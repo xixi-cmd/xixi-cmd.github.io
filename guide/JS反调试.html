@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>JS逆向反调试和反反调试 | Weike</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="https://suda.weikecc.top/img/icon_64.png/">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sviptzk/StaticFile_HEXO@latest/butterfly/css/tags.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
+    <meta name="description" content="Weike">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" conetent="WEIKE">
+    <meta name="twitter:creator" conetent="@WEIKE">
+    
+    <link rel="preload" href="/assets/css/1.styles.3ed545e3.css" as="style"><link rel="preload" href="/assets/js/app.41c4354a.js" as="script"><link rel="preload" href="/assets/js/7.a61542ac.js" as="script"><link rel="prefetch" href="/assets/js/10.b2840810.js"><link rel="prefetch" href="/assets/js/11.18f6e1d7.js"><link rel="prefetch" href="/assets/js/12.1dfabe38.js"><link rel="prefetch" href="/assets/js/13.f7c6b823.js"><link rel="prefetch" href="/assets/js/14.da1704ab.js"><link rel="prefetch" href="/assets/js/15.4694151d.js"><link rel="prefetch" href="/assets/js/16.2d966699.js"><link rel="prefetch" href="/assets/js/17.a6bcbfe2.js"><link rel="prefetch" href="/assets/js/18.49a5ed1a.js"><link rel="prefetch" href="/assets/js/19.fd819c6c.js"><link rel="prefetch" href="/assets/js/2.35e428b5.js"><link rel="prefetch" href="/assets/js/20.9fef3000.js"><link rel="prefetch" href="/assets/js/21.87e185a4.js"><link rel="prefetch" href="/assets/js/22.9b3380a9.js"><link rel="prefetch" href="/assets/js/23.7d6f24cf.js"><link rel="prefetch" href="/assets/js/24.ceffa4f9.js"><link rel="prefetch" href="/assets/js/25.426c7dcc.js"><link rel="prefetch" href="/assets/js/26.40296924.js"><link rel="prefetch" href="/assets/js/27.ff46a68e.js"><link rel="prefetch" href="/assets/js/28.29252fbc.js"><link rel="prefetch" href="/assets/js/29.fd13d974.js"><link rel="prefetch" href="/assets/js/3.59188c44.js"><link rel="prefetch" href="/assets/js/30.dd29ff91.js"><link rel="prefetch" href="/assets/js/31.219326df.js"><link rel="prefetch" href="/assets/js/32.73570b8a.js"><link rel="prefetch" href="/assets/js/33.9556a339.js"><link rel="prefetch" href="/assets/js/34.c2289dd8.js"><link rel="prefetch" href="/assets/js/35.5f42da18.js"><link rel="prefetch" href="/assets/js/36.33b559f2.js"><link rel="prefetch" href="/assets/js/37.6af82484.js"><link rel="prefetch" href="/assets/js/4.71fa3464.js"><link rel="prefetch" href="/assets/js/5.e5b0e988.js"><link rel="prefetch" href="/assets/js/6.e5a91595.js"><link rel="prefetch" href="/assets/js/8.ec2a16d2.js"><link rel="prefetch" href="/assets/js/9.6815d083.js">
+    <link rel="stylesheet" href="/assets/css/1.styles.3ed545e3.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><span><div id="sidebar" data-v-6e67c360><div class="PC-sidebar" data-v-6e67c360><div class="title" data-v-6e67c360>
+            @<span data-v-6e67c360>Weike</span></div> <a href="/" class="router-link-active bar-button" data-v-7201a518 data-v-6e67c360><div class="svg" data-v-7201a518><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home" data-v-7201a518><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" data-v-7201a518></path> <polyline points="9 22 9 12 15 12 15 22" data-v-7201a518></polyline></svg> <!----> <!----></div> <div class="name" data-v-7201a518>Home</div></a> <a href="/archive" class="bar-button" data-v-7201a518 data-v-6e67c360><div class="svg" data-v-7201a518><!----> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book" data-v-7201a518><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" data-v-7201a518></path> <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" data-v-7201a518></path></svg> <!----></div> <div class="name" data-v-7201a518>Archive</div></a> <a href="/about/" class="bar-button" data-v-7201a518 data-v-6e67c360><div class="svg" data-v-7201a518><!----> <!----> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user" data-v-7201a518><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" data-v-7201a518></path> <circle cx="12" cy="7" r="4" data-v-7201a518></circle></svg></div> <div class="name" data-v-7201a518>About</div></a></div> <!----></div><div class="main"><div class="wrap" data-v-5d573f62><div class="post" data-v-5d573f62><div class="title" data-v-5d573f62><h1 data-v-5d573f62>JS逆向反调试和反反调试</h1></div> <div class="info" data-v-5d573f62><div class="date" data-v-382026d3 data-v-5d573f62><div class="svg" data-v-382026d3><svg t="1610177893433" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5858" width="16" height="16" class="icon" data-v-382026d3><path d="M512 192c179.2 0 320 140.8 320 320s-140.8 320-320 320-320-140.8-320-320S332.8 192 512 192M512 128C300.8 128 128 300.8 128 512s172.8 384 384 384 384-172.8 384-384S723.2 128 512 128L512 128z" p-id="5859" fill="#707070" data-v-382026d3></path> <path d="M640 672c-6.4 0-19.2 0-25.6-6.4l-128-128C486.4 531.2 480 518.4 480 512L480 288C480 268.8 492.8 256 512 256s32 12.8 32 32l0 211.2 121.6 121.6c12.8 12.8 12.8 32 0 44.8C659.2 672 646.4 672 640 672z" p-id="5860" fill="#707070" data-v-382026d3></path></svg></div> <div class="content" data-v-382026d3>2021-1-26</div></div> <div class="category" data-v-a6fce850 data-v-5d573f62><div class="svg" data-v-a6fce850><svg t="1610177808699" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4460" width="16" height="16" class="icon" data-v-a6fce850><path d="M725.290667 725.290667m-213.333334 0a213.333333 213.333333 0 1 0 426.666667 0 213.333333 213.333333 0 1 0-426.666667 0Z" p-id="4461" fill="#707070" data-v-a6fce850></path> <path d="M789.205333 234.794667m-149.333333 0a149.333333 149.333333 0 1 0 298.666667 0 149.333333 149.333333 0 1 0-298.666667 0Z" p-id="4462" fill="#707070" data-v-a6fce850></path> <path d="M235.861333 788.138667m-149.333333 0a149.333333 149.333333 0 1 0 298.666667 0 149.333333 149.333333 0 1 0-298.666667 0Z" p-id="4463" fill="#707070" data-v-a6fce850></path> <path d="M298.709333 298.709333m-213.333333 0a213.333333 213.333333 0 1 0 426.666667 0 213.333333 213.333333 0 1 0-426.666667 0Z" p-id="4464" fill="#707070" data-v-a6fce850></path></svg></div> <div class="content" data-v-a6fce850>web</div></div> <div class="tags" data-v-2ed44237 data-v-5d573f62><div class="svg" data-v-2ed44237><svg t="1610177743508" viewBox="0 0 1085 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2934" width="16" height="16" class="icon" data-v-2ed44237><path d="M256 256q0-30.285714-21.428571-51.714286T182.857143 182.857143t-51.714286 21.428571T109.714286 256t21.428571 51.714286T182.857143 329.142857t51.714286-21.428571T256 256z m609.714286 329.142857q0 30.285714-21.142857 51.428572l-280.571429 281.142857q-22.285714 21.142857-52 21.142857-30.285714 0-51.428571-21.142857L52 508.571429q-21.714286-21.142857-36.857143-57.714286T0 384V146.285714q0-29.714286 21.714286-51.428571t51.428571-21.714286h237.714286q30.285714 0 66.857143 15.142857T436 125.142857l408.571429 408q21.142857 22.285714 21.142857 52z m219.428571 0q0 30.285714-21.142857 51.428572l-280.571429 281.142857q-22.285714 21.142857-52 21.142857-20.571429 0-33.714285-8t-30.285715-25.714286l268.571429-268.571428q21.142857-21.142857 21.142857-51.428572 0-29.714286-21.142857-52L527.428571 125.142857q-21.714286-21.714286-58.285714-36.857143T402.285714 73.142857h128q30.285714 0 66.857143 15.142857t58.285714 36.857143l408.571429 408q21.142857 22.285714 21.142857 52z" p-id="2935" fill="#8a8a8a" data-v-2ed44237></path></svg></div> <div class="content" data-v-2ed44237><span class="tag" style="color:#00BCD4;" data-v-2ed44237>
+            教程
+        </span><span class="tag" style="color:#2374AB;" data-v-2ed44237>
+            Python
+        </span></div></div></div> <div class="line" data-v-5d573f62></div> <div class="content" data-v-5d573f62><div class="content__default" data-v-5d573f62><h1 id="写在最前面"><a href="#写在最前面" class="header-anchor">#</a> 写在最前面</h1> <p>本文转载于CSDN大佬: <a href="https://blog.csdn.net/weixin_44504978" target="_blank" rel="noopener noreferrer">@花爷<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a><br>已获得其本人允许<br> 根据《中华人民共和国著作权法》规定</p> <p>1、已在报刊上刊登或者网络上传播的作品，除著作权人声明或者上载该作品的网络服务提供者受著作权人的委托声明不得转载、摘编的以外，网站予以转载、摘编，并按有关规定支付报酬、注明出处的，不构成侵权。</p> <p>2、为个人学习、研究或者欣赏，使用他人已经发表的作品而转载的不属于侵权，可以不经著作权人许可，不向其支付报酬，但应当指明作者姓名、作品名称，并且不得侵犯著作权人依照本法享有的其他权利。</p> <h1 id="切入js逆向反调试"><a href="#切入js逆向反调试" class="header-anchor">#</a> 切入JS逆向反调试</h1> <p><span style="font-size:20px;">现在调试JS各种反调，既然有反调，那我们就肯定有过这个反调试的方法。这里给大家推荐一个JS逆向练习平台。<span></span></span></p> <p><a href="http://spider.wangluozhe.com/" target="_blank" rel="noopener noreferrer">JS逆向练习平台<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p>1.我们这里讲的是第5题，它这里的反调试是不让你打开开发者人员工具。打开开发者人员工具，就自动返回主页面。
+<img src="https://img-blog.csdnimg.cn/2021012414190817.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDUwNDk3OA==,size_16,color_FFFFFF,t_70#pic_center" alt=""></p> <p>2.思路：a：它不让我打开开发者人员工具，肯定是在打开开发者人员工具之后它检测了什么玩意
+<img src="https://img-blog.csdnimg.cn/20210124142517995.png#pic_center" alt=""></p> <div class="language-text extra-class"><pre class="language-text"><code>b：.那他就是调用了浏览器内置的东西，我这个就解决方法是下页面事件监听断点，如图：
+</code></pre></div><p><img src="https://img-blog.csdnimg.cn/20210124144325107.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDUwNDk3OA==,size_16,color_FFFFFF,t_70#pic_center" alt=""></p> <p>这里的意思：
+事件侦听器断点 event listener breakpoints
+事件突变 Dom mutation
+下面还有一些我就不翻译了，有兴趣可以去看看，翻译一下，小弟英语不好。
+下这个断点之后，跳转完页面，加载ok之后他就会断下来，如图，我们就可以得到这道题的答案了。
+<img src="https://img-blog.csdnimg.cn/20210124145214853.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDUwNDk3OA==,size_16,color_FFFFFF,t_70#pic_center" alt=""></p> <p>答案大佬打了一下马赛克，这边大佬不公布答案，大家可以尝试一下。</p> <h1 id="切入js反反调试"><a href="#切入js反反调试" class="header-anchor">#</a> 切入JS反反调试</h1> <div class="tip"><p>你千万别跟任何人谈任何事情。你只要一谈起，就会想念起每一个人来，我只知道我很想念我所谈到的每一个人。——Ｊ·Ｄ·塞林格《麦田里的守望者》</p><p></p></div> <h2 id="js逆向-过无限debugger调试"><a href="#js逆向-过无限debugger调试" class="header-anchor">#</a> [JS逆向]过无限debugger调试</h2> <p><span style="font-size:20px;">在JS逆向过程当中，获取用发F12抓取XHR的时候，常常会发现网页不让我们打开F12开发人员工具。如果这个时候我们开启工具中禁止断点之后，虽然我们可以抓取xhr，但是这样我们无法调试代码部分了，开启了禁止断点之后，我们自己也无法在代码当中下断点了</span></p> <h3 id="需求"><a href="#需求" class="header-anchor">#</a> 需求</h3> <p>在采集某些网站时，目标网站为了防止别人分析调试前端代码，采取了反调试措施。其中一种做法是当你按F12进入浏览器控制台后，浏览器会自动命中debugger断点，并且无限循环，导致无法调试。以食品药品监督管理总局数据查询网站为例。如下图:
+<img src="https://img-blog.csdnimg.cn/20190810135056101.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI2NzEyOTc3,size_16,color_FFFFFF,t_70" alt=""></p> <p>按F12进入控制台</p> <p><img src="https://img-blog.csdnimg.cn/20190810135323385.gif" alt=""></p> <h3 id="解决方法"><a href="#解决方法" class="header-anchor">#</a> 解决方法</h3> <h4 id="禁用浏览器断点"><a href="#禁用浏览器断点" class="header-anchor">#</a> 禁用浏览器断点</h4> <p><img src="https://img-blog.csdnimg.cn/20190810135629767.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI2NzEyOTc3,size_16,color_FFFFFF,t_70" alt="">
+点击图中按钮，之后将不会再命中任何断点。这种方法虽然可以防止无限循环命中debugger断点，但是也存在很大的缺陷，因为对于其他代码，我们还是需要断点调试功能的。所以这个方法仅限于静态分析。</p> <h4 id="利用中间人修改响应代码"><a href="#利用中间人修改响应代码" class="header-anchor">#</a> 利用中间人修改响应代码</h4> <p>用Fiddler删除响应代码中的debugger即可达到目的
+实现的核心代码很简单:如下</p> <div class="language-Python extra-class"><pre class="language-python"><code>FiddlerApplication<span class="token punctuation">.</span>BeforeRequest <span class="token operator">+=</span> delegate<span class="token punctuation">(</span>Fiddler<span class="token punctuation">,</span>Session oS<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+     oS<span class="token punctuation">.</span>bBufferResponse <span class="token operator">=</span> true<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+FiddlerApplication<span class="token punctuation">.</span>BeforeResponse <span class="token operator">+=</span> <span class="token punctuation">(</span>oS<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span>
+<span class="token punctuation">{</span>
+     oS<span class="token punctuation">.</span>utilDecodeResponse<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     oS<span class="token punctuation">.</span>utilReplaceLnResponse<span class="token punctuation">(</span><span class="token string">&quot;debugger&quot;</span><span class="token punctuation">,</span> String<span class="token punctuation">.</span>Empty<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token operator">/</span><span class="token operator">*</span>
+     <span class="token operator">*</span>
+     Code 实在是找不到FiddlerCode的代码格式，只能用Python代替一下
+     <span class="token operator">*</span>
+     <span class="token operator">*</span><span class="token operator">/</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>实际使用中发现,位于响应html页的debugger被删除了，但是仍然会弹出断点。分析页面得到，debugger断点位置一共有2处 第一处位于&quot;http://qy1.sfda.gov.cn/datasearch/face3/dir.html&quot;debugger以明文形式存在,Fiddler删除的就是这部分。通过分析另一处debugger位置，发现debugger是通过eval去实现的，响应中并没有直接出现debugger字段，所以没有被替换掉。</p> <p>在Console输入</p> <div class="language-JS extra-class"><pre class="language-js"><code><span class="token operator">&gt;</span> <span class="token function">_$uj</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token operator">&lt;</span>· <span class="token string">&quot;eval&quot;</span>
+<span class="token operator">&gt;</span> <span class="token function">_$dQ</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token operator">&lt;</span>· <span class="token string">&quot;(function() {var a = new Date(); debugger; return new Date() - a &gt; 100;}())&quot;</span>
+<span class="token operator">&gt;</span> _
+</code></pre></div><p>代码经过强混淆，读者看到的函数名称是和我不一样的。</p> <h4 id="利用浏览器插件修改响应代码"><a href="#利用浏览器插件修改响应代码" class="header-anchor">#</a> 利用浏览器插件修改响应代码</h4> <p>具体原理和使用Fiddler是相同的，通过浏览器插件将请求重定向以达到修改代码的目的。也存在相同的问题</p> <h4 id="手动替换代码"><a href="#手动替换代码" class="header-anchor">#</a> 手动替换代码</h4> <p>既然修改响应结果无法满足需求，那只能从代码中寻找突破了。
+以本文的网站为例，查看debugger断点处的调用栈堆，找到调用位置。其实在上文中间人方式结尾处已经发现了。是通过eval去实现断点的。我们先构造一个空方法</p> <p><img src="https://img-blog.csdnimg.cn/20190810153307160.png" alt="">
+将目标网站的方法偷梁换柱
+<img src="https://img-blog.csdnimg.cn/20190810153643439.png" alt="">
+由于网站代码强混淆，所以函数名称会不一样。下面放个GIF图
+<img src="https://img-blog.csdnimg.cn/20190810154011549.gif" alt="">
+完美解决 但是注意不要刷新，页面刷新后需要重新替换。</p> <h4 id="傻瓜式技巧"><a href="#傻瓜式技巧" class="header-anchor">#</a> 傻瓜式技巧</h4> <p>上文的几种方法，要么是存在缺陷，要么是步骤较为繁琐，我这边还有个压箱底的神技，不需要写任何代码，鼠标点点点就能够满足需求，为了避免伸手党，所以不放了。</p> <h1 id="总结"><a href="#总结" class="header-anchor">#</a> 总结</h1> <p>1-DebugPort
+2-KdDisableDebugger
+3-IsDebuggerPresent和CheckRemoteDebuggerPresent
+4-hook</p> <p>http://www.moguizuofang.com/bbs/thread-3235-1-1.html</p> <p>http://bbs.pediy.com/showthread.php?t=126802</p> <p>http://bbs.pediy.com/showthread.php?t=129810</p> <p>DebugPort是进程EPROCESS结构里的一个成员，指向了一个用于进程调试的对象，如果一个进程不在被调试的时候那么就是NULL，否则他是一个指针。该对象负责在调试器与被调进程之间进行调试事件传递，因此被称为调试端口。被调试程序的事件由这个端口发送到调试器进程的。</p> <p>HOOK系统中一些与调试相关的函数，也可以防止被各种调试器调试。比如某款程序在内核中就HOOK了下面这些函数：
+NtOpenThread（）：防止调试器在程序内部创建线程
+NtOpenProcess（）：防止OD（OllyDbg）等调试工具在进程列表中看到
+KiAttachProcess（）：防止被附加上
+NtReadVirtualMemory（）：防止被读内存
+NtWriteVirtualMemory（）：防止内存被写
+KdReceivePacket（）：KDCOME.dll 中Com串口接收数据函数
+KdSendPacket（）：KDCOME.dll 中Com串口发送数据函数，可以HOOK这2个函数用来防止双机调试。</p> <p>反反调试的思路也就出来了。针对清零DebugPort来防止调试的方法，可以通过对DebugPort内存地址下内存断点：
+ba w4 debugport_addr
+这样一旦有程序代码在修改DebugPort，就会被断下，从而找到对应的清零DebugPort的反调试代码，然后对这部分代码进行patch（用机器码0×90(nop)或者0xC3(ret)取代），从而让它失去作用，当然有的程序会对代码进行校验，一旦发现代码被篡改，就会采取保护措施，比如抛出异常或者退出程序。
+针对调用系统函数如KdDisableDebugger（）来检测调试器存在从而禁止被调试的方法，可以在对应的这些函数的地址下断点，然后对相关的代码进行patch，然后使该函数判断失效。比如：
+bp KdDisableDebugger、eb xxx
+针对通过HOOK系统函数来防止进程被调试的方法，可以直接将这些系统函数的钩子直接恢复，可以通过内核驱动程序或者借助一些ARK工具（比如Pchunter）就可以直接检测和恢复这些函数钩子。
+</p> <h1 id="总结-2"><a href="#总结-2" class="header-anchor">#</a> 总结 -2</h1> <p>在调试一些病毒程序的时候，可能会碰到一些反调试技术，也就是说，被调试的程序可以检测到自己是否被调试器附加了，如果探知自己正在被调试，肯定是有人试图反汇编啦之类的方法破解自己。为了了解如何破解反调试技术，首先我们来看看反调试技术。</p> <p>一、Windows API方法</p> <p>Win32提供了两个API, IsDebuggerPresent和CheckRemoteDebuggerPresent可以用来检测当前进程是否正在被调试，以IsDebuggerPresent函数为例，例子如下：</p> <div class="language-shell extra-class"><pre class="language-shell"><code>BOOL ret <span class="token operator">=</span> IsDebuggerPresent<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+printf<span class="token punctuation">(</span><span class="token string">&quot;ret = %d<span class="token entity" title="\n">\n</span>&quot;</span>, ret<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p>破解方法很简单，就是在系统里将这两个函数hook掉，让这两个函数一直返回false就可以了，网上有很多做hook API工作的工具，也有很多工具源代码是开放的，所以这里就不细谈了。</p> <p>二、查询进程PEB的BeingDebugged标志位</p> <p>当进程被调试器所附加的时候，操作系统会自动设置这个标志位，因此在程序里定期查询这个标志位就可以了，例子如下：</p> <div class="language-c++ extra-class"><pre class="language-text"><code>bool PebIsDebuggedApproach()
+{
+       char result = 0;
+       __asm
+       {
+// 进程的PEB地址放在fs这个寄存器位置上
+              mov eax, fs:[30h]
+// 查询BeingDebugged标志位
+              mov al, BYTE PTR [eax + 2]
+              mov result, al
+       }
+
+       return result != 0;
+}
+</code></pre></div><p>三、查询进程PEB的NtGlobal标志位</p> <p>跟第二个方法一样，当进程被调试的时候，操作系统除了修改BeingDebugged这个标志位以外，还会修改其他几个地方，其中NtDll中一些控制堆（Heap）操作的函数的标志位就会被修改，因此也可以查询这个标志位，例子如下：</p> <div class="language-c++ extra-class"><pre class="language-text"><code>bool PebNtGlobalFlagsApproach()
+{
+       int result = 0;
+
+       __asm
+       {
+  // 进程的PEB
+              mov eax, fs:[30h]
+  // 控制堆操作函数的工作方式的标志位
+              mov eax, [eax + 68h]
+  // 操作系统会加上这些标志位FLG_HEAP_ENABLE_TAIL_CHECK,
+  // FLG_HEAP_ENABLE_FREE_CHECK and FLG_HEAP_VALIDATE_PARAMETERS，
+  // 它们的并集就是x70
+  //
+  // 下面的代码相当于C/C++的
+  //     eax = eax &amp; 0x70
+              and eax, 0x70
+              mov result, eax
+       }
+
+       return result != 0;
+}
+
+</code></pre></div><p>四、查询进程堆的一些标志位</p> <p>这个方法是第三个方法的变种，只要进程被调试，进程在堆上分配的内存，在分配的堆的头信息里，ForceFlags这个标志位会被修改，因此可以通过判断这个标志位的方式来反调试。因为进程可以有很多的堆，因此只要检查任意一个堆的头信息就可以了，所以这个方法貌似很强大，例子如下：</p> <div class="language-c++ extra-class"><pre class="language-text"><code>bool HeapFlagsApproach()
+{
+       int result = 0;
+
+       __asm
+       {
+      // 进程的PEB
+              mov eax, fs:[30h]
+      // 进程的堆，我们随便访问了一个堆，下面是默认的堆
+              mov eax, [eax + 18h]
+  // 检查ForceFlag标志位，在没有被调试的情况下应该是
+              mov eax, [eax + 10h]
+              mov result, eax
+       }
+
+       return result != 0;
+}
+</code></pre></div><p>五、使用NtQueryInformationProcess函数</p> <p>NtQueryInformationProcess函数是一个未公开的API，它的第二个参数可以用来查询进程的调试端口。如果进程被调试，那么返回的端口值会是-1，否则就是其他的值。由于这个函数是一个未公开的函数，因此需要使用LoadLibrary和GetProceAddress的方法获取调用地址，示例代码如下：</p> <div class="language-C++ extra-class"><pre class="language-text"><code>// 声明一个函数指针。
+typedef NTSTATUS (WINAPI *NtQueryInformationProcessPtr)(
+       HANDLE processHandle,
+       PROCESSINFOCLASS processInformationClass,
+       PVOID processInformation,
+       ULONG processInformationLength,
+       PULONG returnLength);
+
+bool NtQueryInformationProcessApproach()
+{
+       int debugPort = 0;
+       HMODULE hModule = LoadLibrary(TEXT(&quot;Ntdll.dll &quot;));
+       NtQueryInformationProcessPtr NtQueryInformationProcess = (NtQueryInformationProcessPtr)GetProcAddress(hModule, &quot;NtQueryInformationProcess&quot;);
+       if ( NtQueryInformationProcess(GetCurrentProcess(), (PROCESSINFOCLASS)7, &amp;debugPort, sizeof(debugPort), NULL) )
+              printf(&quot;[ERROR NtQueryInformationProcessApproach] NtQueryInformationProcess failed\n&quot;);
+       else
+              return debugPort == -1;
+
+       return false;
+}
+</code></pre></div><p>六、NtSetInformationThread方法</p> <p>这个也是使用Windows的一个未公开函数的方法，你可以在当前线程里调用NtSetInformationThread，调用这个函数时，如果在第二个参数里指定0x11这个值（意思是ThreadHideFromDebugger），等于告诉操作系统，将所有附加的调试器统统取消掉。示例代码:</p> <div class="language-C++ extra-class"><pre class="language-text"><code>// 声明一个函数指针。
+typedef NTSTATUS (*NtSetInformationThreadPtr)(HANDLE threadHandle,
+       THREADINFOCLASS threadInformationClass,
+       PVOID threadInformation,
+       ULONG threadInformationLength);
+
+void NtSetInformationThreadApproach()
+{
+      HMODULE hModule = LoadLibrary(TEXT(&quot;ntdll.dll&quot;));
+      NtSetInformationThreadPtr NtSetInformationThread = (NtSetInformationThreadPtr)GetProcAddress(hModule, &quot;NtSetInformationThread&quot;);
+
+      NtSetInformationThread(GetCurrentThread(), (THREADINFOCLASS)0x11, 0, 0);
+}
+
+</code></pre></div><p>七、触发异常的方法</p> <p>这个技术的原理是，首先，进程使用SetUnhandledExceptionFilter函数注册一个未处理异常处理函数A，如果进程没有被调试的话，那么触发一个未处理异常，会导致操作系统将控制权交给先前注册的函数A；而如果进程被调试的话，那么这个未处理异常会被调试器捕捉，这样我们的函数A就没有机会运行了。</p> <p>这里有一个技巧，就是触发未处理异常的时候，如果跳转回原来代码继续执行，而不是让操作系统关闭进程。方案是在函数A里修改eip的值，因为在函数A的参数_EXCEPTION_POINTERS里，会保存当时触发异常的指令地址，所以在函数A里根据这个指令地址修改寄存器eip的值就可以了，示例代码如下：</p> <div class="language-c++ extra-class"><pre class="language-text"><code>// 进程要注册的未处理异常处理程序A
+LONG WINAPI MyUnhandledExceptionFilter(struct _EXCEPTION_POINTERS *pei)
+{
+       SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)
+              pei-&gt;ContextRecord-&gt;Eax);
+       // 修改寄存器eip的值
+       pei-&gt;ContextRecord-&gt;Eip += 2;
+       // 告诉操作系统，继续执行进程剩余的指令（指令保存在eip里），而不是关闭进程
+       return EXCEPTION_CONTINUE_EXECUTION;
+}
+
+bool UnhandledExceptionFilterApproach()
+{
+       SetUnhandledExceptionFilter(MyUnhandledExceptionFilter);
+       __asm
+       {
+              // 将eax清零
+              xor eax, eax
+              // 触发一个除零异常
+              div eax
+       }
+
+       return false;
+}
+</code></pre></div><p>八、调用DeleteFiber函数</p> <p>如果给DeleteFiber函数传递一个无效的参数的话，DeleteFiber函数除了会抛出一个异常以外，还是将进程的LastError值设置为具体出错原因的代号。然而，如果进程正在被调试的话，这个LastError值会被修改，因此如果调试器绕过了第七步里讲的反调试技术的话，我们还可以通过验证LastError值是不是被修改过来检测调试器的存在，示例代码：</p> <div class="language-c++ extra-class"><pre class="language-text"><code>bool DeleteFiberApproach()
+{
+       char fib[1024] = {0};
+       // 会抛出一个异常并被调试器捕获
+       DeleteFiber(fib);
+
+       // 0x57的意思是ERROR_INVALID_PARAMETER
+       return (GetLastError() != 0x57);
+}
+</code></pre></div></div></div> <div class="footer" data-v-5d573f62><div title="share this post" class="share share-icon" data-v-5d573f62><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2" data-v-5d573f62><circle cx="18" cy="5" r="3" data-v-5d573f62></circle><circle cx="6" cy="12" r="3" data-v-5d573f62></circle><circle cx="18" cy="19" r="3" data-v-5d573f62></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" data-v-5d573f62></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" data-v-5d573f62></line></svg> <path d="M896 469.333333l-298.666667-298.666667 0 170.666667C298.666667 384 170.666667 597.333333 128 810.666667c106.666667-149.333333 256-217.6 469.333333-217.6L597.333333 768 896 469.333333z" p-id="7022" fill="#1296db" data-v-5d573f62></path></div> <div class="share" data-v-5d573f62><!----></div> <div class="share" data-v-5d573f62><!----></div></div></div> <div class="footer" data-v-52876424 data-v-5d573f62><footer data-v-52876424><div data-v-52876424>
+            © 2018 -
+            2021
+            <svg viewBox="64 64 896 896" data-icon="flag" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false" data-v-52876424><path fill="#1296db" d="M880 305H624V192c0-17.7-14.3-32-32-32H184v-40c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v784c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8V640h248v113c0 17.7 14.3 32 32 32h416c17.7 0 32-14.3 32-32V337c0-17.7-14.3-32-32-32z" data-v-52876424></path></svg>
+            @Weike Joe
+        </div> <div data-v-52876424><a href="https://vuepress.vuejs.org/" target="_blank" data-v-52876424><img src="https://cdn.jsdelivr.net/gh/xixi-cmd/img-bed/kj.svg" alt srcset data-v-52876424></a> <a href="https://ww.vercel.com/" target="_blank" data-v-52876424><img src="https://img.shields.io/badge/Hosted-Vercel-brightgreen?style=flat&logo=Vercel" alt srcset data-v-52876424></a> <a href="http://www.github.com/xixi-cmd/" target="_blank" data-v-52876424><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" alt srcset data-v-52876424></a> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" data-v-52876424><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" alt srcset data-v-52876424></a></div> <div data-v-52876424>
+            备案号：<a target="_blank" rel="noopener" href="http://beian.miit.gov.cn/" data-v-52876424>
+                暂时还未备案
+            </a></div></footer></div></div></div><div id="toolbar" data-v-fe84d7a0><!----> <div class="toolbar" data-v-fe84d7a0><div class="search" data-v-fe84d7a0><div class="search-box" data-v-fe84d7a0><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div></div> <div class="post-sort" data-v-fe84d7a0><div class="title" data-v-fe84d7a0>Post Order</div> <div class="op" data-v-fe84d7a0>
+                By Time
+                <svg t="1610607067172" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2795" width="20" height="20" class="icon" style="display:;" data-v-fe84d7a0><path d="M495.765247 353.091804 333.414649 190.741205 171.065074 353.091804 304.386522 353.091804l0 420.142919c0 17.947767 14.046924 32.469506 31.978319 32.469506 17.931395 0 31.978319-14.522762 31.978319-32.469506L368.343159 353.091804 495.765247 353.091804z" p-id="2796" data-v-fe84d7a0></path> <path d="M720.104665 672.874991 720.104665 221.24494c0-17.947767-14.046924-32.469506-31.978319-32.469506s-31.978319 14.522762-31.978319 32.469506l0 451.630051-127.913275 0 162.349575 162.349575 162.349575-162.349575L720.104665 672.874991z" p-id="2797" data-spm-anchor-id="a313x.7781069.0.i7" fill="#1296db" class="selected" data-v-fe84d7a0></path></svg> <svg t="1610612746140" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2973" width="20" height="20" class="icon" style="display:none;" data-v-fe84d7a0><path d="M495.765247 353.091804 333.414649 190.741205 171.065074 353.091804 304.386522 353.091804l0 420.142919c0 17.947767 14.046924 32.469506 31.978319 32.469506 17.931395 0 31.978319-14.522762 31.978319-32.469506L368.343159 353.091804 495.765247 353.091804z" p-id="2974" data-spm-anchor-id="a313x.7781069.0.i9" fill="#1296db" class="selected" data-v-fe84d7a0></path> <path d="M720.104665 672.874991 720.104665 221.24494c0-17.947767-14.046924-32.469506-31.978319-32.469506s-31.978319 14.522762-31.978319 32.469506l0 451.630051-127.913275 0 162.349575 162.349575 162.349575-162.349575L720.104665 672.874991z" p-id="2975" data-v-fe84d7a0></path></svg>
+                :
+                <span class="content" data-v-fe84d7a0>DESC</span></div></div> <div class="statistics" data-v-fe84d7a0><div class="title" data-v-fe84d7a0>Article Statistics</div> <div class="data" data-v-fe84d7a0>
+                Article: 34
+            </div> <div class="data" data-v-fe84d7a0>
+                Categories: 34
+            </div> <div class="data" data-v-fe84d7a0>
+                Tags: 49
+            </div> <div class="more" data-v-fe84d7a0><a href="/archive" data-v-fe84d7a0>see more</a></div></div></div></div></span></div><div class="global-ui"><!----></div></div>
+    <script src="/assets/js/app.41c4354a.js" defer></script><script src="/assets/js/7.a61542ac.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Gradle | Weike</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="https://suda.weikecc.top/img/icon_64.png/">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sviptzk/StaticFile_HEXO@latest/butterfly/css/tags.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
+    <meta name="description" content="Weike">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" conetent="WEIKE">
+    <meta name="twitter:creator" conetent="@WEIKE">
+    
+    <link rel="preload" href="/assets/css/1.styles.3ed545e3.css" as="style"><link rel="preload" href="/assets/js/app.41c4354a.js" as="script"><link rel="preload" href="/assets/js/17.a6bcbfe2.js" as="script"><link rel="prefetch" href="/assets/js/10.b2840810.js"><link rel="prefetch" href="/assets/js/11.18f6e1d7.js"><link rel="prefetch" href="/assets/js/12.1dfabe38.js"><link rel="prefetch" href="/assets/js/13.f7c6b823.js"><link rel="prefetch" href="/assets/js/14.da1704ab.js"><link rel="prefetch" href="/assets/js/15.4694151d.js"><link rel="prefetch" href="/assets/js/16.2d966699.js"><link rel="prefetch" href="/assets/js/18.49a5ed1a.js"><link rel="prefetch" href="/assets/js/19.fd819c6c.js"><link rel="prefetch" href="/assets/js/2.35e428b5.js"><link rel="prefetch" href="/assets/js/20.9fef3000.js"><link rel="prefetch" href="/assets/js/21.87e185a4.js"><link rel="prefetch" href="/assets/js/22.9b3380a9.js"><link rel="prefetch" href="/assets/js/23.7d6f24cf.js"><link rel="prefetch" href="/assets/js/24.ceffa4f9.js"><link rel="prefetch" href="/assets/js/25.426c7dcc.js"><link rel="prefetch" href="/assets/js/26.40296924.js"><link rel="prefetch" href="/assets/js/27.ff46a68e.js"><link rel="prefetch" href="/assets/js/28.29252fbc.js"><link rel="prefetch" href="/assets/js/29.fd13d974.js"><link rel="prefetch" href="/assets/js/3.59188c44.js"><link rel="prefetch" href="/assets/js/30.dd29ff91.js"><link rel="prefetch" href="/assets/js/31.219326df.js"><link rel="prefetch" href="/assets/js/32.73570b8a.js"><link rel="prefetch" href="/assets/js/33.9556a339.js"><link rel="prefetch" href="/assets/js/34.c2289dd8.js"><link rel="prefetch" href="/assets/js/35.5f42da18.js"><link rel="prefetch" href="/assets/js/36.33b559f2.js"><link rel="prefetch" href="/assets/js/37.6af82484.js"><link rel="prefetch" href="/assets/js/4.71fa3464.js"><link rel="prefetch" href="/assets/js/5.e5b0e988.js"><link rel="prefetch" href="/assets/js/6.e5a91595.js"><link rel="prefetch" href="/assets/js/7.a61542ac.js"><link rel="prefetch" href="/assets/js/8.ec2a16d2.js"><link rel="prefetch" href="/assets/js/9.6815d083.js">
+    <link rel="stylesheet" href="/assets/css/1.styles.3ed545e3.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><span><div id="sidebar" data-v-6e67c360><div class="PC-sidebar" data-v-6e67c360><div class="title" data-v-6e67c360>
+            @<span data-v-6e67c360>Weike</span></div> <a href="/" class="router-link-active bar-button" data-v-7201a518 data-v-6e67c360><div class="svg" data-v-7201a518><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home" data-v-7201a518><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" data-v-7201a518></path> <polyline points="9 22 9 12 15 12 15 22" data-v-7201a518></polyline></svg> <!----> <!----></div> <div class="name" data-v-7201a518>Home</div></a> <a href="/archive" class="bar-button" data-v-7201a518 data-v-6e67c360><div class="svg" data-v-7201a518><!----> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book" data-v-7201a518><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" data-v-7201a518></path> <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" data-v-7201a518></path></svg> <!----></div> <div class="name" data-v-7201a518>Archive</div></a> <a href="/about/" class="bar-button" data-v-7201a518 data-v-6e67c360><div class="svg" data-v-7201a518><!----> <!----> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user" data-v-7201a518><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" data-v-7201a518></path> <circle cx="12" cy="7" r="4" data-v-7201a518></circle></svg></div> <div class="name" data-v-7201a518>About</div></a></div> <!----></div><div class="main"><div class="wrap" data-v-5d573f62><div class="post" data-v-5d573f62><div class="title" data-v-5d573f62><h1 data-v-5d573f62>Gradle</h1></div> <div class="info" data-v-5d573f62><div class="date" data-v-382026d3 data-v-5d573f62><div class="svg" data-v-382026d3><svg t="1610177893433" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5858" width="16" height="16" class="icon" data-v-382026d3><path d="M512 192c179.2 0 320 140.8 320 320s-140.8 320-320 320-320-140.8-320-320S332.8 192 512 192M512 128C300.8 128 128 300.8 128 512s172.8 384 384 384 384-172.8 384-384S723.2 128 512 128L512 128z" p-id="5859" fill="#707070" data-v-382026d3></path> <path d="M640 672c-6.4 0-19.2 0-25.6-6.4l-128-128C486.4 531.2 480 518.4 480 512L480 288C480 268.8 492.8 256 512 256s32 12.8 32 32l0 211.2 121.6 121.6c12.8 12.8 12.8 32 0 44.8C659.2 672 646.4 672 640 672z" p-id="5860" fill="#707070" data-v-382026d3></path></svg></div> <div class="content" data-v-382026d3>Invalid Date</div></div> <div class="category" data-v-a6fce850 data-v-5d573f62><div class="svg" data-v-a6fce850><svg t="1610177808699" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4460" width="16" height="16" class="icon" data-v-a6fce850><path d="M725.290667 725.290667m-213.333334 0a213.333333 213.333333 0 1 0 426.666667 0 213.333333 213.333333 0 1 0-426.666667 0Z" p-id="4461" fill="#707070" data-v-a6fce850></path> <path d="M789.205333 234.794667m-149.333333 0a149.333333 149.333333 0 1 0 298.666667 0 149.333333 149.333333 0 1 0-298.666667 0Z" p-id="4462" fill="#707070" data-v-a6fce850></path> <path d="M235.861333 788.138667m-149.333333 0a149.333333 149.333333 0 1 0 298.666667 0 149.333333 149.333333 0 1 0-298.666667 0Z" p-id="4463" fill="#707070" data-v-a6fce850></path> <path d="M298.709333 298.709333m-213.333333 0a213.333333 213.333333 0 1 0 426.666667 0 213.333333 213.333333 0 1 0-426.666667 0Z" p-id="4464" fill="#707070" data-v-a6fce850></path></svg></div> <div class="content" data-v-a6fce850>JAVA</div></div> <div class="tags" data-v-2ed44237 data-v-5d573f62><div class="svg" data-v-2ed44237><svg t="1610177743508" viewBox="0 0 1085 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2934" width="16" height="16" class="icon" data-v-2ed44237><path d="M256 256q0-30.285714-21.428571-51.714286T182.857143 182.857143t-51.714286 21.428571T109.714286 256t21.428571 51.714286T182.857143 329.142857t51.714286-21.428571T256 256z m609.714286 329.142857q0 30.285714-21.142857 51.428572l-280.571429 281.142857q-22.285714 21.142857-52 21.142857-30.285714 0-51.428571-21.142857L52 508.571429q-21.714286-21.142857-36.857143-57.714286T0 384V146.285714q0-29.714286 21.714286-51.428571t51.428571-21.714286h237.714286q30.285714 0 66.857143 15.142857T436 125.142857l408.571429 408q21.142857 22.285714 21.142857 52z m219.428571 0q0 30.285714-21.142857 51.428572l-280.571429 281.142857q-22.285714 21.142857-52 21.142857-20.571429 0-33.714285-8t-30.285715-25.714286l268.571429-268.571428q21.142857-21.142857 21.142857-51.428572 0-29.714286-21.142857-52L527.428571 125.142857q-21.714286-21.714286-58.285714-36.857143T402.285714 73.142857h128q30.285714 0 66.857143 15.142857t58.285714 36.857143l408.571429 408q21.142857 22.285714 21.142857 52z" p-id="2935" fill="#8a8a8a" data-v-2ed44237></path></svg></div> <div class="content" data-v-2ed44237><span class="tag" style="color:#FF95AE;" data-v-2ed44237>
+            JAVA
+        </span><span class="tag" style="color:#5EA2DD;" data-v-2ed44237>
+            gradle
+        </span></div></div></div> <div class="line" data-v-5d573f62></div> <div class="content" data-v-5d573f62><div class="content__default" data-v-5d573f62><p>软件行业的蓬勃发展，新旧交替，版本构建工具从 <strong>ant -&gt; maven -&gt; gradle</strong> 进行演变，个人不喜欢 maven 的 xml 的配置文件，基于  <strong>Groovy</strong> 语言作为构建脚本语言，相对于 JAVA 开发人员来说比较容易上手，动态语言也比 xml 配置文件更灵活，构建速度也更加的快速，所以入了 gradle 的坑。当然，目前，很多公司还是使用 maven 作为构建工具，所以建议maven 还是要懂点的。</p> <p>本文仅供自己学习 gradle 的记录笔记，如果你想深入的学习，请戳 <a href="https://docs.gradle.org/current/userguide/userguide.html" target="_blank" rel="noopener noreferrer"><strong>官方文档</strong><span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p>个人觉得，官方文档是最好的学习文档，我简单过了一遍，感觉官方文档的例子都很精炼，总结得很到位，底下很多代码实例也是来自官方文档。</p> <h2 id="基本概念"><a href="#基本概念" class="header-anchor">#</a> 基本概念</h2> <p>每一次  Gradle  构建都是由一个或者多个 <strong>projects</strong> 组成，</p> <p>比如一个  <strong>root projects</strong>  依赖多个 <strong>sub projects</strong> <strong>(module)</strong> 项目，每个 projects 又由编译，打包，生成javadoc，发布等多个 <strong>tasks</strong> 组成。<strong>tasks</strong> 之间也可以相互依赖，形成一个依赖关系图以确保他们的执行顺序。</p> <h3 id="项目-projects"><a href="#项目-projects" class="header-anchor">#</a> 项目 Projects</h3> <p>一个项目代表一个正在构建的组件，比如一个jar文件，当构建启动的时候，<strong>Gradle</strong> 会基于 <strong>build.gradle</strong> 实例化一个 <strong>org.gradle.api.Project</strong> 类，并且能够通过 project 变量使其隐式可用。</p> <p>属性: <strong>group name version</strong></p> <p>方法: <strong>apply denpendencies repositories task</strong></p> <p>其他配置方式: <strong>ext gradle.properties</strong></p> <h3 id="任务-tasks"><a href="#任务-tasks" class="header-anchor">#</a> 任务 Tasks</h3> <p>任务对应 <strong>org.gradle.api.Task</strong> ，主要包括任务动作和任务依赖。任务工作定义了一个最小的工作单元，可以定义依赖其他任务，动作序列和动作执行条件等。</p> <p>方法: <strong>dependsOn doFirst do Last(&lt;&lt;)</strong></p> <h3 id="构建生命周期-build-lifecycle"><a href="#构建生命周期-build-lifecycle" class="header-anchor">#</a> 构建生命周期 Build Lifecycle</h3> <p>A Gradle build has three distinct phases.</p> <ul><li><p>Initialization</p> <p>Gradle supports single and multi-project builds. During the initialization phase, Gradle determines which projects are going to take part in the build, and creates a <a href="https://docs.gradle.org/current/dsl/org.gradle.api.Project.html" target="_blank" rel="noopener noreferrer">Project<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> instance for each of these projects.</p></li> <li><p>Configuration</p> <p>During this phase the project objects are configured. The build scripts of <em>all</em> projects which are part of the build are executed.</p></li> <li><p>Execution</p> <p>Gradle determines the subset of the tasks, created and configured during the configuration phase, to be executed. The subset is determined by the task name arguments passed to the <code>gradle</code> command and the current directory. Gradle then executes each of the selected tasks.</p></li></ul> <h3 id="配置文件-settings-file"><a href="#配置文件-settings-file" class="header-anchor">#</a> 配置文件 Settings file</h3> <p>简要概述，就是如果你是多项目，那么你要在 root project 里创建 <strong>settings.gradle</strong> 里去定义跟 sub project的关系，这个文件会在所有 project build.gradle 执行前执行。</p> <p>每个 project 都有一个构建脚本 <strong>build.gradle</strong> 来完成每个 project 的构建。</p> <p>在构建的时候，你如果需要对 gradle 运行一些通用的构建配置，你可以定义在 <strong>gradle.properties</strong> 里，比如全局的 group 跟 name 等。</p> <p>另外，gradle 是插件配置，你可以通过 <strong>apply</strong> 引入各种现成的或者自定义的插件构建脚本。</p> <p>关于 gradle 项目的几种构建脚本或者配置文件描述如下</p> <h4 id="settings-gradle"><a href="#settings-gradle" class="header-anchor">#</a> settings.gradle</h4> <p>This is executed during the <strong>initialization</strong> phase.</p> <p>The main role of settings.gradle is to define all included submodules and to mark the directory root of a tree of modules, so you can only have one <code>settings.gradle</code> file in a multi-module project.</p> <div class="language-java extra-class"><pre class="language-java"><code>rootProject<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">'project-x'</span>
+
+include <span class="token string">'sub-a'</span><span class="token punctuation">,</span> <span class="token string">'sub-b'</span>
+</code></pre></div><p>The settings file is also written in groovy, and submodule lookup can be adapted alot.</p> <h4 id="build-gradle"><a href="#build-gradle" class="header-anchor">#</a> build.gradle</h4> <p>This is executed during the <strong>configuration</strong> phase.</p> <p>There is one such file per module, it contains the build logic for this module.</p> <p>In the <code>build.gradle</code> file of the <strong>main module</strong>, you can use <code>allprojects {}</code> or <code>subprojects {}</code>to define settings for all other modules.</p> <p>In the <code>build.gradle</code> file of the submodules, you can use <code>compile project(':sub-a')</code> to make one submodule depend on the other.</p> <h4 id="gradle-properties"><a href="#gradle-properties" class="header-anchor">#</a> gradle.properties</h4> <p>This is optional, it's main purpose is to provide startup options to use for running gradle itself, e.g.</p> <div class="language-java extra-class"><pre class="language-java"><code>org<span class="token punctuation">.</span>gradle<span class="token punctuation">.</span>jvmargs<span class="token operator">=</span><span class="token operator">-</span><span class="token class-name">Dfile</span><span class="token punctuation">.</span>encoding<span class="token operator">=</span>UTF<span class="token operator">-</span><span class="token number">8</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+org<span class="token punctuation">.</span>gradle<span class="token punctuation">.</span>configureondemand<span class="token operator">=</span><span class="token boolean">true</span>
+</code></pre></div><h4 id="gradle-utils-gradle"><a href="#gradle-utils-gradle" class="header-anchor">#</a> gradle/utils.gradle</h4> <p>(Any name of folder or file is possible.) You can define additional custom gradle files to reuse definitions, and include them in other gradle files via</p> <div class="language-java extra-class"><pre class="language-java"><code>apply from<span class="token operator">:</span> <span class="token string">&quot;$rootDir/gradle/utils.gradle&quot;</span>
+</code></pre></div><h2 id="groovy-基础"><a href="#groovy-基础" class="header-anchor">#</a> Groovy 基础</h2> <p>Groovy是一门jvm语言，它最终是要编译成class文件然后在jvm上执行，所以Java语言的特性Groovy都支持，我们完全可以混写Java和Groovy。</p> <p>既然如此，那Groovy的优势是什么呢？简单来说，Groovy提供了更加灵活简单的语法，大量的语法糖以及闭包特性可以让你用更少的代码来实现和Java同样的功能。比如解析xml文件，Groovy就非常方便，只需要几行代码就能搞定，而如果用Java则需要几十行代码。</p> <h3 id="基本语法"><a href="#基本语法" class="header-anchor">#</a> 基本语法</h3> <p>深入学习或者有问题请戳 <a href="http://docs.groovy-lang.org/latest/html/groovy-jdk/index-all.html" target="_blank" rel="noopener noreferrer"><strong>Groovy Api文档</strong><span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <div class="language-groovy extra-class"><pre class="language-groovy"><code><span class="token comment">// 完全兼容 java 的语法</span>
+
+<span class="token comment">// 分号可选</span>
+
+<span class="token comment">// 类，方法默认都是 public</span>
+
+<span class="token comment">// 编译器给属性自动添加 getter/setter 方法</span>
+
+<span class="token comment">// 属性可以直接通过 . 号获取 </span>
+
+<span class="token comment">// == 调用 equals 方法，判断对象是否同一个使用.is()</span>
+Object a <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Object</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+Object b <span class="token operator">=</span> a<span class="token punctuation">.</span><span class="token function">clone</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">assert</span> a <span class="token operator">==</span> b
+<span class="token keyword">assert</span> <span class="token operator">!</span>a<span class="token punctuation">.</span><span class="token function">is</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span>
+
+<span class="token comment">// 弱类型语言，可以直接用 def 定义</span>
+<span class="token keyword">def</span> version <span class="token operator">=</span> <span class="token number">1</span>
+
+<span class="token comment">// assert 语句</span>
+version <span class="token operator">=</span> null
+<span class="token keyword">assert</span> version <span class="token operator">==</span> <span class="token number">2</span>
+
+<span class="token comment">// 括号可选</span>
+println version
+
+<span class="token comment">// 方法返回值可省略</span>
+<span class="token keyword">def</span> <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// 字符串</span>
+
+<span class="token comment">// .1 单引号仅仅表示字符</span>
+<span class="token keyword">def</span> s1 <span class="token operator">=</span> <span class="token string">'hello world'</span>
+
+<span class="token comment">// .2 双引号可以引用变量</span>
+<span class="token keyword">def</span> world <span class="token operator">=</span> <span class="token string">'world'</span>
+<span class="token keyword">def</span> s2 <span class="token operator">=</span> <span class="token string gstring">&quot;hello <span class="token expression"><span class="token punctuation">$</span><span class="token punctuation">{</span>world<span class="token punctuation">}</span></span>&quot;</span>
+
+<span class="token comment">// .3 三个引号可以换行</span>
+<span class="token keyword">def</span> s3 <span class="token operator">=</span> <span class="token string">''' hello 
+world
+'''</span>
+
+<span class="token comment">// 循环</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token keyword">in</span> <span class="token number">1</span><span class="token operator">..</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token function">println</span><span class="token punctuation">(</span><span class="token string gstring">&quot;hello world&quot;</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token number">4</span><span class="token punctuation">.</span>times <span class="token punctuation">{</span>
+    println it
+<span class="token punctuation">}</span>
+
+<span class="token comment">// 集合api</span>
+
+<span class="token comment">// .1 list -&gt; ArrayList</span>
+<span class="token keyword">def</span> buildTools <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'ant'</span><span class="token punctuation">,</span> <span class="token string">'maven'</span><span class="token punctuation">]</span>
+buildTools <span class="token operator">&lt;&lt;</span> <span class="token string">'gradle'</span>
+<span class="token keyword">assert</span> buildTools<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> ArrayList
+<span class="token keyword">assert</span> buildTools<span class="token punctuation">.</span>size
+
+<span class="token comment">// .2 map -&gt; LinkedHashMap</span>
+<span class="token keyword">def</span> map <span class="token operator">=</span> <span class="token string">'a'</span><span class="token punctuation">:</span><span class="token string">'b'</span>
+<span class="token keyword">def</span> buildYears <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'ant'</span><span class="token punctuation">:</span> <span class="token number">2000</span><span class="token punctuation">,</span> <span class="token string">'maven'</span><span class="token punctuation">:</span> <span class="token number">2004</span><span class="token punctuation">]</span>
+buildYears<span class="token punctuation">.</span>gradle <span class="token operator">=</span> <span class="token number">2009</span>
+println buildYears<span class="token punctuation">.</span>ant
+println buildYears<span class="token punctuation">[</span><span class="token string">'ant'</span><span class="token punctuation">]</span>
+println buildYears<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment">// 闭包 -&gt; 类似于c语言的函数指针，可以作为方法的参数和返回值，也可以作为一个变量而存在。</span>
+<span class="token keyword">def</span> c1 <span class="token operator">=</span> <span class="token punctuation">{</span>
+    v <span class="token operator">-&gt;</span>
+    	println v
+<span class="token punctuation">}</span>
+<span class="token keyword">def</span> c2 <span class="token operator">=</span> <span class="token punctuation">{</span>
+    println <span class="token string">'world'</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">def</span> <span class="token function">method1</span><span class="token punctuation">(</span>Closure closure<span class="token punctuation">)</span> <span class="token punctuation">{</span>方法<span class="token punctuation">:</span> apply denpendencies repositories task
+
+
+    <span class="token function">closure</span><span class="token punctuation">(</span><span class="token string">'hello'</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">def</span> <span class="token function">method2</span><span class="token punctuation">(</span>Closure closure<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">closure</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+c1<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token string">'hello'</span><span class="token punctuation">)</span>
+<span class="token function">c1</span><span class="token punctuation">(</span><span class="token string">'hello'</span><span class="token punctuation">)</span>
+c2<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token function">method1</span><span class="token punctuation">(</span>c1<span class="token punctuation">)</span>
+<span class="token function">method2</span><span class="token punctuation">(</span>c2<span class="token punctuation">)</span>
+
+<span class="token comment">// io</span>
+<span class="token keyword">def</span> file <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span><span class="token string gstring">&quot;a.txt&quot;</span><span class="token punctuation">)</span>
+
+println <span class="token string gstring">&quot;read file using two parameters&quot;</span>
+file<span class="token punctuation">.</span>eachLine <span class="token punctuation">{</span> line<span class="token punctuation">,</span> lineNo <span class="token operator">-&gt;</span>
+
+    println <span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span><span class="token punctuation">{</span>lineNo<span class="token punctuation">}</span></span> <span class="token expression"><span class="token punctuation">$</span><span class="token punctuation">{</span>line<span class="token punctuation">}</span></span>&quot;</span>
+
+<span class="token punctuation">}</span>
+
+println <span class="token string gstring">&quot;read file using one parameters&quot;</span>
+file<span class="token punctuation">.</span>eachLine <span class="token punctuation">{</span> line <span class="token operator">-&gt;</span>
+
+    println <span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span><span class="token punctuation">{</span>line<span class="token punctuation">}</span></span>&quot;</span>
+
+<span class="token punctuation">}</span>
+
+file<span class="token punctuation">.</span><span class="token function">eachLine</span><span class="token punctuation">(</span><span class="token string gstring">&quot;utf-8&quot;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    println it
+<span class="token punctuation">}</span>
+
+<span class="token comment">// wich 操作符</span>
+Book bk <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Book</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+bk<span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token number">1</span>
+bk<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string gstring">&quot;android art&quot;</span>
+bk<span class="token punctuation">.</span>press <span class="token operator">=</span> <span class="token string gstring">&quot;china press&quot;</span>
+
+Book bk <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Book</span><span class="token punctuation">(</span><span class="token punctuation">)</span> 
+bk<span class="token punctuation">.</span>with <span class="token punctuation">{</span>
+    id <span class="token operator">=</span> <span class="token number">1</span>
+    name <span class="token operator">=</span> <span class="token string gstring">&quot;android art&quot;</span>
+    press <span class="token operator">=</span> <span class="token string gstring">&quot;china press&quot;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// 判断是否为真</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>name<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+<span class="token comment">// 三元表达式</span>
+<span class="token keyword">def</span> result <span class="token operator">=</span> name <span class="token operator">?:</span> <span class="token string gstring">&quot;Unknown&quot;</span>
+
+<span class="token comment">// 非空判断</span>
+println order<span class="token operator">?.</span>customer<span class="token operator">?.</span>address
+
+<span class="token comment">// switch</span>
+<span class="token keyword">def</span> x <span class="token operator">=</span> <span class="token number">1.23</span>
+<span class="token keyword">def</span> result <span class="token operator">=</span> <span class="token string gstring">&quot;&quot;</span>
+<span class="token keyword">switch</span> <span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">case</span> <span class="token string gstring">&quot;foo&quot;</span><span class="token punctuation">:</span> result <span class="token operator">=</span> <span class="token string gstring">&quot;found foo&quot;</span>
+
+    <span class="token comment">// lets fall through</span>
+
+    <span class="token keyword">case</span> <span class="token string gstring">&quot;bar&quot;</span><span class="token punctuation">:</span> result <span class="token operator">+=</span> <span class="token string gstring">&quot;bar&quot;</span>
+    <span class="token keyword">case</span> <span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> <span class="token string">'inList'</span><span class="token punctuation">]</span><span class="token punctuation">:</span> result <span class="token operator">=</span> <span class="token string gstring">&quot;list&quot;</span>
+    <span class="token keyword">break</span>
+
+    <span class="token keyword">case</span> <span class="token number">12</span><span class="token operator">..</span><span class="token number">30</span><span class="token punctuation">:</span> result <span class="token operator">=</span> <span class="token string gstring">&quot;range&quot;</span>
+    <span class="token keyword">break</span>
+
+    <span class="token keyword">case</span> Integer<span class="token punctuation">:</span> result <span class="token operator">=</span> <span class="token string gstring">&quot;integer&quot;</span>
+    <span class="token keyword">break</span>
+
+    <span class="token keyword">case</span> Number<span class="token punctuation">:</span> result <span class="token operator">=</span> <span class="token string gstring">&quot;number&quot;</span>
+    <span class="token keyword">break</span>
+
+    <span class="token keyword">case</span> <span class="token punctuation">{</span> it <span class="token operator">&gt;</span> <span class="token number">3</span> <span class="token punctuation">}</span><span class="token punctuation">:</span> result <span class="token operator">=</span> <span class="token string gstring">&quot;number &gt; 3&quot;</span>
+    <span class="token keyword">break</span>
+
+    <span class="token keyword">default</span><span class="token punctuation">:</span> result <span class="token operator">=</span> <span class="token string gstring">&quot;default&quot;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">assert</span> result <span class="token operator">==</span> <span class="token string gstring">&quot;number&quot;</span>
+
+</code></pre></div><h3 id="构建脚本解析"><a href="#构建脚本解析" class="header-anchor">#</a> 构建脚本解析</h3> <p>详细介绍或者想深入了解请戳 <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/Project.html#apply(java.util.Map)" target="_blank" rel="noopener noreferrer"><strong>官方api</strong><span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <div class="language-groovy extra-class"><pre class="language-groovy"><code>
+<span class="token comment">//  PluginAware.apply(java.util.Map) </span>
+apply plugin<span class="token punctuation">:</span><span class="token string">'java'</span>
+
+version <span class="token operator">=</span> <span class="token string">'0.1'</span>
+
+<span class="token comment">// void	repositories​(Closure configureClosure)	</span>
+<span class="token comment">// Configures the repositories for this project.</span>
+repositories <span class="token punctuation">{</span>
+    <span class="token function">mavenCentral</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// void dependencies​(Closure configureClosure)</span>
+<span class="token comment">// Configures the dependencies for this project.</span>
+dependencies <span class="token punctuation">{</span>
+    <span class="token comment">// https://mvnrepository.com/artifact/com.google.guava/guava</span>
+	compile group<span class="token punctuation">:</span> <span class="token string">'com.google.guava'</span><span class="token punctuation">,</span> name<span class="token punctuation">:</span> <span class="token string">'guava'</span><span class="token punctuation">,</span> version<span class="token punctuation">:</span> <span class="token string">'27.1-jre'</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="todo"><a href="#todo" class="header-anchor">#</a> Todo</h2> <h3 id="使用插件"><a href="#使用插件" class="header-anchor">#</a> 使用插件</h3> <p>Gradle的设计理念是，所有有用的特性都由<a href="http://www.gradle.org/docs/current/userguide/plugins.html" target="_blank" rel="noopener noreferrer">Gradle插件<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>提供，一个Gradle插件能够：</p> <ul><li><p>在项目中添加新任务</p></li> <li><p>为新加入的任务提供默认配置，这个默认配置会在项目中注入新的约定（如源文件位置）。</p></li> <li><p>加入新的属性，可以覆盖插件的默认配置属性。</p></li> <li><p>为项目加入新的依赖。</p></li></ul> <p>Gradle 用户手册提供了 <a href="https://docs.gradle.org/current/userguide/plugin_reference.html" target="_blank" rel="noopener noreferrer"><strong>一系列标准的gradle插件</strong><span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <h4 id="the-java-plugin"><a href="#the-java-plugin" class="header-anchor">#</a> The Java Plugin</h4> <p>比如 <strong>The Java Plugin</strong>， 提供了 java 相关的目录结构，属性配置，构建任务等等</p> <p>如果我们使用标准的gradle插件，</p> <p>注意这个不能在配置在 <strong>multi-project configurations(subprojects<code>,</code>allprojects)</strong></p> <div class="language-groovy extra-class"><pre class="language-groovy"><code>plugins<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    id<span class="token punctuation">:</span> <span class="token string">'java'</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>当然我们也可以使用 <strong>apply</strong> 方法，就比较灵活了</p> <div class="language-groovy extra-class"><pre class="language-groovy"><code>apply plugin<span class="token punctuation">:</span> <span class="token string">'java'</span>
+</code></pre></div><p>我们还可以定义 jvm 的编译级别</p> <div class="language-groovy extra-class"><pre class="language-groovy"><code>sourceCompatibility<span class="token punctuation">:</span> <span class="token number">1.8</span>
+targetCompatibility<span class="token punctuation">:</span> <span class="token number">1.8</span>
+</code></pre></div><h5 id="project-layout"><a href="#project-layout" class="header-anchor">#</a> Project Layout</h5> <p>当我们使用 java 这个插件的时候，它默认的项目结构是</p> <ul><li><p><code>src/main/java</code></p> <p>Production Java source.</p></li> <li><p><code>src/main/resources</code></p> <p>Production resources, such as XML and properties files.</p></li> <li><p><code>src/test/java</code></p> <p>Test Java source.</p></li> <li><p><code>src/test/resources</code></p> <p>Test resources.</p></li> <li><p><code>src/*sourceSet*/java</code></p> <p>Java source for the source set named <em>sourceSet</em>.</p></li> <li><p><code>src/*sourceSet*/resources</code></p> <p>Resources for the source set named <em>sourceSet</em>.</p></li></ul> <p>当然我们也可以更改它</p> <div class="language-groovy extra-class"><pre class="language-groovy"><code>sourceSets <span class="token punctuation">{</span>
+    main <span class="token punctuation">{</span>
+        java <span class="token punctuation">{</span>
+            srcDirs <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'src/java'</span><span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+        resources <span class="token punctuation">{</span>
+            srcDirs <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'src/resources'</span><span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h5 id="dependency-management"><a href="#dependency-management" class="header-anchor">#</a> Dependency management</h5> <ul><li><p><code>compile</code>(Deprecated)</p> <p>Compile time dependencies. Superseded by <code>implementation</code>.</p></li> <li><p><code>implementation</code> extends <code>compile</code></p> <p>Implementation only dependencies.</p></li> <li><p><code>compileOnly</code></p> <p>Compile time only dependencies, not used at runtime.</p></li> <li><p><code>compileClasspath</code> extends <code>compile, compileOnly, implementation</code></p> <p>Compile classpath, used when compiling source. Used by task <code>compileJava</code>.</p></li> <li><p><code>annotationProcessor</code></p> <p>Annotation processors used during compilation.</p></li> <li><p><code>runtime</code>(Deprecated) extends <code>compile</code></p> <p>Runtime dependencies. Superseded by <code>runtimeOnly</code>.</p></li> <li><p><code>runtimeOnly</code></p> <p>Runtime only dependencies.</p></li> <li><p><code>runtimeClasspath</code> extends <code>runtimeOnly, runtime, implementation</code></p> <p>Runtime classpath contains elements of the implementation, as well as runtime only elements.</p></li> <li><p><code>testCompile</code>(Deprecated) extends <code>compile</code></p> <p>Additional dependencies for compiling tests. Superseded by <code>testImplementation</code>.</p></li> <li><p><code>testImplementation</code> extends <code>testCompile, implementation</code></p> <p>Implementation only dependencies for tests.</p></li> <li><p><code>testCompileOnly</code></p> <p>Additional dependencies only for compiling tests, not used at runtime.</p></li> <li><p><code>testCompileClasspath</code> extends <code>testCompile, testCompileOnly, testImplementation</code></p> <p>Test compile classpath, used when compiling test sources. Used by task <code>compileTestJava</code>.</p></li> <li><p><code>testRuntime</code>(Deprecated) extends <code>runtime, testCompile</code></p> <p>Additional dependencies for running tests only. Used by task <code>test</code>. Superseded by <code>testRuntimeOnly</code>.</p></li> <li><p><code>testRuntimeOnly</code> extends <code>runtimeOnly</code></p> <p>Runtime only dependencies for running tests. Used by task <code>test</code>.</p></li> <li><p><code>testRuntimeClasspath</code> extends <code>testRuntimeOnly, testRuntime, testImplementation</code></p> <p>Runtime classpath for running tests.</p></li> <li><p><code>archives</code></p> <p>Artifacts (e.g. jars) produced by this project. Used by tasks <code>uploadArchives</code>.</p></li> <li><p><code>default</code> extends <code>runtime</code></p> <p>The default configuration used by a project dependency on this project. Contains the artifacts and dependencies required by this project at runtime.</p></li></ul> <h5 id="jar"><a href="#jar" class="header-anchor">#</a> jar</h5> <p>插件也会提供很多构建任务，比如 <strong>compileJava</strong> ， <strong>processResources</strong>，<strong>classes</strong>，<strong>jar</strong>，<strong>clean</strong>，<strong>test</strong> 等等，这里只简要地提一下 <strong>jar</strong> 构建的 <strong>Manifest</strong></p> <p>Each jar or war object has a <code>manifest</code> property with a separate instance of <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/java/archives/Manifest.html" target="_blank" rel="noopener noreferrer">Manifest<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>. When the archive is generated, a corresponding <code>MANIFEST.MF</code> file is written into the archive.</p> <div class="language-groovy extra-class"><pre class="language-groovy"><code>jar <span class="token punctuation">{</span>
+    from <span class="token punctuation">{</span> configurations<span class="token punctuation">.</span>compile<span class="token punctuation">.</span>collect <span class="token punctuation">{</span> it<span class="token punctuation">.</span><span class="token function">isDirectory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">?</span> it <span class="token punctuation">:</span> <span class="token function">zipTree</span><span class="token punctuation">(</span>it<span class="token punctuation">)</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span>
+    manifest <span class="token punctuation">{</span>
+        attributes <span class="token string">'Main-Class'</span><span class="token punctuation">:</span> <span class="token string">'cn.jianchengwang.todo.gradle.HelloWorld'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="the-war-plugin"><a href="#the-war-plugin" class="header-anchor">#</a> The War Plugin</h4> <p>The War plugin extends the Java plugin to add support for assembling web application WAR files. It disables the default JAR archive generation of the Java plugin and adds a default WAR archive task.</p> <p>这里只显示一些简单的配置脚本</p> <div class="language-groovy extra-class"><pre class="language-groovy"><code>apply plugin<span class="token punctuation">:</span> <span class="token string">'war'</span>
+
+configurations <span class="token punctuation">{</span>
+   moreLibs
+<span class="token punctuation">}</span>
+
+repositories <span class="token punctuation">{</span>
+   flatDir <span class="token punctuation">{</span> dirs <span class="token string gstring">&quot;lib&quot;</span> <span class="token punctuation">}</span>
+   <span class="token function">jcenter</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+dependencies <span class="token punctuation">{</span>
+    implementation <span class="token function">module</span><span class="token punctuation">(</span><span class="token string gstring">&quot;:compile:1.0&quot;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        dependency <span class="token string gstring">&quot;:compile-transitive-1.0@jar&quot;</span>
+        dependency <span class="token string gstring">&quot;:providedCompile-transitive:1.0@jar&quot;</span>
+    <span class="token punctuation">}</span>
+    providedCompile <span class="token string gstring">&quot;javax.servlet:servlet-api:2.5&quot;</span>
+    providedCompile <span class="token function">module</span><span class="token punctuation">(</span><span class="token string gstring">&quot;:providedCompile:1.0&quot;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        dependency <span class="token string gstring">&quot;:providedCompile-transitive:1.0@jar&quot;</span>
+    <span class="token punctuation">}</span>
+    runtimeOnly <span class="token string gstring">&quot;:runtime:1.0&quot;</span>
+    providedRuntime <span class="token string gstring">&quot;:providedRuntime:1.0@jar&quot;</span>
+    testImplementation <span class="token string gstring">&quot;junit:junit:4.12&quot;</span>
+    moreLibs <span class="token string gstring">&quot;:otherLib:1.0&quot;</span>
+<span class="token punctuation">}</span>
+
+war <span class="token punctuation">{</span>
+    from <span class="token string">'src/rootContent'</span> <span class="token comment">// adds a file-set to the root of the archive</span>
+    webInf <span class="token punctuation">{</span> from <span class="token string">'src/additionalWebInf'</span> <span class="token punctuation">}</span> <span class="token comment">// adds a file-set to the WEB-INF dir.</span>
+    classpath <span class="token function">fileTree</span><span class="token punctuation">(</span><span class="token string">'additionalLibs'</span><span class="token punctuation">)</span> <span class="token comment">// adds a file-set to the WEB-INF/lib dir.</span>
+    classpath configurations<span class="token punctuation">.</span>moreLibs <span class="token comment">// adds a configuration to the WEB-INF/lib dir.</span>
+    webXml <span class="token operator">=</span> <span class="token function">file</span><span class="token punctuation">(</span><span class="token string">'src/someWeb.xml'</span><span class="token punctuation">)</span> <span class="token comment">// copies a file to WEB-INF/web.xml</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>其他还有很多官方标准插件这里就不都叙述了，还有怎么编写 gradle 插件，官方文档里有详细的介绍，有兴趣可以去了解下。</p> <h3 id="自定义任务"><a href="#自定义任务" class="header-anchor">#</a> 自定义任务</h3> <div class="language-groovy extra-class"><pre class="language-groovy"><code>
+task hello <span class="token punctuation">{</span>
+    doLast <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+        println <span class="token string">'hello world'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+task count <span class="token punctuation">{</span>
+    <span class="token operator">&lt;&lt;</span> <span class="token punctuation">{</span>
+        <span class="token number">4</span><span class="token punctuation">.</span>times <span class="token punctuation">{</span> print <span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span>it</span> &quot;</span> <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Task dependencies</span>
+task intro <span class="token punctuation">{</span>
+    dependsOn hello
+    doLast <span class="token punctuation">{</span>
+        println <span class="token string gstring">&quot;I'm Gradle&quot;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Dynamic tasks</span>
+<span class="token number">4</span><span class="token punctuation">.</span>times <span class="token punctuation">{</span> counter <span class="token operator">-&gt;</span>
+    task <span class="token string gstring">&quot;task<span class="token expression"><span class="token punctuation">$</span>counter</span>&quot;</span> <span class="token punctuation">{</span>
+        doLast <span class="token punctuation">{</span>
+            println <span class="token string gstring">&quot;I'm task number <span class="token expression"><span class="token punctuation">$</span>counter</span>&quot;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Manipulating existing tasks</span>
+hello<span class="token punctuation">.</span>doFirst <span class="token punctuation">{</span>
+    println <span class="token string">'Hello Venus'</span>
+<span class="token punctuation">}</span>
+hello<span class="token punctuation">.</span>configure <span class="token punctuation">{</span>
+    doLast <span class="token punctuation">{</span>
+        println <span class="token string">'Hello Mars'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+hello<span class="token punctuation">.</span>configure <span class="token punctuation">{</span>
+    doLast <span class="token punctuation">{</span>
+        println <span class="token string">'Hello Jupiter'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Extra task properties</span>
+task myTask <span class="token punctuation">{</span>
+    ext<span class="token punctuation">.</span>myProperty <span class="token operator">=</span> <span class="token string gstring">&quot;myValue&quot;</span>
+<span class="token punctuation">}</span>
+
+task printTaskProperties <span class="token punctuation">{</span>
+    doLast <span class="token punctuation">{</span>
+        println myTask<span class="token punctuation">.</span>myProperty
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Default tasks</span>
+<span class="token comment">// Gradle allows you to define one or more default tasks that are executed if no other tasks are specified.</span>
+defaultTasks <span class="token string">'clean'</span><span class="token punctuation">,</span> <span class="token string">'run'</span>
+
+task clean <span class="token punctuation">{</span>
+    doLast <span class="token punctuation">{</span>
+        println <span class="token string">'Default Cleaning!'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+task run <span class="token punctuation">{</span>
+    doLast <span class="token punctuation">{</span>
+        println <span class="token string">'Default Running!'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+task other <span class="token punctuation">{</span>
+    doLast <span class="token punctuation">{</span>
+        println <span class="token string gstring">&quot;I'm not a default task!&quot;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// working with files</span>
+<span class="token comment">// .1 Copy</span>
+task <span class="token function">copyReport</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> Copy<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    from <span class="token function">file</span><span class="token punctuation">(</span><span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span>buildDir</span>/reports/my-report.pdf&quot;</span><span class="token punctuation">)</span>
+    into <span class="token function">file</span><span class="token punctuation">(</span><span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span>buildDir</span>/toArchive&quot;</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+task <span class="token function">copyReportsForArchiving</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> Copy<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    from <span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span>buildDir</span>/reports/my-report.pdf&quot;</span><span class="token punctuation">,</span> <span class="token string gstring">&quot;src/docs/manual.pdf&quot;</span>
+    into <span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span>buildDir</span>/toArchive&quot;</span>
+<span class="token punctuation">}</span>
+
+task <span class="token function">copyPdfReportsForArchiving</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> Copy<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    from <span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span>buildDir</span>/reports&quot;</span>
+    include <span class="token string gstring">&quot;*.pdf&quot;</span>
+    into <span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span>buildDir</span>/toArchive&quot;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// .2 Archive or UnPack</span>
+task <span class="token function">packageDistribution</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> Zip<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    archiveFileName <span class="token operator">=</span> <span class="token string gstring">&quot;my-distribution.zip&quot;</span>
+    destinationDirectory <span class="token operator">=</span> <span class="token function">file</span><span class="token punctuation">(</span><span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span>buildDir</span>/dist&quot;</span><span class="token punctuation">)</span>
+
+    from <span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span>buildDir</span>/toArchive&quot;</span>
+<span class="token punctuation">}</span>
+
+task <span class="token function">unpackFiles</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> Copy<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    from <span class="token function">zipTree</span><span class="token punctuation">(</span><span class="token string gstring">&quot;src/resources/thirdPartyResources.zip&quot;</span><span class="token punctuation">)</span>
+    into <span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span>buildDir</span>/resources&quot;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// .3 Creating &quot;uber&quot; or &quot;fat&quot; JARs</span>
+plugins <span class="token punctuation">{</span>
+    id <span class="token string">'java'</span>
+<span class="token punctuation">}</span>
+
+version <span class="token operator">=</span> <span class="token string">'1.0.0'</span>
+
+repositories <span class="token punctuation">{</span>
+    <span class="token function">mavenCentral</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+dependencies <span class="token punctuation">{</span>
+    implementation <span class="token string">'commons-io:commons-io:2.6'</span>
+<span class="token punctuation">}</span>
+
+task <span class="token function">uberJar</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> Jar<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    archiveClassifier <span class="token operator">=</span> <span class="token string">'uber'</span>
+
+    from sourceSets<span class="token punctuation">.</span>main<span class="token punctuation">.</span>output
+
+    dependsOn configurations<span class="token punctuation">.</span>runtimeClasspath
+    from <span class="token punctuation">{</span>
+        configurations<span class="token punctuation">.</span>runtimeClasspath<span class="token punctuation">.</span>findAll <span class="token punctuation">{</span> it<span class="token punctuation">.</span>name<span class="token punctuation">.</span><span class="token function">endsWith</span><span class="token punctuation">(</span><span class="token string">'jar'</span><span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">.</span>collect <span class="token punctuation">{</span> <span class="token function">zipTree</span><span class="token punctuation">(</span>it<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="管理依赖"><a href="#管理依赖" class="header-anchor">#</a> 管理依赖</h3> <h4 id="依赖类型"><a href="#依赖类型" class="header-anchor">#</a> 依赖类型</h4> <div class="language-groovy extra-class"><pre class="language-groovy"><code><span class="token comment">// module dependencies</span>
+dependencies <span class="token punctuation">{</span>
+    runtime group<span class="token punctuation">:</span> <span class="token string">'org.springframework'</span><span class="token punctuation">,</span> name<span class="token punctuation">:</span> <span class="token string">'spring-core'</span><span class="token punctuation">,</span> version<span class="token punctuation">:</span> <span class="token string">'2.5'</span>
+    implementation <span class="token string">'org.springframework:spring-web:5.+'</span>
+    <span class="token function">implementation</span><span class="token punctuation">(</span><span class="token string">'org.ow2.asm:asm:6.0'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        because <span class="token string">'we require a JDK 9 compatible bytecode generator'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// file dependencies</span>
+dependencies <span class="token punctuation">{</span>
+    runtime <span class="token function">files</span><span class="token punctuation">(</span><span class="token string">'libs/a.jar'</span><span class="token punctuation">,</span> <span class="token string">'libs/b.jar'</span><span class="token punctuation">)</span>
+    runtime <span class="token function">fileTree</span><span class="token punctuation">(</span><span class="token string">'libs'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> include <span class="token string">'*.jar'</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// project dependencies</span>
+dependencies <span class="token punctuation">{</span>
+    implementation <span class="token function">project</span><span class="token punctuation">(</span><span class="token string">':shared'</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="仓库类型"><a href="#仓库类型" class="header-anchor">#</a> 仓库类型</h4> <div class="language-groovy extra-class"><pre class="language-groovy"><code><span class="token comment">// flat dir</span>
+repositories <span class="token punctuation">{</span>
+    flatDir <span class="token punctuation">{</span>
+        dirs <span class="token string">'lib'</span>
+    <span class="token punctuation">}</span>
+    flatDir <span class="token punctuation">{</span>
+        dirs <span class="token string">'lib1'</span><span class="token punctuation">,</span> <span class="token string">'lib2'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// maven repo</span>
+repositories <span class="token punctuation">{</span>
+    <span class="token function">mavenCentral</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  	<span class="token function">jcenter</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token function">google</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token function">mavenLocal</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    maven <span class="token punctuation">{</span>
+        url <span class="token string gstring">&quot;http://repo.mycompany.com/maven2&quot;</span>
+    <span class="token punctuation">}</span>
+    maven <span class="token punctuation">{</span>
+        url <span class="token string gstring">&quot;http://repo.mycompany.com/snapshots&quot;</span>
+        mavenContent <span class="token punctuation">{</span>
+            <span class="token function">snapshotsOnly</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    maven <span class="token punctuation">{</span>
+        url <span class="token string gstring">&quot;sftp://repo.mycompany.com:22/maven2&quot;</span>
+        credentials <span class="token punctuation">{</span>
+            username <span class="token string gstring">&quot;user&quot;</span>
+            password <span class="token string gstring">&quot;password&quot;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="版本冲突"><a href="#版本冲突" class="header-anchor">#</a> 版本冲突</h4> <p>如果存在依赖的版本冲突，那么 gradle 默认会选择最高版本的的依赖以解决依赖冲突，当然我们也可以手动解决，比如排除依赖，或者手动设置一个版本。当然，一般使用 gradle 默认的处理就可以了。</p> <div class="language-groovy extra-class"><pre class="language-groovy"><code><span class="token comment">//  Excluding transitive dependency for a particular dependency declaration</span>
+dependencies <span class="token punctuation">{</span>
+    <span class="token function">implementation</span><span class="token punctuation">(</span><span class="token string">'log4j:log4j:1.2.15'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        exclude group<span class="token punctuation">:</span> <span class="token string">'javax.jms'</span><span class="token punctuation">,</span> module<span class="token punctuation">:</span> <span class="token string">'jms'</span>
+        exclude group<span class="token punctuation">:</span> <span class="token string">'com.sun.jdmk'</span><span class="token punctuation">,</span> module<span class="token punctuation">:</span> <span class="token string">'jmxtools'</span>
+        exclude group<span class="token punctuation">:</span> <span class="token string">'com.sun.jmx'</span><span class="token punctuation">,</span> module<span class="token punctuation">:</span> <span class="token string">'jmxri'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Excluding transitive dependency for a particular configuration</span>
+configurations <span class="token punctuation">{</span>
+    implementation <span class="token punctuation">{</span>
+        exclude group<span class="token punctuation">:</span> <span class="token string">'javax.jms'</span><span class="token punctuation">,</span> module<span class="token punctuation">:</span> <span class="token string">'jms'</span>
+        exclude group<span class="token punctuation">:</span> <span class="token string">'com.sun.jdmk'</span><span class="token punctuation">,</span> module<span class="token punctuation">:</span> <span class="token string">'jmxtools'</span>
+        exclude group<span class="token punctuation">:</span> <span class="token string">'com.sun.jmx'</span><span class="token punctuation">,</span> module<span class="token punctuation">:</span> <span class="token string">'jmxri'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+dependencies <span class="token punctuation">{</span>
+    implementation <span class="token string">'log4j:log4j:1.2.15'</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Enforcing a dependency version</span>
+dependencies <span class="token punctuation">{</span>
+    implementation <span class="token string">'org.apache.httpcomponents:httpclient:4.5.4'</span>
+    <span class="token function">implementation</span><span class="token punctuation">(</span><span class="token string">'commons-codec:commons-codec:1.9'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        force <span class="token operator">=</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="多项目构建"><a href="#多项目构建" class="header-anchor">#</a> 多项目构建</h3> <p>多项目构建就是在 <strong>root project</strong>配置一个 <strong>settings.gradle</strong> 引入需要的子项目即可，</p> <p>比如我这边 <strong>root project</strong> 为  todo-gradle，有三个 <strong>sub project</strong> ，</p> <p>则 <strong>settings.gradle</strong> 配置如下</p> <div class="language-groovy extra-class"><pre class="language-groovy"><code>rootProject<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">'todo-gradle'</span>
+include <span class="token string">'web'</span>
+include <span class="token string">'model'</span>
+include <span class="token string">'dao'</span>
+</code></pre></div><p>如果，<strong>sub project</strong> 很多配置项一样，那我们可以在 <strong>root project</strong> 的 <strong>build.gradle</strong> 构建脚本里进行通用的配置，使其对子项目生效，</p> <div class="language-groovy extra-class"><pre class="language-groovy"><code>allprojects <span class="token punctuation">{</span>
+
+    apply plugin<span class="token punctuation">:</span> <span class="token string">'java'</span>
+
+    sourceCompatibility <span class="token operator">=</span> <span class="token number">1.8</span>
+<span class="token punctuation">}</span>
+
+subprojects <span class="token punctuation">{</span>
+
+    repositories <span class="token punctuation">{</span>
+        <span class="token function">mavenCentral</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+
+    dependencies <span class="token punctuation">{</span>
+        testCompile group<span class="token punctuation">:</span> <span class="token string">'junit'</span><span class="token punctuation">,</span> name<span class="token punctuation">:</span> <span class="token string">'junit'</span><span class="token punctuation">,</span> version<span class="token punctuation">:</span> <span class="token string">'4.12'</span>
+    <span class="token punctuation">}</span>
+
+
+<span class="token punctuation">}</span>
+</code></pre></div><p>如果自定义的配置的任务或者选项，则在每个 <strong>project</strong> 的 <strong>build.gradle</strong> 构建脚本里配置即可，比如我 <strong>web sub project</strong> 还引入了 <strong>The War Plugin</strong>，那么我在 <strong>web sub project</strong> 的<strong>build.gradle</strong> 构建脚本可以配置如下</p> <div class="language-groovy extra-class"><pre class="language-groovy"><code>apply plugin<span class="token punctuation">:</span> <span class="token string">'war'</span>
+</code></pre></div><p>最后就是项目依赖配置了，比如我 <strong>dao sub project</strong> 依赖 <strong>model sub project</strong></p> <div class="language-groovy extra-class"><pre class="language-groovy"><code>dependencies <span class="token punctuation">{</span>
+    implementation <span class="token function">project</span><span class="token punctuation">(</span><span class="token string">':model'</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>因为依赖是可以传递的，所以假如我 <strong>web sub project</strong> 依赖 <strong>dao sub project</strong> 跟 <strong>model sub project</strong>，而 <strong>dao sub project</strong> 又依赖 <strong>model sub project</strong>，实际上我只要在 <strong>web sub projec</strong>t 构建脚本里面依赖 <strong>dao sub project</strong> 即可</p> <div class="language-groovy extra-class"><pre class="language-groovy"><code>
+dependencies <span class="token punctuation">{</span>
+    implementation <span class="token function">project</span><span class="token punctuation">(</span><span class="token string">':dao'</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div><p>如果存在依赖关系，显而易见，那么被依赖的项目或者任务都会先执行。</p> <h3 id="测试"><a href="#测试" class="header-anchor">#</a> 测试</h3> <p>一般只要类继承 <strong>junit.framework.TestCase</strong> 或者 <strong>groovy.util.GroovyTestCase</strong></p> <p>或是假如使用 springboot 框架，带有 <strong>@RunWith</strong> 注解的类</p> <p>最常见的就是任何至少一个包含 <strong>@Test</strong> 注解的类</p> <p>当然，不同测试框架使用大同小异，你可以具体使用的时候查阅下资料即可，</p> <p>下面官方的代码实例就显示了 <strong>test task</strong> 的相关配置。</p> <p>Executes JUnit (3.8.x, 4.x or 5.x) or TestNG tests. Test are always run in (one or more) separate JVMs. The sample below shows various configuration options.</p> <div class="language-groovy extra-class"><pre class="language-groovy"><code>apply plugin<span class="token punctuation">:</span> <span class="token string">'java'</span> <span class="token comment">// adds 'test' task</span>
+
+test <span class="token punctuation">{</span>
+  <span class="token comment">// enable TestNG support (default is JUnit)</span>
+  <span class="token function">useTestNG</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token comment">// enable JUnit Platform (a.k.a. JUnit 5) support</span>
+  <span class="token function">useJUnitPlatform</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+  <span class="token comment">// set a system property for the test JVM(s)</span>
+  systemProperty <span class="token string">'some.prop'</span><span class="token punctuation">,</span> <span class="token string">'value'</span>
+
+  <span class="token comment">// explicitly include or exclude tests</span>
+  include <span class="token string">'org/foo/**'</span>
+  exclude <span class="token string">'org/boo/**'</span>
+
+  <span class="token comment">// show standard out and standard error of the test JVM(s) on the console</span>
+  testLogging<span class="token punctuation">.</span>showStandardStreams <span class="token operator">=</span> <span class="token boolean">true</span>
+
+  <span class="token comment">// set heap size for the test JVM(s)</span>
+  minHeapSize <span class="token operator">=</span> <span class="token string gstring">&quot;128m&quot;</span>
+  maxHeapSize <span class="token operator">=</span> <span class="token string gstring">&quot;512m&quot;</span>
+
+  <span class="token comment">// set JVM arguments for the test JVM(s)</span>
+  jvmArgs <span class="token string">'-XX:MaxPermSize=256m'</span>
+
+  <span class="token comment">// listen to events in the test execution lifecycle</span>
+  beforeTest <span class="token punctuation">{</span> descriptor <span class="token operator">-&gt;</span>
+     logger<span class="token punctuation">.</span><span class="token function">lifecycle</span><span class="token punctuation">(</span><span class="token string gstring">&quot;Running test: &quot;</span> <span class="token operator">+</span> descriptor<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// Fail the 'test' task on the first test failure</span>
+  failFast <span class="token operator">=</span> <span class="token boolean">true</span>
+
+  <span class="token comment">// listen to standard out and standard error of the test JVM(s)</span>
+  onOutput <span class="token punctuation">{</span> descriptor<span class="token punctuation">,</span> event <span class="token operator">-&gt;</span>
+     logger<span class="token punctuation">.</span><span class="token function">lifecycle</span><span class="token punctuation">(</span><span class="token string gstring">&quot;Test: &quot;</span> <span class="token operator">+</span> descriptor <span class="token operator">+</span> <span class="token string gstring">&quot; produced standard out/err: &quot;</span> <span class="token operator">+</span> event<span class="token punctuation">.</span>message <span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>一般测试的最终结果，会显示在 <strong>project</strong> 的 <strong>build/reports</strong> 目录里面</p> <h3 id="发布"><a href="#发布" class="header-anchor">#</a> 发布</h3> <p>假如我们开发完一个功能模块，打包成一个 jar 包，需要提供给他人依赖引用，那么我们就可以发布出去了，一般 gradle 没有自己的仓库，如果是java 项目的话一般都是发布到 <strong>maven</strong> 仓库，因为 <strong>lvh</strong> 现在用的人比较少了，这里就简单的介绍一下怎么发布到 maven 仓库</p> <h4 id="maven-publish-pluging"><a href="#maven-publish-pluging" class="header-anchor">#</a> Maven Publish Pluging</h4> <div class="language-groovy extra-class"><pre class="language-groovy"><code>apply plugin<span class="token punctuation">:</span> <span class="token string">'maven-publish'</span>
+
+publishing <span class="token punctuation">{</span>
+    
+    publications <span class="token punctuation">{</span>
+        <span class="token function">maven</span><span class="token punctuation">(</span>MavenPublication<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            groupId <span class="token operator">=</span> <span class="token string">'org.gradle.sample'</span>
+            artifactId <span class="token operator">=</span> <span class="token string">'project1-sample'</span>
+            version <span class="token operator">=</span> <span class="token string">'1.1'</span>
+
+            from components<span class="token punctuation">.</span>java
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    
+    repositories <span class="token punctuation">{</span>
+        maven <span class="token punctuation">{</span>
+            name <span class="token operator">=</span> <span class="token string">'myRepo'</span>
+            <span class="token keyword">def</span> releasesRepoUrl <span class="token operator">=</span> <span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span>buildDir</span>/repos/releases&quot;</span>
+            <span class="token keyword">def</span> snapshotsRepoUrl <span class="token operator">=</span> <span class="token string gstring">&quot;<span class="token expression"><span class="token punctuation">$</span>buildDir</span>/repos/snapshots&quot;</span>
+            url <span class="token operator">=</span> version<span class="token punctuation">.</span><span class="token function">endsWith</span><span class="token punctuation">(</span><span class="token string">'SNAPSHOT'</span><span class="token punctuation">)</span> <span class="token operator">?</span> snapshotsRepoUrl <span class="token punctuation">:</span> releasesRepoUrl
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="相关链接"><a href="#相关链接" class="header-anchor">#</a> 相关链接</h2> <p><a href="https://docs.gradle.org/current/userguide/userguide.html" target="_blank" rel="noopener noreferrer"><strong>官方用户手册</strong><span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p><a href="https://www.imooc.com/learn/833" target="_blank" rel="noopener noreferrer"><strong>慕课网新一代构建工具gradle</strong><span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p><a href="https://github.com/jianchengwang/todo-java" target="_blank" rel="noopener noreferrer"><strong>TODO 代码</strong><span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p></div></div> <div class="footer" data-v-5d573f62><div title="share this post" class="share share-icon" data-v-5d573f62><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2" data-v-5d573f62><circle cx="18" cy="5" r="3" data-v-5d573f62></circle><circle cx="6" cy="12" r="3" data-v-5d573f62></circle><circle cx="18" cy="19" r="3" data-v-5d573f62></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" data-v-5d573f62></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" data-v-5d573f62></line></svg> <path d="M896 469.333333l-298.666667-298.666667 0 170.666667C298.666667 384 170.666667 597.333333 128 810.666667c106.666667-149.333333 256-217.6 469.333333-217.6L597.333333 768 896 469.333333z" p-id="7022" fill="#1296db" data-v-5d573f62></path></div> <div class="share" data-v-5d573f62><!----></div> <div class="share" data-v-5d573f62><!----></div></div></div> <div class="footer" data-v-52876424 data-v-5d573f62><footer data-v-52876424><div data-v-52876424>
+            © 2018 -
+            2021
+            <svg viewBox="64 64 896 896" data-icon="flag" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false" data-v-52876424><path fill="#1296db" d="M880 305H624V192c0-17.7-14.3-32-32-32H184v-40c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v784c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8V640h248v113c0 17.7 14.3 32 32 32h416c17.7 0 32-14.3 32-32V337c0-17.7-14.3-32-32-32z" data-v-52876424></path></svg>
+            @Weike Joe
+        </div> <div data-v-52876424><a href="https://vuepress.vuejs.org/" target="_blank" data-v-52876424><img src="https://cdn.jsdelivr.net/gh/xixi-cmd/img-bed/kj.svg" alt srcset data-v-52876424></a> <a href="https://ww.vercel.com/" target="_blank" data-v-52876424><img src="https://img.shields.io/badge/Hosted-Vercel-brightgreen?style=flat&logo=Vercel" alt srcset data-v-52876424></a> <a href="http://www.github.com/xixi-cmd/" target="_blank" data-v-52876424><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" alt srcset data-v-52876424></a> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" data-v-52876424><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" alt srcset data-v-52876424></a></div> <div data-v-52876424>
+            备案号：<a target="_blank" rel="noopener" href="http://beian.miit.gov.cn/" data-v-52876424>
+                暂时还未备案
+            </a></div></footer></div></div></div><div id="toolbar" data-v-fe84d7a0><!----> <div class="toolbar" data-v-fe84d7a0><div class="search" data-v-fe84d7a0><div class="search-box" data-v-fe84d7a0><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div></div> <div class="post-sort" data-v-fe84d7a0><div class="title" data-v-fe84d7a0>Post Order</div> <div class="op" data-v-fe84d7a0>
+                By Time
+                <svg t="1610607067172" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2795" width="20" height="20" class="icon" style="display:;" data-v-fe84d7a0><path d="M495.765247 353.091804 333.414649 190.741205 171.065074 353.091804 304.386522 353.091804l0 420.142919c0 17.947767 14.046924 32.469506 31.978319 32.469506 17.931395 0 31.978319-14.522762 31.978319-32.469506L368.343159 353.091804 495.765247 353.091804z" p-id="2796" data-v-fe84d7a0></path> <path d="M720.104665 672.874991 720.104665 221.24494c0-17.947767-14.046924-32.469506-31.978319-32.469506s-31.978319 14.522762-31.978319 32.469506l0 451.630051-127.913275 0 162.349575 162.349575 162.349575-162.349575L720.104665 672.874991z" p-id="2797" data-spm-anchor-id="a313x.7781069.0.i7" fill="#1296db" class="selected" data-v-fe84d7a0></path></svg> <svg t="1610612746140" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2973" width="20" height="20" class="icon" style="display:none;" data-v-fe84d7a0><path d="M495.765247 353.091804 333.414649 190.741205 171.065074 353.091804 304.386522 353.091804l0 420.142919c0 17.947767 14.046924 32.469506 31.978319 32.469506 17.931395 0 31.978319-14.522762 31.978319-32.469506L368.343159 353.091804 495.765247 353.091804z" p-id="2974" data-spm-anchor-id="a313x.7781069.0.i9" fill="#1296db" class="selected" data-v-fe84d7a0></path> <path d="M720.104665 672.874991 720.104665 221.24494c0-17.947767-14.046924-32.469506-31.978319-32.469506s-31.978319 14.522762-31.978319 32.469506l0 451.630051-127.913275 0 162.349575 162.349575 162.349575-162.349575L720.104665 672.874991z" p-id="2975" data-v-fe84d7a0></path></svg>
+                :
+                <span class="content" data-v-fe84d7a0>DESC</span></div></div> <div class="statistics" data-v-fe84d7a0><div class="title" data-v-fe84d7a0>Article Statistics</div> <div class="data" data-v-fe84d7a0>
+                Article: 34
+            </div> <div class="data" data-v-fe84d7a0>
+                Categories: 34
+            </div> <div class="data" data-v-fe84d7a0>
+                Tags: 49
+            </div> <div class="more" data-v-fe84d7a0><a href="/archive" data-v-fe84d7a0>see more</a></div></div></div></div></span></div><div class="global-ui"><!----></div></div>
+    <script src="/assets/js/app.41c4354a.js" defer></script><script src="/assets/js/17.a6bcbfe2.js" defer></script>
+  </body>
+</html>
