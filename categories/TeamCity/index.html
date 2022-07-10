@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="robots" content="noindex"><meta><title>分类: TeamCity - 一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="一枝清寒."><meta property="og:url" content="http://example.com/"><meta property="og:site_name" content="一枝清寒."><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:author" content="ChenShang"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com"},"headline":"一枝清寒.","image":["http://example.com/img/og_image.png"],"author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/categories">分类</a></li><li class="is-active"><a href="#" aria-current="page">TeamCity</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2016-03-23T12:48:31.000Z" title="2016/3/23 20:48:31">2016-03-23</time>发表</span><span class="level-item"><time dateTime="2021-08-21T04:31:04.146Z" title="2021/8/21 12:31:04">2021-08-21</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/TeamCity/">TeamCity</a><span> / </span><a class="link-muted" href="/categories/TeamCity/Java/">Java</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2016/03/23/TeamCity/">持续集成TeamCity的安装和使用</a></h1><div class="content"><span id="more"></span>
+
+
+<ul>
+<li><img src="http://img.youmeek.com/2016/TeamCity.jpg" alt="TeamCity"></li>
+</ul>
+<h2 id="本文初衷"><a href="#本文初衷" class="headerlink" title="本文初衷"></a>本文初衷</h2><ul>
+<li>让大家了解持续集成（CI），以及入门了解 JetBrains 家的 TeamCity 的一些简单实用。</li>
+<li>TeamCity 的一些复杂使用我暂时也不会，一样也是要看文档的，所以不管怎样你都要养成看官网文档的习惯。</li>
+<li>TeamCity 和 Jenkins、Hudson 其实是非常一样的，基本流程都是差不多的，所以如果你会其他的几个 CI 工具的话，学习起来很快。</li>
+<li>Docker 已经开始在引入到 CI、CD（持续交付）过程中，可以大大简化整体的过程，也许这是未来的一个方向，有兴趣的可以了解更多。</li>
+</ul>
+<h2 id="它是什么"><a href="#它是什么" class="headerlink" title="它是什么"></a>它是什么</h2><ul>
+<li>官网定义（就一句话）：<code>Powerful Continuous Integration out of the box</code></li>
+<li>官网首页：<a target="_blank" rel="noopener" href="https://www.jetbrains.com/teamcity/">https://www.jetbrains.com/teamcity/</a></li>
+<li>官网特性总结：<a target="_blank" rel="noopener" href="https://www.jetbrains.com/teamcity/features/">https://www.jetbrains.com/teamcity/features/</a></li>
+<li>百度百科：<a target="_blank" rel="noopener" href="http://baike.baidu.com/view/3703414.htm">http://baike.baidu.com/view/3703414.htm</a></li>
+<li>官网文档：<a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/TeamCity+Documentation">https://confluence.jetbrains.com/display/TCD9/TeamCity+Documentation</a></li>
+<li>支持的平台、环境如下图（看不懂也没关系，只要知道它最友好的是 Java 开发即可）：</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-Supported-Platforms-and-Environments.png" alt="TeamCity"></li>
+<li>对上图的具体讲解可以看（<strong>很重要</strong>）：<a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/Supported+Platforms+and+Environments">https://confluence.jetbrains.com/display/TCD9/Supported+Platforms+and+Environments</a></li>
+</ul>
+<h2 id="为什么会出现"><a href="#为什么会出现" class="headerlink" title="为什么会出现"></a>为什么会出现</h2><ul>
+<li>TeamCity 的出现需要了解这个概念：持续集成（Continuous Integration）</li>
+<li>百科定义：<a target="_blank" rel="noopener" href="http://baike.baidu.com/view/5253255.htm">http://baike.baidu.com/view/5253255.htm</a></li>
+<li>网络文章：<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2015/09/continuous-integration.html">http://www.ruanyifeng.com/blog/2015/09/continuous-integration.html</a></li>
+</ul>
+<h2 id="哪些人喜欢它"><a href="#哪些人喜欢它" class="headerlink" title="哪些人喜欢它"></a>哪些人喜欢它</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/leijiantian/article/details/7916483">持续集成学习笔记－入门篇（1）持续集成基本概念</a></li>
+<li><a target="_blank" rel="noopener" href="https://about.gitlab.com/2015/02/03/7-reasons-why-you-should-be-using-ci/">7 reasons why you should be using Continuous Integration</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.rainforestqa.com/2014-07-17-what-is-CI-and-why-use-it/">What is CI and why use it?</a></li>
+</ul>
+<h2 id="哪些人不喜欢它"><a href="#哪些人不喜欢它" class="headerlink" title="哪些人不喜欢它"></a>哪些人不喜欢它</h2><ul>
+<li>Google 不到结果，应该是没人不喜欢，只是有些人用不惯</li>
+</ul>
+<h2 id="为什么学习它"><a href="#为什么学习它" class="headerlink" title="为什么学习它"></a>为什么学习它</h2><ul>
+<li>更好地保证项目质量</li>
+</ul>
+<h2 id="同类工具"><a href="#同类工具" class="headerlink" title="同类工具"></a>同类工具</h2><ul>
+<li>Jenkins：<a target="_blank" rel="noopener" href="http://jenkins-ci.org/">http://jenkins-ci.org/</a></li>
+<li>Travis CI：<a target="_blank" rel="noopener" href="http://travis-ci.org/">http://travis-ci.org/</a></li>
+<li>Bamboo：<a target="_blank" rel="noopener" href="http://www.atlassian.com/software/bamboo">http://www.atlassian.com/software/bamboo</a></li>
+<li>Hudson：<a target="_blank" rel="noopener" href="http://hudson-ci.org/">http://hudson-ci.org/</a></li>
+<li>QuickBuild：<a target="_blank" rel="noopener" href="http://www.pmease.com/">http://www.pmease.com/</a></li>
+<li>其他：<a target="_blank" rel="noopener" href="http://www.oschina.net/project/tag/344/ci?lang=0&amp;os=0&amp;sort=view&amp;p=1">http://www.oschina.net/project/tag/344/ci?lang=0&amp;os=0&amp;sort=view&amp;p=1</a></li>
+<li>好的网络文章介绍：<ul>
+<li><a target="_blank" rel="noopener" href="http://cristal.iteye.com/blog/482658">持续集成工具的选择</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="TeamCity-入门"><a href="#TeamCity-入门" class="headerlink" title="TeamCity 入门"></a>TeamCity 入门</h2><ul>
+<li>先来看一段官网的介绍视频</li>
+<li>这个视频其实已经很清楚地说明了一个整理流程是怎样的，我今天只是做一个更加清晰的细节讲解而已</li>
+<li>你需要穿越：<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=J-iYMMG6jmc#action=share">https://www.youtube.com/watch?v=J-iYMMG6jmc#action=share</a></li>
+</ul>
+<h3 id="TeamCity-安装部署（Linux-环境）"><a href="#TeamCity-安装部署（Linux-环境）" class="headerlink" title="TeamCity 安装部署（Linux 环境）"></a>TeamCity 安装部署（Linux 环境）</h3><ul>
+<li>在我讲之前，如果你英文还可以，就到官网这里看下：</li>
+<li><a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/Installation+Quick+Start#InstallationQuickStart-onLinuxandOSX">Installation Quick Start</a></li>
+<li>安装环境要求：<ul>
+<li>JDK 1.7 以上，如果你要使用的是 2016 最新的 TeamCity 9.1 的话，JDK 官网推荐的 1.8</li>
+</ul>
+</li>
+<li>安装包下载：<a target="_blank" rel="noopener" href="https://www.jetbrains.com/teamcity/download/#section=linux-version">https://www.jetbrains.com/teamcity/download/#section=linux-version</a></li>
+<li>开始安装（eg：TeamCity-9.1.6.tar.gz）：<ul>
+<li>解压压缩包（解压速度有点慢）：<code>tar zxf TeamCity-9.1.6.tar.gz</code></li>
+<li>解压完的目录结构讲解：<a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/TeamCity+Home+Directory">https://confluence.jetbrains.com/display/TCD9/TeamCity+Home+Directory</a></li>
+<li>下载的 tar.gz 的本质是已经里面捆绑了一个 Tomcat，所以如果你会 Tomcat 的话，有些东西你可以自己改的。</li>
+<li>按我个人习惯，把解压缩的目录放在 usr 目录下：<code>mv TeamCity/ /usr/program/</code></li>
+<li>进入解压目录：<code>cd /usr/program/TeamCity/</code></li>
+<li>启动程序：<code>/usr/program/TeamCity/bin/runAll.sh start</code></li>
+<li>停止程序：<code>/usr/program/TeamCity/bin/runAll.sh stop</code></li>
+<li>启动需要点时间，最好能给它一两分钟吧</li>
+</ul>
+</li>
+</ul>
+<h3 id="首次进入"><a href="#首次进入" class="headerlink" title="首次进入"></a>首次进入</h3><ul>
+<li>假设我们已经启动了 TeamCity</li>
+<li>访问（TeamCity 默认端口是：8111）：<a target="_blank" rel="noopener" href="http://192.168.1.113:8111/">http://192.168.1.113:8111/</a></li>
+<li>如果访问不了，请先关闭防火墙：<code>service iptables stop</code></li>
+<li>你也可以选择把端口加入白名单中：<ul>
+<li><code>sudo iptables -I INPUT -p tcp -m tcp --dport 8111 -j ACCEPT</code></li>
+<li><code>sudo /etc/rc.d/init.d/iptables save</code></li>
+<li><code>sudo service iptables restart</code></li>
+</ul>
+</li>
+<li>如果你要改变端口，找到下面这个 8111 位置：<code>vim /usr/program/TeamCity/conf/server.xml</code></li>
+</ul>
+<pre><code class="bash">&lt;Connector port=&quot;8111&quot; ...
+</code></pre>
+<ul>
+<li>在假设你已经可以访问的情况，我们开始进入 TeamCity 的设置向导：</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-a-1.jpg" alt="TeamCity 向导"><ul>
+<li>如上图英文所示，TeamCity 的一些软件安装的配置、服务的配置默认都会放在：<code>/root/.BuildServer</code></li>
+<li>如果你要了解更多 TeamCity Data Directory 目录，你可以看：<a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/TeamCity+Data+Directory">https://confluence.jetbrains.com/display/TCD9/TeamCity+Data+Directory</a></li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-a-2.jpg" alt="TeamCity 向导"><ul>
+<li>如上图英文所示，TeamCity 的一些构建历史、用户信息、构建结果等这类数据是需要放在关系型数据库上的，而默认它给我们内置了一个。</li>
+<li>如果你要了解更多 TeamCity External Database，你可以看：<a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/Setting+up+an+External+Database">https://confluence.jetbrains.com/display/TCD9/Setting+up+an+External+Database</a></li>
+<li>首次使用，官网是建议使用默认的：<code>Internal(HSQLDB)</code>，这样我们无需在一开始使用的就考虑数据库迁移或安装的问题，我们只要好好感受 TeamCity 给我们的，等我们决定要使用了，后续再更换数据也是可以的。但是内置的有一个注意点：’TeamCity with the native MSSQL external database driver is not compatible with Oracle Java 6 Update 29, due to a bug in Java itself. You can use earlier or later versions of Oracle Java.’</li>
+<li>假设我们就选 <code>Internal(HSQLDB)</code> ，则在创建初始化数据库的过程稍微需要点时间，我这边是几分钟。</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-a-3.jpg" alt="TeamCity 向导"><ul>
+<li>如上图所示，接受下协议</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-b-1.jpg" alt="TeamCity 向导"><ul>
+<li>如上图所示，我们要创建一个顶级管理员账号，我个人习惯测试的账号是：<code>admin</code>，<code>123456</code></li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-b-2.jpg" alt="TeamCity 向导"><ul>
+<li>如上图所示，安装完首次进来地址：<a target="_blank" rel="noopener" href="http://192.168.1.113:8111/profile.html?tab=userGeneralSettings">http://192.168.1.113:8111/profile.html?tab=userGeneralSettings</a></li>
+<li>我们可以完善一些管理员信息和基础配置信息，这些配置不配置都无所谓了，只是完善了可以更加好用而已</li>
+<li>如果你有 SMTP 的邮箱，你可以来这里开启邮件通知功能：<a target="_blank" rel="noopener" href="http://192.168.1.113:8111/admin/admin.html?item=email">http://192.168.1.113:8111/admin/admin.html?item=email</a></li>
+<li>如果你要开启通知功能那肯定下一步就是考虑通知内容的模板要如何设定：<a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9//Customizing+Notifications">https://confluence.jetbrains.com/display/TCD9//Customizing+Notifications</a></li>
+<li>模板存放路径在：<code>/root/.BuildServer/config/_notifications</code>，用的是 FreeMarker 的语法</li>
+</ul>
+</li>
+</ul>
+<h3 id="项目的构建、管理"><a href="#项目的构建、管理" class="headerlink" title="项目的构建、管理"></a>项目的构建、管理</h3><ul>
+<li>建议可以看下官网：<a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/Configure+and+Run+Your+First+Build">https://confluence.jetbrains.com/display/TCD9/Configure+and+Run+Your+First+Build</a></li>
+<li>现在让我们开始创建一个项目进行构建</li>
+<li>项目管理地址：<a target="_blank" rel="noopener" href="http://192.168.1.113:8111/admin/admin.html?item=projects">http://192.168.1.113:8111/admin/admin.html?item=projects</a></li>
+<li>假设我现在有一个项目的结构是这样的：</li>
+</ul>
+<pre><code class="bash">- Youshop-Parent，输出是 pom
+    - Youshop-manage，输出是 pom
+        - Youshop-pojo，输出 jar
+</code></pre>
+<ul>
+<li>我们现在以 Youshop-pojo 为例，让它自动构建并发布到 Nexus 中，其他项目道理是一样的，这里就不多说。</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-c-1.jpg" alt="TeamCity 向导"></li>
+<li>如上图，由于目前只要是公司的项目都应该是在版本控制的，所以这里我们选择：<strong>Create project from URL</strong></li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-c-2.jpg" alt="TeamCity 向导"></li>
+<li>如上图，我们可以看出 TeamCity 也支持 HTTP、SVN、Git 等链接方式。</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-c-3.jpg" alt="TeamCity 向导"></li>
+<li>输入你项目托管商的账号密码，我这里用的是 oschina 的。</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-c-4.jpg" alt="TeamCity 向导"></li>
+<li>账号、密码验证通过，现在可以给这个项目配置一个项目基本信息。</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-c-5.jpg" alt="TeamCity 向导"></li>
+<li>在从版本控制中下载文件和扫描文件</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-c-6.jpg" alt="TeamCity 向导"></li>
+<li>TeamCity 自动扫描到我是用 Maven 构建的项目，所以把 POM 文件找出来了，如果你一个项目有多种构建方式，有对应的配置文件的话，这里都会显示出来的。</li>
+<li>我们勾选 Maven 前面的复选框，点击：<code>Use Selected</code></li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-c-7.jpg" alt="TeamCity 向导"></li>
+<li>由于我们的目标是构建完自动发布到 Nexus，所以我们的 <strong>Maven Goals</strong> 应该是：<code>clean install deploy</code>，这里我们应该点击：<code>Edit</code>，进行编辑。</li>
+<li>如果你不懂 <strong>Maven Goals</strong>，那你需要学习下，这个很重要。<ul>
+<li>官网：<a target="_blank" rel="noopener" href="http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html">http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html</a></li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-c-8.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，这台服务器必须装有 Maven、JDK</li>
+<li>如上图，<code>Goals</code> 我们的目标是 <code>clean install deploy</code></li>
+<li>如上图，<code>Maven Home</code> 我建议是自己自定义路径，这样肯定不会有问题。所以你服务器上的 Maven 安装路径是什么你就在这里填写上去。Maven 目前支持的最高版本是：3.2.5<ul>
+<li>下载 Maven 3.2.5：<a target="_blank" rel="noopener" href="http://archive.apache.org/dist/maven/maven-3/3.2.5/binaries/">http://archive.apache.org/dist/maven/maven-3/3.2.5/binaries/</a></li>
+</ul>
+</li>
+<li>如上图，<code>Java Parameters</code> 我建议也是自己自定义路径，别选择其他选项。</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-c-9.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，点击 <code>run</code>，开始手动构建该项目</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-c-10.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，我们看到简略的构建日志</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-c-11.jpg" alt="TeamCity 向导"></li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-c-12.jpg" alt="TeamCity 向导"><ul>
+<li>如上 2 张图，我们看到详细的构建内容</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-d-1.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，当我们版本控制中有提交的时候，TeamCity 会识别到记录</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-d-2.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，我们可以看到提交的 Commit Message 信息。</li>
+<li>如上图，右边红圈的三个按钮是用来处理这次提交的，常用的是第一次按钮，点击对此次版本进行构建</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-d-3.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，如果你要看所有的提交记录，可以在 Change Log 看到并且指定版本构建</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-e-1.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，如果在你不想要这个项目的时候可以进行删除</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-e-2.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，因为 Goals 里面有 deploy 命令，所以构建完成会发布到 Nexus 中，这样团队的人就可以用到最新的代码了</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-e-3.gif" alt="TeamCity 向导"><ul>
+<li>如上 gif 图演示，项目常去的几个配置地方就是这样些了</li>
+</ul>
+</li>
+</ul>
+<h3 id="配置自动构建触发行为"><a href="#配置自动构建触发行为" class="headerlink" title="配置自动构建触发行为"></a>配置自动构建触发行为</h3><ul>
+<li>官网提供的触发行为有：<a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/Configuring+Build+Triggers">https://confluence.jetbrains.com/display/TCD9/Configuring+Build+Triggers</a></li>
+<li>下面我们举例说常见的：<code>VCS Trigger</code>、<code>Schedule Trigger</code></li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-f-1.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，点击 <code>Add new trigger</code> 添加触发器</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-f-2.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，常见的触发器就这些了</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-f-3.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，配置好 <code>VCS Trigger</code> 效果是，当我们有代码提交的时候，TeamCity 检查到新版本之后自动构建，这个最常用</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-f-4.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，<code>Schedule Trigger</code> 的作用就是定时构建，除了常用的几个输入框设置定时外，TeamCity 还可以使用 Cron 语法进行设置</li>
+<li>TeamCity 采用的 Cron 语法是 Quartz，具体你可以看：<a target="_blank" rel="noopener" href="http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger#CronTriggersTutorial-Specialcharacters">Quartz CronTrigger Tutorial</a></li>
+<li>如果你不懂 Cron 语法那就算了，但是我想做 Java 这个应该要会的</li>
+</ul>
+</li>
+</ul>
+<h3 id="集成-IntelliJ-IDEA"><a href="#集成-IntelliJ-IDEA" class="headerlink" title="集成 IntelliJ IDEA"></a>集成 IntelliJ IDEA</h3><ul>
+<li>安装 IntelliJ IDEA：<a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/IntelliJ+Platform+Plugin">https://confluence.jetbrains.com/display/TCD9/IntelliJ+Platform+Plugin</a></li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-g-1.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，我们可以直接连上 TeamCity 服务器，这里的用户名密码是 TeamCity 的账号系统。</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-g-2.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，连上去的效果是这里会打钩</li>
+</ul>
+</li>
+<li><img src="http://img.youmeek.com/2016/TeamCity-guide-g-3.jpg" alt="TeamCity 向导"><ul>
+<li>如上图，我们可以直接把别人提交的内容做 patch 直接用 IntelliJ IDEA 进行整合</li>
+<li>还有其他很多结合玩法大家可以自己去尝试下</li>
+</ul>
+</li>
+</ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
+<li>TeamCity 的插件列表：<a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TW/TeamCity+Plugins">https://confluence.jetbrains.com/display/TW/TeamCity+Plugins</a></li>
+<li>使用外部数据库：<ul>
+<li>使用外部数据库：<a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/Setting+up+an+External+Database">https://confluence.jetbrains.com/display/TCD9/Setting+up+an+External+Database</a></li>
+<li>迁移到外部数据库：<a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/Migrating+to+an+External+Database">https://confluence.jetbrains.com/display/TCD9/Migrating+to+an+External+Database</a></li>
+</ul>
+</li>
+<li>数据备份：<a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/TeamCity+Data+Backup">https://confluence.jetbrains.com/display/TCD9/TeamCity+Data+Backup</a></li>
+<li>代码检查功能：<ul>
+<li><a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/Code+Quality+Tools">https://confluence.jetbrains.com/display/TCD9/Code+Quality+Tools</a></li>
+<li><a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/display/TCD9/Code+Quality+Tools#CodeQualityTools-IntelliJIDEA-poweredCodeAnalysisTools">https://confluence.jetbrains.com/display/TCD9/Code+Quality+Tools#CodeQualityTools-IntelliJIDEA-poweredCodeAnalysisTools</a>  </li>
+<li><a target="_blank" rel="noopener" href="https://confluence.jetbrains.com/pages/viewpage.action?pageId=74847276">https://confluence.jetbrains.com/pages/viewpage.action?pageId=74847276</a></li>
+</ul>
+</li>
+</ul>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>

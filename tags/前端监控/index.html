@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="robots" content="noindex"><meta><title>标签: 前端监控 - 一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="一枝清寒."><meta property="og:url" content="http://example.com/"><meta property="og:site_name" content="一枝清寒."><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:author" content="ChenShang"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com"},"headline":"一枝清寒.","image":["http://example.com/img/og_image.png"],"author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">标签</a></li><li class="is-active"><a href="#" aria-current="page">前端监控</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-08-18T11:23:55.000Z" title="2018/8/18 19:23:55">2018-08-18</time>发表</span><span class="level-item"><time dateTime="2021-07-25T07:58:54.000Z" title="2021/7/25 15:58:54">2021-07-25</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/08/18/%E4%BB%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90sentry%E7%9A%84%E9%94%99%E8%AF%AF%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">从源码分析sentry的错误信息收集</a></h1><div class="content"><p>raven.js 是 sentry 为 JavaScript 错误上报提供的 JS-SDK，本篇我们基于其源代码对其原理进行分析，本篇文章只分析前端部分，对应的文件目录是<code>https://github.com/getsentry/sentry-javascript/tree/master/packages/raven-js</code>。</p>
+<p>首先抛出几个问题：</p>
+<ul>
+<li><strong>raven.js 是如何收集浏览器错误信息的？</strong></li>
+<li><strong>raven.js 上报的错误信息格式是什么样的？又是如何把这些信息传给后端？支不支持合并上报？</strong></li>
+<li><strong>面包屑（breadcrumbs）是什么？raven.js 如何来收集面包屑信息？</strong></li>
+<li><strong>raven.js 如何和框架配合使用（比如 vue、react）？</strong></li>
+</ul>
+<p>在回答以上这几个问题之前，我们首先来对 raven.js 做一个宏观的分析，主要涉及其文件目录、所引用的第三方框架等。</p>
+<p>raven.js 的核心文件内容并不多，其中使用了三个第三方库，放在了 vendor 文件夹下：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/moll/json-stringify-safe">json-stringify-safe</a> ：一个对 <code>JSON.stringify</code> 的封装，安全的 json 序列化操作函数，不会抛出循环引用的错误。<ul>
+<li>这里面有一个注意点要单独说一下，我们熟知的 <code>JSON.stringify</code> , 可以接受三个参数：第一个参数是我们要序列化的对象；第二个参数是对其中键值对的处理函数；第三个参数是控制缩进空格。reven.js 的 <code>json-stringify-safe</code> 就是充分利用了这三个参数。</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/blueimp/JavaScript-MD5">md5</a>：js 的 md5 函数。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/csnover/TraceKit">TraceKit</a>：TraceKit 是一个已经比较完善的错误收集、堆栈格式化的库，reven.js 的功能在很大程度上对它有所依赖。</li>
+</ul>
+<p>除此之外，raven.js 支持插件，官方提供的一些知名库的 sentry 插件主要放在了 plugin 文件夹下面，raven.js 的一些核心文件，则放在了 src 文件夹下面。</p>
+<h3 id="raven-js-是如何收集错误信息的？"><a href="#raven-js-是如何收集错误信息的？" class="headerlink" title="raven.js 是如何收集错误信息的？"></a>raven.js 是如何收集错误信息的？</h3><p>我们知道，在前端收集错误，肯定离不开 <code>window.onerror</code> 这个函数，那么我们就从这个函数说起。</p>
+<p>实际上，这部分工作是 raven.js 引用的第三方库 TraceKit 完成的：</p>
+<pre><code>function installGlobalHandler() &#123;
+  if (_onErrorHandlerInstalled) &#123; // 一个起到标志作用的全局变量
+    return;
+  &#125;
+  _oldOnerrorHandler = _window.onerror; 
+  // _oldOnerrorHandler 是防止对用户其他地方定义的回调函数进行覆盖
+  // 该 _window 经过兼容，实际上就是 window
+  _window.onerror = traceKitWindowOnError;
+  _onErrorHandlerInstalled = true;
+&#125;
+</code></pre>
+<p>相关错误回调函数交给 traceKitWindowOnError 处理，下面我们来看一下 traceKitWindowOnError 函数，为了避免太多冗余代码，我们仅分析一种主要情况：</p>
+<pre><code>function traceKitWindowOnError(msg, url, lineNo, colNo, ex) &#123;
+    
+    var exception = utils.isErrorEvent(ex) ? ex.error : ex;
+    //...
+    stack = TraceKit.computeStackTrace(exception);
+    notifyHandlers(stack, true);
+    //...
+   
+    //...
+    if (_oldOnerrorHandler) &#123;
+       return _oldOnerrorHandler.apply(this, arguments);
+    &#125;
+    return false;
+&#125;
+</code></pre>
+<p>其中调用的最重要的一个函数，就是 computeStackTrace，而这个函数也是 TraceKit 的核心函数，简单来讲，它做的事情就是统一格式化报错信息调用栈，因为对于各个浏览器来说，返回的 Error 调用栈信息格式不尽相同，另外甚至还有的浏览器并不返回调用栈，computeStackTrace 函数对这些情况都做了兼容性处理，并且对于一些不返回调用栈的情况，还使用了 caller 来向上回溯函数的调用栈，最终把报错信息转化成一个键相同的对象数组，做到了报错信息格式的统一。</p>
+<p>notifyHandlers 函数则是通知相关的回调函数。 实际上，raven.js 在 install 函数中会调用 TraceKit.report.subscribe 函数，并把对错误的处理逻辑写入回调：</p>
+<pre><code>function subscribe(handler) &#123;
+    installGlobalHandler();
+    handlers.push(handler);
+&#125;
+</code></pre>
+<p>以上过程完成了错误处理过程中的负责角色转换，并且借助 TraceKit，可以使 raven.js 得到一个结构比较清晰的带有格式化好的调用栈信息的错误内容对象，之后，raven.js 对错误内容进一步处理并最终上报。</p>
+<p>下面我们对错误处理 raven.js 控制的部分做了一些梳理：</p>
+<pre><code> _handleOnErrorStackInfo: function(stackInfo, options) &#123;
+    options.mechanism = options.mechanism || &#123;
+      type: &#39;onerror&#39;,
+      handled: false
+    &#125;;
+    // mechanism 和错误统计来源有关
+
+    if (!this._ignoreOnError) &#123;
+      this._handleStackInfo(stackInfo, options);
+    &#125;
+&#125;,
+
+_handleStackInfo: function(stackInfo, options) &#123;
+    var frames = this._prepareFrames(stackInfo, options);
+
+    this._triggerEvent(&#39;handle&#39;, &#123;
+      stackInfo: stackInfo,
+      options: options
+    &#125;);
+
+    this._processException(
+      stackInfo.name,
+      stackInfo.message,
+      stackInfo.url,
+      stackInfo.lineno,
+      frames,
+      options
+    );
+&#125;,
+
+_processException: function(type, message, fileurl, lineno, frames, options) &#123;
+    // 首先根据 message 信息判断是否是需要忽略的错误类型
+    // 然后判断出错的文件是否在黑名单中或者白名单中
+    // 接下来对错误内容进行必要的整合与转换，构造出 data 对象
+    // 最后调用上报函数
+    this._send(data);
+&#125;
+
+_send: function(data) &#123;
+    
+    // 对 data 进一步处理，增加必要的信息，包括后续会提到的面包屑信息
+
+    // 交由 _sendProcessedPayload 进行进一步处理
+    this._sendProcessedPayload(data);
+&#125;
+
+_sendProcessedPayload: function(data, callback) &#123;
+
+    // 对 data 增加一些必要的元信息
+    // 可以通过自定义 globalOptions.transport 的方式来自定义上报函数 
+    (globalOptions.transport || this._makeRequest).call(this, &#123;
+         url: url,
+         auth: auth,
+         data: data,
+         options: globalOptions,
+         onSuccess: function success() &#123;
+           
+         &#125;,
+         onError: function failure(error) &#123;
+           
+         &#125;
+    &#125;);
+&#125;    
+
+// 真正发起请求的函数
+_makeRequest: function(opts) &#123;
+    // 对于支持 fetch 的浏览器，直接使用 fetch 的方式发送 POST 请求
+    // 如果浏览器不支持 fetch，则使用 XHR 的传统方式发送 POST 请求
+&#125;
+</code></pre>
+<p>实际上我们可以发现，从拿到已经初步格式化的报错信息，到最终真正执行数据上报，raven.js 的过程非常漫长，这其中我分析有如下几个原因：</p>
+<ul>
+<li>每个函数只处理一件或者一些事情，保持函数的短小整洁。</li>
+<li>部分函数可以做到复用（因为除了自动捕获错误的方式， raven.js 还提供通过 captureException，即 <code>try &#123;   doSomething(a[0]) &#125; catch(e) &#123;   Raven.captureException(e) &#125;</code> 的方式来上报错误，两个过程中有一些函数的调用是有重叠的）。</li>
+</ul>
+<p>但是笔者认为，raven.js 的代码设计还有很多值得优化的地方，比如：</p>
+<ul>
+<li>对最终上报数据（data）的属性处理和增加分散在多个函数，并且有较多可选项目，很难梳理出一个完整的 data 格式，并且不便于维护。</li>
+<li>部分函数的拆分必要性不足，并且会增加链路的复杂性，比如 <code>_processException </code>、<code>_sendProcessedPayload </code>、<code>_makeRequest </code>等都只在一个链路中被调用一次。</li>
+<li>部分属性重命名会造成资源浪费，由于 TraceKit 部分最终返回的数据格式并不完全满足 raven.js 的需要，所以 raven.js 之后又在较后阶段进行了重命名等处理，实际上这些内容完全可以通过一些其他的方式避免。</li>
+</ul>
+<p>最后，非常遗憾，sentry 目前完全不支持合并上报，就算是在同一个事件循环（甚至事件循环的同一个阶段，关于事件循环，可以参考我之前绘制的<a target="_blank" rel="noopener" href="https://www.processon.com/view/link/5b6ec8cbe4b053a09c2fb977">一张图</a>）的两个错误，sentry 都是分开来上报的，这里有一个简单例子：</p>
+<pre><code class="javascript">Raven.config(&#39;http://8ec3f1a9f652463bb58191bd0b35f20c@localhost:9000/2&#39;).install()
+let s = window.ss;
+
+try&#123;
+    let b = s.b
+&#125; catch (e) &#123;
+    Raven.captureException(e)
+    // sentry should report error now
+&#125;
+
+s.nomethod();
+// sentry should report error now
+</code></pre>
+<p>以上例子中，sentry 会发送两个 POST 请求。</p>
+<h3 id="raven-js-最终上报数据的格式"><a href="#raven-js-最终上报数据的格式" class="headerlink" title="raven.js 最终上报数据的格式"></a>raven.js 最终上报数据的格式</h3><p>这一部分，我们并不会详细地分析 raven.js 上报的数据的每一项内容，仅会给读者展示一个比较典型的情况。</p>
+<p>我们看一下对于一个一般的 js 错误，raven.js 上报的 json 中包含哪些内容，下面是一个已经删掉一些冗余内容的典型上报信息：</p>
+<pre><code>&#123;
+  &quot;project&quot;: &quot;2&quot;,
+  &quot;logger&quot;: &quot;javascript&quot;,
+  &quot;platform&quot;: &quot;javascript&quot;,
+  &quot;request&quot;: &#123;
+    &quot;headers&quot;: &#123;
+      &quot;User-Agent&quot;: &quot;Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1&quot;
+    &#125;,
+    &quot;url&quot;: &quot;http://localhost:63342/sentry-test1/test1.html?_ijt=j54dmgn136gom08n8v8v9fdddu&quot;
+  &#125;,
+  &quot;exception&quot;: &#123;
+    &quot;values&quot;: [
+      &#123;
+        &quot;type&quot;: &quot;TypeError&quot;,
+        &quot;value&quot;: &quot;Cannot read property &#39;b&#39; of undefined&quot;,
+        &quot;stacktrace&quot;: &#123;
+          &quot;frames&quot;: [
+            &#123;
+              &quot;filename&quot;: &quot;http://localhost:63342/sentry-test1/test1.html?_ijt=j54dmgn136gom08n8v8v9fdddu&quot;,
+              &quot;lineno&quot;: 19,
+              &quot;colno&quot;: 19,
+              &quot;function&quot;: &quot;?&quot;,
+              &quot;in_app&quot;: true
+            &#125;
+          ]
+        &#125;
+      &#125;
+    ],
+    &quot;mechanism&quot;: &#123;
+      &quot;type&quot;: &quot;generic&quot;,
+      &quot;handled&quot;: true
+    &#125;
+  &#125;,
+  &quot;transaction&quot;: &quot;http://localhost:63342/sentry-test1/test1.html?_ijt=j54dmgn136gom08n8v8v9fdddu&quot;,
+  &quot;extra&quot;: &#123;
+    &quot;session:duration&quot;: 6
+  &#125;,
+  &quot;breadcrumbs&quot;: &#123;
+    &quot;values&quot;: [
+      &#123;
+        &quot;timestamp&quot;: 1534257309.996,
+        &quot;message&quot;: &quot;_prepareFrames stackInfo: [object Object]&quot;,
+        &quot;level&quot;: &quot;log&quot;,
+        &quot;category&quot;: &quot;console&quot;
+      &#125;,
+      // ...
+   ]
+  &#125;,
+  &quot;event_id&quot;: &quot;ea0334adaf9d43b78e72da2b10e084a9&quot;,
+  &quot;trimHeadFrames&quot;: 0
+&#125;
+</code></pre>
+<p>其中支持的信息类型重点分为以下几种：</p>
+<ul>
+<li>sentry 基本配置信息，包括库本身的配置和使用者的配置信息，以及用户的一些自定义信息</li>
+<li>错误信息，主要包括错误调用栈信息</li>
+<li>request 信息，主要包括浏览器的 User-Agent、当前请求地址等</li>
+<li>面包屑信息，关于面包屑具体指的是什么，我们会在下一环节进行介绍</li>
+</ul>
+<h3 id="raven-js-面包屑收集"><a href="#raven-js-面包屑收集" class="headerlink" title="raven.js 面包屑收集"></a>raven.js 面包屑收集</h3><p>面包屑信息，也就是错误在发生之前，一些用户、浏览器的行为信息，raven.js 实现了一个简单的队列（有一个最大条目长度，默认为 100），这个队列在时刻记录着这些信息，一旦错误发生并且需要上报，raven.js 就把这个队列的信息内容，作为面包屑 breadcrumbs，发回客户端。</p>
+<p>面包屑信息主要包括这几类：</p>
+<ul>
+<li>用户对某个元素的点击或者用户对某个可输入元素的输入</li>
+<li>发送的 http 请求</li>
+<li>console 打印的信息（支持配置 ‘debug’, ‘info’, ‘warn’, ‘error’, ‘log’ 等不同级别）</li>
+<li>window.location 变化信息</li>
+</ul>
+<p>接下来，我们对这几类面包屑信息 sentry 的记录实现进行简单的分析。</p>
+<p>实际上，sentry 对这些信息记录的方式比较一致，都是通过对原声的函数进行包装，并且在包装好的函数中增加自己的钩子函数，来实现触发时候的事件记录，实际上，sentry 总共包装的函数有：</p>
+<ul>
+<li>window.setTimeout</li>
+<li>window.setInterval</li>
+<li>window.requestAnimationFrame</li>
+<li>EventTarget.addEventListener</li>
+<li>EventTarget.removeEventListener</li>
+<li>XMLHTTPRequest.open</li>
+<li>XMLHTTPRequest.send</li>
+<li>window.fetch</li>
+<li>History.pushState</li>
+<li>History.replaceState</li>
+</ul>
+<blockquote>
+<p>备注：这里包装的所有函数，其中有一部分只是使 raven.js 具有捕获回调函数中错误的能力（对回调函数进行包装）</p>
+</blockquote>
+<p>接下来我们看一段典型的代码，来分析 raven.js 是如何记录用户的点击和输入信息的（通过对 EventTarget.addEventListener 进行封装）：</p>
+<pre><code class="javascript">function wrapEventTarget(global) &#123;
+      var proto = _window[global] &amp;&amp; _window[global].prototype;
+      if (proto &amp;&amp; proto.hasOwnProperty &amp;&amp; proto.hasOwnProperty(&#39;addEventListener&#39;)) &#123;
+        fill(
+          proto,
+          &#39;addEventListener&#39;,
+          function(orig) &#123;
+            return function(evtName, fn, capture, secure) &#123;
+              try &#123;
+                if (fn &amp;&amp; fn.handleEvent) &#123; //兼容通过 handleEvent 的方式进行绑定事件
+                  fn.handleEvent = self.wrap(
+                    &#123;
+                      mechanism: &#123;
+                        type: &#39;instrument&#39;,
+                        data: &#123;
+                          target: global,
+                          function: &#39;handleEvent&#39;,
+                          handler: (fn &amp;&amp; fn.name) || &#39;&lt;anonymous&gt;&#39;
+                        &#125;
+                      &#125;
+                    &#125;,
+                    fn.handleEvent
+                  );
+                &#125;
+              &#125; catch (err) &#123;
+              &#125;
+
+              var before, clickHandler, keypressHandler;
+
+              if (
+                autoBreadcrumbs &amp;&amp;
+                autoBreadcrumbs.dom &amp;&amp;
+                (global === &#39;EventTarget&#39; || global === &#39;Node&#39;)
+              ) &#123;
+                // NOTE: generating multiple handlers per addEventListener invocation, should
+                //       revisit and verify we can just use one (almost certainly)
+                clickHandler = self._breadcrumbEventHandler(&#39;click&#39;);
+                keypressHandler = self._keypressEventHandler();
+                before = function(evt) &#123; // 钩子函数，用于在回调函数调用的时候记录信息
+                  if (!evt) return;
+
+                  var eventType;
+                  try &#123;
+                    eventType = evt.type;
+                  &#125; catch (e) &#123;
+                    // just accessing event properties can throw an exception in some rare circumstances
+                    // see: https://github.com/getsentry/raven-js/issues/838
+                    return;
+                  &#125;
+                  if (eventType === &#39;click&#39;) return clickHandler(evt);
+                  else if (eventType === &#39;keypress&#39;) return keypressHandler(evt);
+                &#125;;
+              &#125;
+              return orig.call(
+                this,
+                evtName,
+                self.wrap(
+                  &#123;
+                    mechanism: &#123;
+                      type: &#39;instrument&#39;,
+                      data: &#123;
+                        target: global,
+                        function: &#39;addEventListener&#39;,
+                        handler: (fn &amp;&amp; fn.name) || &#39;&lt;anonymous&gt;&#39;
+                      &#125;
+                    &#125;
+                  &#125;,
+                  fn,
+                  before
+                ),
+                capture,
+                secure
+              );
+            &#125;;
+          &#125;,
+          wrappedBuiltIns
+        );
+        fill(
+          proto,
+          &#39;removeEventListener&#39;,
+          function(orig) &#123;
+            return function(evt, fn, capture, secure) &#123;
+              try &#123;
+                fn = fn &amp;&amp; (fn.__raven_wrapper__ ? fn.__raven_wrapper__ : fn);
+              &#125; catch (e) &#123;
+                // ignore, accessing __raven_wrapper__ will throw in some Selenium environments
+              &#125;
+              return orig.call(this, evt, fn, capture, secure);
+            &#125;;
+          &#125;,
+          wrappedBuiltIns
+        );
+      &#125;
+    &#125;
+</code></pre>
+<p>以上代码兼容了通过 handleEvent 的方式进行绑定事件（如果没有听说过这种方式，可以在<a target="_blank" rel="noopener" href="http://www.ayqy.net/blog/handleevent%E4%B8%8Eaddeventlistener/">这里</a>补充一些相关的知识）。</p>
+<p>默认情况下，raven.js 只记录通过 <code>EventTarget.addEventListener</code> 绑定的点击和输入信息，实际上这是比较科学的，并且这些信息较为有效。另外，raven.js 也提供了记录所有点击和输入信息的可选项，其实现方式更为简单，直接在 document 上添加相关的监听即可。</p>
+<h3 id="raven-js-如何和框架配合使用"><a href="#raven-js-如何和框架配合使用" class="headerlink" title="raven.js 如何和框架配合使用"></a>raven.js 如何和框架配合使用</h3><p>raven.js 和框架配合使用的方式非常简单，但是我们要知道，很多框架内置了错误边界处理，或者对错误进行转义。以至于我们通过 window.onerror 的方式得不到完整的错误信息。同时，有些框架提供了错误处理的接口（比如 vue），利用错误处理的接口，我们能够获取到和错误有关的更多更重要的信息。</p>
+<p>raven.js 利用各个框架的官方接口，提供了 vue、require.js、angular、ember、react-native 等各个框架的官方插件。</p>
+<p>插件内容本身非常简单，我们可以看一下 vue 插件的代码：</p>
+<pre><code>function formatComponentName(vm) &#123;
+  if (vm.$root === vm) &#123;
+    return &#39;root instance&#39;;
+  &#125;
+  var name = vm._isVue ? vm.$options.name || vm.$options._componentTag : vm.name;
+  return (
+    (name ? &#39;component &lt;&#39; + name + &#39;&gt;&#39; : &#39;anonymous component&#39;) +
+    (vm._isVue &amp;&amp; vm.$options.__file ? &#39; at &#39; + vm.$options.__file : &#39;&#39;)
+  );
+&#125;
+
+function vuePlugin(Raven, Vue) &#123;
+  Vue = Vue || window.Vue;
+
+  // quit if Vue isn&#39;t on the page
+  if (!Vue || !Vue.config) return;
+
+  var _oldOnError = Vue.config.errorHandler;
+  Vue.config.errorHandler = function VueErrorHandler(error, vm, info) &#123;
+    var metaData = &#123;&#125;;
+
+    // vm and lifecycleHook are not always available
+    if (Object.prototype.toString.call(vm) === &#39;[object Object]&#39;) &#123;
+      metaData.componentName = formatComponentName(vm);
+      metaData.propsData = vm.$options.propsData;
+    &#125;
+
+    if (typeof info !== &#39;undefined&#39;) &#123;
+      metaData.lifecycleHook = info;
+    &#125;
+
+    Raven.captureException(error, &#123;
+      extra: metaData
+    &#125;);
+
+    if (typeof _oldOnError === &#39;function&#39;) &#123;
+      _oldOnError.call(this, error, vm, info);
+    &#125;
+  &#125;;
+&#125;
+
+module.exports = vuePlugin;
+</code></pre>
+<p>应该不用进行过多解释。</p>
+<p>你也许想知道为什么没有提供 react 插件，事实上，react 16 以后才引入了<a target="_blank" rel="noopener" href="https://reactjs.org/blog/2017/07/26/error-handling-in-react-16.html">Error Boundaries</a>，这种方式由于灵活性太强，并不太适合使用插件，另外，就算不使用插件，也非常方便地使用 raven.js 进行错误上报，可以参考<a target="_blank" rel="noopener" href="https://docs.sentry.io/clients/javascript/integrations/react/">这里</a></p>
+<blockquote>
+<p>但笔者认为，目前 react 的引入方式会对源代码进行侵入，并且比较难通过构建的方式进行 sentry 的配置，也许我们可以寻找更好的方式。</p>
+</blockquote>
+<p>完。</p>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>

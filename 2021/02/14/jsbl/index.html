@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>关于javaScript变量 作用域链 this指针的详解 - 一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Undefined代码： var a &amp;#x3D; 1;  function hehe()  &amp;amp;#123;           window.alert(a);           var a &amp;#x3D; 2;           window.alert(a);  &amp;amp;#125;  hehe();  第一个alert： 图片失效！！！ 第二个alert： 图片失效！！！ 原理我描述如下： 按照javascript作"><meta property="og:type" content="blog"><meta property="og:title" content="关于javaScript变量 作用域链 this指针的详解"><meta property="og:url" content="http://example.com/2021/02/14/jsbl/"><meta property="og:site_name" content="一枝清寒."><meta property="og:description" content="Undefined代码： var a &amp;#x3D; 1;  function hehe()  &amp;amp;#123;           window.alert(a);           var a &amp;#x3D; 2;           window.alert(a);  &amp;amp;#125;  hehe();  第一个alert： 图片失效！！！ 第二个alert： 图片失效！！！ 原理我描述如下： 按照javascript作"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://static.codeceo.com/images/2014/12/0b3422f10e2c5004f206823ae8303cf2.jpg"><meta property="og:image" content="http://static.codeceo.com/images/2014/12/8b343f4c69a4b5a0d1143fd8a13d59b7.jpg"><meta property="og:image" content="http://static.codeceo.com/images/2014/12/fc8e5eb613a9aab3fd93368e640fb106.jpg"><meta property="og:image" content="http://static.codeceo.com/images/2014/12/acc415c3ba267ac54790d802b6df7fb5.jpg"><meta property="og:image" content="http://static.codeceo.com/images/2014/12/b332fc8eee74c7dd86b014c1469529a3.jpg"><meta property="og:image" content="http://static.codeceo.com/images/2014/12/9ffa60f9a450358b2850f2b243d85656.jpg"><meta property="og:image" content="http://static.codeceo.com/images/2014/12/12ba5a58fbf2cedd1dd846f6461be825.jpg"><meta property="og:image" content="http://static.codeceo.com/images/2014/12/1ff244a138b1d849383345b9f7dd715f.jpg"><meta property="og:image" content="http://static.codeceo.com/images/2014/12/3404e89f1638356f6417e7a9ee4fadf7.jpg"><meta property="og:image" content="http://static.codeceo.com/images/2014/12/410996857f01a2ae265b26f3d033b096.jpg"><meta property="article:published_time" content="2021-02-14T14:07:49.000Z"><meta property="article:modified_time" content="2021-08-21T04:29:38.790Z"><meta property="article:author" content="ChenShang"><meta property="article:tag" content="教程"><meta property="article:tag" content="JS"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="http://static.codeceo.com/images/2014/12/0b3422f10e2c5004f206823ae8303cf2.jpg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2021/02/14/jsbl/"},"headline":"关于javaScript变量 作用域链 this指针的详解","image":["http://static.codeceo.com/images/2014/12/0b3422f10e2c5004f206823ae8303cf2.jpg","http://static.codeceo.com/images/2014/12/8b343f4c69a4b5a0d1143fd8a13d59b7.jpg","http://static.codeceo.com/images/2014/12/fc8e5eb613a9aab3fd93368e640fb106.jpg","http://static.codeceo.com/images/2014/12/acc415c3ba267ac54790d802b6df7fb5.jpg","http://static.codeceo.com/images/2014/12/b332fc8eee74c7dd86b014c1469529a3.jpg","http://static.codeceo.com/images/2014/12/9ffa60f9a450358b2850f2b243d85656.jpg","http://static.codeceo.com/images/2014/12/12ba5a58fbf2cedd1dd846f6461be825.jpg","http://static.codeceo.com/images/2014/12/1ff244a138b1d849383345b9f7dd715f.jpg","http://static.codeceo.com/images/2014/12/3404e89f1638356f6417e7a9ee4fadf7.jpg","http://static.codeceo.com/images/2014/12/410996857f01a2ae265b26f3d033b096.jpg"],"datePublished":"2021-02-14T14:07:49.000Z","dateModified":"2021-08-21T04:29:38.790Z","author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":"Undefined代码： var a &#x3D; 1;  function hehe()  &amp;#123;           window.alert(a);           var a &#x3D; 2;           window.alert(a);  &amp;#125;  hehe();  第一个alert： 图片失效！！！ 第二个alert： 图片失效！！！ 原理我描述如下： 按照javascript作"}</script><link rel="canonical" href="http://example.com/2021/02/14/jsbl/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-02-14T14:07:49.000Z" title="2021/2/14 22:07:49">2021-02-14</time>发表</span><span class="level-item"><time dateTime="2021-08-21T04:29:38.790Z" title="2021/8/21 12:29:38">2021-08-21</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/web/">web</a><span> / </span><a class="link-muted" href="/categories/web/JS/">JS</a></span></div></div><h1 class="title is-3 is-size-4-mobile">关于javaScript变量 作用域链 this指针的详解</h1><div class="content"><h1 id="Undefined"><a href="#Undefined" class="headerlink" title="Undefined"></a>Undefined</h1><p>代码：</p>
+<pre><code class="JS">var a = 1;
+
+function hehe()
+
+&#123;
+
+         window.alert(a);
+
+         var a = 2;
+
+         window.alert(a);
+
+&#125;
+
+hehe();
+</code></pre>
+<p>第一个alert：</p>
+<p>图片失效！！！</p>
+<p>第二个alert：</p>
+<p>图片失效！！！</p>
+<p>原理我描述如下：</p>
+<p>按照javascript作用域链的原理，当一个变量在当前作用域下找不到该变量的定义，会沿着作用域链往上找直到在全局作用域里查找。</p>
+<p>按上面的代码所示，虽然函数内部重新定义了变量的值，但在定义之前使用了该变量；按照作用域链的原理会在全局作用域里找到变量定义，而实际情况却是变量未定义，这到底是怎么回事呢？</p>
+<p>下面开始本文的主要内容，我会从基础知识一步步讲起。</p>
+<h1 id="Javascript的变量"><a href="#Javascript的变量" class="headerlink" title="Javascript的变量"></a>Javascript的变量</h1><p><strong>变量的两种类型：基本类型和引用类型。基本类型是指：Undefined、Null、Boolean、Number和String，引用类型是指多个基本类型构成的对象。</strong></p>
+<p>下面我们来看看下面的代码：</p>
+<pre><code class="javascript">var str = &quot;sharpxiajun&quot;;
+str.attr01 = &quot;hello world&quot;;
+console.log(str);//  运行结果：sharpxiajun
+console.log(str.attr01);// 运行结果：undefined
+</code></pre>
+<p>运行之，发现基本类型无法添加属性，当然方法也同样不可以，例如下面的代码：</p>
+<pre><code class="javascript">str.ftn = function()&#123;
+    console.log(&quot;str ftn&quot;);
+&#125;
+str.ftn();
+</code></pre>
+<p>运行之，结果如下图所示：</p>
+<p><img src="http://static.codeceo.com/images/2014/12/0b3422f10e2c5004f206823ae8303cf2.jpg" alt="img"></p>
+<p>当我们使用引用类型时候，结果就和上面完全不同了，大家请看下面的代码：</p>
+<pre><code class="javascript">var obj1 = new Object();
+obj1.name = &quot;obj1 name&quot;;
+console.log(obj1.name);// 运行结果：obj1 name
+</code></pre>
+<p>Javascript里的基本类型是存放在栈区（内存里的栈内存），存储结构如下图所示：</p>
+<p><img src="http://static.codeceo.com/images/2014/12/8b343f4c69a4b5a0d1143fd8a13d59b7.jpg" alt="img"></p>
+<p>javascript里引用类型的存储需要内存的栈区和堆区（内存里的堆内存）共同完成，如下图所示：</p>
+<p><img src="http://static.codeceo.com/images/2014/12/fc8e5eb613a9aab3fd93368e640fb106.jpg" alt="img"></p>
+<p>场景一：如下代码所示：</p>
+<pre><code class="javascript">var qqq;
+console.log(qqq);// 运行结果：undefined
+</code></pre>
+<p>上面的代码就是命名了变量但未初始化，此时在内存里只有栈区的变量标示符而没有变量值，更没有堆区存储的对象。</p>
+<p>场景二：如下代码所示：</p>
+<pre><code class="javascript">var qqq;
+console.log(qqq);// 运行结果：undefined
+console.log(xxx);
+</code></pre>
+<p><img src="http://static.codeceo.com/images/2014/12/acc415c3ba267ac54790d802b6df7fb5.jpg" alt="img"></p>
+<p>提示变量未定义！在任何语言里变量未定义就使用都是违法的，但是我们javascript变量未定义也可以使用，怎么我的例子里却不能使用了？</p>
+<p>那么我们看看下面的代码：</p>
+<pre><code class="javascript">xxx = &quot;outer xxx&quot;;
+console.log(xxx);// 运行结果：outer xxx
+function testFtn()&#123;
+     sss = &quot;inner sss&quot;;
+     console.log(sss);// 运行结果：outer sss
+&#125;
+testFtn();
+console.log(sss);//运行结果：outer sss
+console.log(window.sss);//运行结果：outer sss
+</code></pre>
+<p>我们看看window对象的结构，如下图所示：</p>
+<p><img src="http://static.codeceo.com/images/2014/12/b332fc8eee74c7dd86b014c1469529a3.jpg" alt="img"></p>
+<p>由这两个场景我们可以知道：</p>
+<p>**<em>*javascript**变量如果没有被var定义也没有赋值操作才会**报出“xxx is not defined”，后续的代码将不能正常运行；而只有赋值操作的变量，不管在哪个作用域里赋值，都是全局变量即window对象*<em>。</em></em></p>
+<p>下面我修改一下代码，如下所示：</p>
+<pre><code class="javascript">//var a = 1;
+function hehe()
+&#123;
+     console.log(a);
+     var a = 2;
+     console.log(a);
+&#125;
+hehe();
+</code></pre>
+<p>结果如下图所示：</p>
+<p><img src="http://static.codeceo.com/images/2014/12/9ffa60f9a450358b2850f2b243d85656.jpg" alt="img"></p>
+<p>我再改下代码：</p>
+<pre><code class="javascript">//var a = 1;
+function hehe()
+&#123;
+    console.log(a);
+    // var a = 2;
+    console.log(a);
+&#125;
+hehe();
+</code></pre>
+<p>运行之，结果如下所示：</p>
+<p><img src="http://static.codeceo.com/images/2014/12/12ba5a58fbf2cedd1dd846f6461be825.jpg" alt="img"></p>
+<p>对比二者代码，我们发现问题的关键是var a&#x3D;2所引起的！</p>
+<p><strong>javascript变量是松散类型即定义时不需要指定变量类型，当变量值确定后才有类型，但没有使用var的变量必须有赋值。</strong></p>
+<p>**javascript代码运行前还有一个*<em>预加载*<em>，构造运行环境例如全局环境、函数运行环境和作用域链。环境和作用域的构造就是指定好变量属于哪个作用域，变量的定义是在预加载时完成而非在运行时。*<em>预加载时会扫描所有代码但不运行，当扫描到被赋值操作的变量没有var定义，那么该变量就会被赋予全局变量即window对象。*</em></em></em></p>
+<p><strong>重新分析引子里的代码：在函数的局部作用域内变量a被重新定义了，在预加载时a的作用域也就不再属于全局变量而是函数作用域；赋值操作是在运行期执行的，第一次使用a变量时，a变量在局部作用域内还没被赋值，只有栈区的标示符，结果就undefined了。</strong></p>
+<p>*<em>javascript两个特别的类型：undefined和null。变量的值为undefined，说明只有栈区的标示符；如果对变量进行赋值基本类型，那么栈区就有值了；如果*</em>**赋值引用类型******那么堆区会有一个对象，而栈区的值则是堆区对象的地址。变量的值是null，说明这个变量是个空对象，栈区的标示符和值都有值，堆区也有个空对象，这么说来null其实比undefined更耗内存了！</p>
+<p>那么我们看看下面的代码：</p>
+<pre><code class="javascript">var ooo = null;
+console.log(ooo);// 运行结果：null
+console.log(ooo == undefined);// 运行结果：tru
+console.log(ooo == null);// 运行结果：true
+ console.log(ooo === undefined);// 运行结果：false
+console.log(ooo === null);// 运行结果：true
+</code></pre>
+<p><strong>运行之，null可以和undefined相等；但使用更加精确的三等号“&#x3D;&#x3D;&#x3D;”，发现还是有点不同，其实javascript里null是undefined的父类，要让一个变量是null必须使用等号“&#x3D;”进行赋值！</strong></p>
+<p><strong>javascript开发规范要求变量定义时马上赋值，好处就是程序很难因为变量未定义报错从而终止程序的运行，而且变量定义最好放在变量作用域的最前端。</strong></p>
+<p>下面我们再看一段代码：</p>
+<pre><code class="javascript">var str;
+    if (undefined != str &amp;&amp; null != str &amp;&amp; &quot;&quot; != str)&#123;
+        console.log(&quot;true&quot;);
+    &#125;else&#123;
+        console.log(&quot;false&quot;);
+    &#125;
+    if (undefined != str &amp;&amp; &quot;&quot; != str)&#123;
+        console.log(&quot;true&quot;);
+    &#125;else&#123;
+        console.log(&quot;false&quot;);
+    &#125;
+    if (null != str &amp;&amp; &quot;&quot; != str)&#123;
+        console.log(&quot;true&quot;);
+    &#125;else&#123;
+        console.log(&quot;false&quot;);
+    &#125;
+    if (!!str)&#123;
+        console.log(&quot;true&quot;);
+    &#125;else&#123;
+        console.log(&quot;false&quot;);
+    &#125;
+    str = &quot;&quot;;
+    if (!!str)&#123;
+        console.log(&quot;true&quot;);
+    &#125;else&#123;
+        console.log(&quot;false&quot;)&#123;
+    &#125;
+</code></pre>
+<p>运行之，结果都是打印出false。</p>
+<p><strong>使用双等号“&#x3D;&#x3D;”时，undefined和null是一回事，所以第一个if语句的写法完全多余，而第二种和第三种写法是等价，究其本质前三种写法本质都是一致的；第四种写法更加完美，javascript里如果if语句的条件是undefined和null，if判断是false，所以判断代码是否为未定义和null时最好使用！运算符。</strong></p>
+<p>代码四里字符串被赋值空字符串时，if的判断也是false。javascript里有五种基本类型，undefined、null、boolean、Number和string，现在我们发现除了Number都可以使用！来判断if的ture和false，那么基本类型Number呢？</p>
+<pre><code class="javascript">var num = 0;
+if (!!num)&#123;
+        console.log(&quot;true&quot;);
+&#125;else&#123;
+        console.log(&quot;false&quot;);
+&#125;
+</code></pre>
+<p>运行之，结果是false；如果我们把num改为负数或正数，那么运行之的结果就是true了。</p>
+<p><strong>所以变量初始化值如果基本类型是string就赋值空字符串，如果是number就赋值0，*<em>**if语句就可以判断变量是否初始化过**</em>*！</strong></p>
+<p>但是当变量是对象时候，结果却不一样了，如下代码：</p>
+<pre><code class="javascript">var obj = &#123;&#125;;
+if (!!obj)&#123;
+        console.log(&quot;true&quot;)；
+&#125;else&#123;
+        console.log(&quot;false&quot;);
+&#125;
+</code></pre>
+<p>运行之，代码是true。</p>
+<p><strong>所以引用类型变量赋值null，if语句就可以判断变量是否初始化过！</strong></p>
+<p>场景三：复制变量的值和函数传递参数</p>
+<p>首先看看这个场景的代码：</p>
+<pre><code class="javascript">var s1 = &quot;sharpxiajun&quot;;
+var s2 = s1;
+console.log(s1); 运行结果：sharpxiajun
+console.log(s2); 运行结果：sharpxiajun
+s2 = &quot;xtq&quot;;
+console.log(s1); 运行结果：sharpxiajun
+console.log(s2); 运行结果：xtq
+</code></pre>
+<p>上面是基本类型变量的复制，我们再看看下面的代码：</p>
+<pre><code class="javascript">var obj1 = new Object();
+obj1.name = &quot;obj1 name&quot;;
+console.log(obj1.name);// 运行结果：obj1 name
+var obj2 = obj1;
+console.log(obj2.name);// 运行结果：obj1 name
+obj1.name = &quot;sharpxiajun&quot;;
+console.log(obj2.name);// 运行结果：sharpxiajun
+</code></pre>
+<p>当复制的是对象，obj1和obj2两个对象被关联起来了，obj1的属性改变时，obj2的属性也改变。</p>
+<p>我们看看下面的代码：</p>
+<pre><code class="javascript">function testFtn(sNm,pObj)&#123;
+        console.log(sNm);// 运行结果：new Name
+        console.log(pObj.oName);// 运行结果：new obj
+        sNm = &quot;change name&quot;;
+        pObj.oName = &quot;change obj&quot;;
+&#125;
+var sNm = &quot;new Name&quot;;
+var pObj = &#123;oName:&quot;new obj&quot;&#125;;
+testFtn(sNm,pObj);
+console.log(sNm);// 运行结果：new Name
+console.log(pObj.oName);// 运行结果：change obj
+</code></pre>
+<p>这个结果和变量复制的结果是一致的。</p>
+<p><strong>函数传参的本质就是外部的变量复制到函数参数的变量里，<strong><strong>是按值传递的</strong></strong>。</strong></p>
+<p>如下两张图所示：</p>
+<p><img src="http://static.codeceo.com/images/2014/12/1ff244a138b1d849383345b9f7dd715f.jpg" alt="img"></p>
+<p><img src="http://static.codeceo.com/images/2014/12/3404e89f1638356f6417e7a9ee4fadf7.jpg" alt="img"></p>
+<p>在javascript里变量的存储有三个位置：</p>
+<p>位置一：栈区变量标示符；</p>
+<p>位置二：栈区变量值（栈区对象地址）；</p>
+<p>位置三：堆区对象。</p>
+<p>**javascript的变量复制（函数传参也是）本质是传栈区变量值。基本类型的值在**栈区变量值里，复制时**两个变量是独立的；复制引用类型时，*<em>栈区变量值*<em>是堆区对象的地址，因此其中一个改变，另一个也改变。</em></em></p>
+<p>原理讲完了，下面我列举一个拔高的例子，代码如下：</p>
+<pre><code class="javascript">var ftn1 = function()&#123;
+        console.log(&quot;test:ftn1&quot;);
+    &#125;;
+var ftn2 = function()&#123;
+        console.log(&quot;test:ftn2&quot;);
+&#125;;
+function ftn(f)&#123;
+       f();
+       f = ftn2;
+&#125;
+ftn(ftn1);// 运行结果：test:ftn1
+console.log(&quot;====================华丽的分割线======================&quot;);
+ftn1();// 运行结果：test:ftn1
+</code></pre>
+<p>这个代码以前是这么分析的：f是函数的参数，属于函数的局部作用域，更改f的值，是没法改变ftn1的值，因为到了外部作用域f就失效了。但是这种解释很难说明我上文里给出的函数传参的实例。其实这个问题应该这么分析：在javascript里函数也是对象，局部作用域里f &#x3D; ftn2操作是将f在栈区变量地址改为ftn2的地址，对ftn1和ftn2没有影响。</p>
+<p>**<em>*记住：javascript变量复制和函数传参是在传递栈区变量值，*<em>当栈区变量值为undefined、null、“”（空字符串）、0、false时，if判断是为false，我们可以通过！运算符计算。</em></em></p>
+<p>当我们的代码如下：</p>
+<pre><code class="javascript">var obj = &#123;&#125;;
+    if (!!obj)&#123;
+        console.log(&quot;true&quot;);
+    &#125;else&#123;
+        console.log(&quot;false&quot;);
+&#125;
+</code></pre>
+<p>结果则是true，其中var obj &#x3D; {}相当于var obj &#x3D; new Object()。虽然对象里没什么内容，但是在堆区里对象的内存已经分配，栈区变量值已经是内存地址了，所以if判断是true。</p>
+<h2 id="3-作用域链相关的问题"><a href="#3-作用域链相关的问题" class="headerlink" title="3) 作用域链相关的问题"></a>3) 作用域链相关的问题</h2><p><strong>了解作用域链前先了解作用域：</strong></p>
+<p><strong>作用域在许多程序设计语言中非常重要。 通常来说，一段程序代码中所用到的名字并不总是有效&#x2F;可用的，而限定这个名字的可用性的代码范围就是这个名字的作用域。 作用域的使用提高了程序逻辑的局部性，增强程序的可靠性，减少名字冲突。</strong></p>
+<p>在java里通过{}来设置作用域，在{}里面的变量会得到保护，这种保护就是不让{}里的变量被外部变量混淆。那么{}的方式适合于javascript吗？</p>
+<p>我们看看下面的例子：</p>
+<pre><code class="javascript">var s1 = &quot;sharpxiajun&quot;;
+    function ftn()&#123;
+        var s2 = &quot;xtq&quot;;
+        console.log(this);// 运行结果： windows
+        console.log(&quot;s1:&quot; + this.s1 + &quot;;s2:&quot; + this.s2);//运行结果：s1:sharpxiajun;s2:undefined
+        console.log(&quot;s1:&quot; + this.s1 + &quot;;s2:&quot; + s2);// 运行结果：s1:sharpxiajun;s2:xtq
+    &#125;
+    ftn();
+</code></pre>
+<p>javascript最大的作用域是window，加载时自动构造。上面代码里的大括号是函数定义，函数作用域内定义的s2变量不能被window对象访问的。可以说s2变量是被{}保护起来了，它的生命周期和这个函数的生命周期有关。</p>
+<p>但是在javascript语言里还有非函数的{}，我们再看看下面的例子：</p>
+<pre><code class="javascript">if (true)&#123;
+        var a = &quot;aaaa&quot;;
+    &#125;
+    console.log(a);// 运行结果：aaaa
+</code></pre>
+<p><strong>我们发现javascript里{}有时是起不到定义作用域的功能。这也说明javascript里的作用域定义是和其他语言例如java不同的。</strong></p>
+<p>javascript作用域execution context，翻译成执行上下文或执行环境。我们来想想javascript里哪些情况是执行的：</p>
+<p>情况一：页面加载时script标签下的代码会顺序执行，而这些能被执行的代码都是属于window的变量或函数；</p>
+<p>情况二：函数的名字后面加上小括号()，例如ftn()，执行的是函数。</p>
+<p>如此说来，javascript里的执行环境有两类一类是全局执行环境，即window代表的全局环境；一类是函数代表的函数执行环境，这也就是局部作用域。</p>
+<p>执行环境有个对象叫做variable object，翻译为变量对象或上下文变量，存储其执行环境里所有的变量和函数，全局执行环境的上下文变量就是window。</p>
+<p>javascript执行环境栈execution context stack：每个要被执行的函数会先把函数的执行环境压入到执行环境栈里，执行完后被弹出，控制权交给全局环境；如果函数后面还有代码，代码接着执行；如果函数里嵌套了函数，那么嵌套函数执行完毕后，执行环境栈的控制权就交由了外部函数，然后依次类推，最后就是全局执行环境了。</p>
+<p>函数的执行环境被压入到执行环境栈里后，函数执行的第一步不是函数里的第一行代码而是在上下文变量里构造一个作用域链scope chain，保证执行环境里有权访问的变量和函数是有序的。</p>
+<p>我们看看下面的代码：</p>
+<pre><code class="javascript">var b1 = &quot;b1&quot;;
+    function ftn1()&#123;
+        var b2 = &quot;b2&quot;;
+        var b1 = &quot;bbb&quot;;
+        function ftn2()&#123;
+            var b3 = &quot;b3&quot;;
+            b2 = b1;
+            b1 = b3;
+            console.log(&quot;b1:&quot; + b1 + &quot;;b2:&quot; + b2 + &quot;;b3:&quot; + b3);// 运行结果：b1:b3;b2:bbb;b3:b3
+        &#125;
+        ftn2();
+    &#125;
+    ftn1();
+console.log(b1);// 运行结果：b1
+</code></pre>
+<p>ftn2函数可以访问变量b1，b2，这个体现了有权访问；当ftn1作用域里改变了b1的值并且把b1变量重新定义为ftn1的局部变量，那么ftn2访问到的b1就是ftn1的，ftn2访问到b1后就不会在全局作用域里查找b1了，这个体现了有序性。</p>
+<p>**总结：**作用域指的是执行环境execution context，通过上下文变量variable object体现。**当函数的执行环境压入到了执行环境栈**execution context stack**时上下文变量会构造一个对象作用域链scope chain保证执行环境里有权访问的变量和函数是有序的。作用域链只能向上访问**变量**，直到window，*<em>不允许*<em>向下访问。</em></em></p>
+<h2 id="4-this、new、apply和call详解"><a href="#4-this、new、apply和call详解" class="headerlink" title="4)  this、new、apply和call详解"></a>4)  this、new、apply和call详解</h2><p>*<em>this*</em>**对象****：上下文变量构建作用域链时还会构造一个this对象，*<em>是当前执行环境外部上下文变量的一份拷贝，*<em>不包含作用域链变量。</em></em></p>
+<p>例如代码：</p>
+<pre><code class="javascript">var b1 = &quot;b1&quot;;
+    function ftn1()&#123;
+        console.log(this);// 运行结果： window
+        var b2 = &quot;b2&quot;;
+        var b1 = &quot;bbb&quot;;
+        function ftn2()&#123;
+            console.log(this);// 运行结果： window
+            var b3 = &quot;b3&quot;;
+            b2 = b1;
+            b1 = b3;
+            console.log(&quot;b1:&quot; + b1 + &quot;;b2:&quot; + b2 + &quot;;b3:&quot; + b3);// 运行结果：b1:b3;b2:bbb;b3:b3
+        &#125;
+        ftn2();
+    &#125;
+    ftn1();
+</code></pre>
+<p>函数ftn1和ftn2里的this指针都是指向window，这是为什么了？因为通过function xxx(){}形式定义函数，这个函数不管在哪定义都属于window。</p>
+<p>但是我们知道很多this指针都不是指向window，例如下面的代码：</p>
+<pre><code class="javascript">var obj = &#123;
+    name:&quot;sharpxiajun&quot;,
+    ftn:function()&#123;
+        console.log(this);// 运行结果: Object &#123; name=&quot;sharpxiajun&quot;, ftn=function()&#125;
+        console.log(this.name);//运行结果: sharpxiajun
+    &#125;
+&#125;
+obj.ftn();// ：
+</code></pre>
+<p>这里this指针指向了Object，我前文不是说javascript里作用域只有两种：一个是全局的一个是函数，为什么这里Object也是可以制造出作用域？</p>
+<p>那我们看看下面的代码：</p>
+<pre><code class="javascript">var obj1 = new Object();
+obj1.name = &quot;xtq&quot;;
+obj1.ftn = function()&#123;
+    console.log(this);// 运行结果: Object &#123; name=&quot;xtq&quot;, ftn=function()&#125;
+    console.log(this.name);//运行结果: xtq
+&#125;
+obj1.ftn();
+</code></pre>
+<p><strong>这两种写法是等价的，第一种叫做字面量定义，而第二种是标准写法。Object对象的本质也是个function，调用对象里的函数时，函数的外部执行环境就是obj1本身，this指针也是指向了obj1。</strong></p>
+<p>下面我们看看在java语言里是如何使用this指针的，代码如下：</p>
+<pre><code class="javascript">public class Person &#123;
+    private String name;
+    private String sex;
+    private int age;
+    private String job;
+    public Person(String name, String sex, int age, String job) &#123;
+        super();
+        this.name = name;
+        this.sex = sex;
+        this.age = age;
+        this.job = job;
+    &#125;
+    private void showPerson()&#123;
+        System.out.println(&quot;姓名：&quot; + this.name);
+        System.out.println(&quot;性别：&quot; + this.sex);
+        System.out.println(&quot;年龄：&quot; + this.age);
+        System.out.println(&quot;工作：&quot; + this.job);
+    &#125;
+    public void printInfo()&#123;
+        this.showPerson();
+    &#125;
+    public static void main(String[] args) &#123;
+        Person person = new Person(&quot;马云&quot;, &quot;男&quot;, 46, &quot;董事长&quot;);
+        person.printInfo();
+    &#125;
+&#125;
+//姓名：马云
+//性别：男
+//年龄：46
+//工作：董事长
+</code></pre>
+<p>上面的代码执行后没有任何问题，下面我修改下这个代码，加一个静态的方法，静态方法里使用this指针调用类里的属性，如下图所示：</p>
+<p><img src="http://static.codeceo.com/images/2014/12/410996857f01a2ae265b26f3d033b096.jpg" alt="img"></p>
+<p>我们发现IDE会报出语法错误“Cannot use this in a static context”，this指针在java语言里是不能在静态方法里使用的。</p>
+<p>在面向对象编程里有两个重要的概念：一个是类，一个是实例化的对象。类是一个抽象的概念，类就像一个模具，而实例化对象就是通过这个模具制造出来的产品。</p>
+<p>有上面代码我们可以看到，this指针在java语言里只能在实例化对象里使用，this指针等于这个被实例化好的对象，而this后面加上点操作符后面的东西就是this所拥有的东西，例如：姓名，工作，手，脚等等。</p>
+<p>javascript的this指针也只能在实例化对象里使用，但是javascript的this指针却比java难以理解的多，原因得有三：</p>
+<p>原因一：javascript是一个函数编程语言，也是面向对象的语言；javascript的函数是高阶函数，可以作为对象传递，还可以作为构造函数，创建实例化对象，结果导致方法执行时候this指针的指向会不断发生变化。</p>
+<p>原因二：由上面java的例子我们看到，this指针只有在使用new操作符后才会生效；但是javascript里的this在没有进行new操作也会生效，这时候this往往会指向全局对象window。</p>
+<p>原因三：javascript里call和apply操作符可以改变this指针。</p>
+<p>我们先看看下面的代码：</p>
+<pre><code class="javascript">&lt;script type=&quot;text/javascript&quot;&gt;
+    this.a = &quot;aaa&quot;;
+    console.log(a);//aaa
+    console.log(this.a);//aaa
+    console.log(window.a);//aaa
+    console.log(this);// window
+    console.log(window);// window
+    console.log(this == window);// true
+    console.log(this === window);// true
+&lt;/script&gt;
+</code></pre>
+<p>script标签里直接使用this指针就指向window，window在页面加载时由javascript引擎完成。程序员无法通过编程语言来控制这个实例化过程，所以开发时就没有构建这个this指针的感觉，常常会忽视它。</p>
+<p>还和function的使用有关，我们看看下面的代码：</p>
+<pre><code class="javascript">&lt;script type=&quot;text/javascript&quot;&gt;
+    function ftn01()&#123;
+       console.log(&quot;I am ftn01!&quot;);
+    &#125;
+    var ftn02 = function()&#123;
+        console.log(&quot;I am ftn02!&quot;);
+    &#125;
+&lt;/script&gt;
+</code></pre>
+<p>上面是两种定义函数的方式，第一种称作声明函数，第二种称作函数表达式，这两种方式的区别常常会让我们混淆this指针的使用。</p>
+<p>我们再看看下面的代码：</p>
+<pre><code class="javascript">&lt;script type=&quot;text/javascript&quot;&gt;
+    console.log(ftn01);//ftn01()  注意：在firebug下这个打印结果是可以点击，点击后会显示函数的定义
+    console.log(ftn02);// undefined
+    function ftn01()&#123;
+       console.log(&quot;I am ftn01!&quot;);
+    &#125;
+    var ftn02 = function()&#123;
+        console.log(&quot;I am ftn02!&quot;);
+    &#125;
+&lt;/script&gt;
+</code></pre>
+<p>这又是一段没有按顺序执行的代码，ftn02打印结果是undefined，有栈区变量标识符，没有栈区变量值，堆区没有对象，这是javascript引擎在预处理时扫描变量定义所致。ftn01打印出完整的函数定义，这只能说明一个问题：</p>
+<p>**<em>*声明函数会在预处理时把函数定义和赋值操作都完成，且声明函数都是window对象的属性*<em>。</em></em></p>
+<p>关于函数表达式的写法还有秘密可以探寻，我们看下面的代码：</p>
+<pre><code class="javascript">&lt;script type=&quot;text/javascript&quot;&gt;
+    function ftn03()&#123;
+        var ftn04 = function()&#123;
+            console.log(this);// window
+        &#125;;
+        ftn04();
+    &#125;
+    ftn03();
+&lt;/script&gt;
+</code></pre>
+<p>ftn04虽然在ftn03作用域下，但是它里面的this指针指向window。说明<strong>函数表达式在函数内部写时，this指针指向window。</strong></p>
+<p><strong>原因是javascript里任何匿名函数都是属于window，在全局作用域构造时完成定义和赋值。匿名函数是没有名字的变量，定义时会返回内存地址；如果有个变量接收了这个地址，那么匿名函数就能使用了；匿名函数是在全局执行环境构造时定义和赋值，所以匿名函数内的this指向window对象。</strong></p>
+<p>这下子坏了，this都指向window，那我们到底怎么才能改变它了？</p>
+<p>在本文开头我说出了this的秘密，this都是指向实例化对象，前面讲到那么多情况this都指向window，就是因为这些时候只做了一次实例化操作，实例化window对象，所以this都是指向window。我们要把this从window变成别的对象，就得要让function被实例化，那如何让javascript的function实例化呢？</p>
+<p>答案就是使用new操作符。我们看看下面的代码：</p>
+<pre><code class="javascript">&lt;script type=&quot;text/javascript&quot;&gt;
+    var obj = &#123;
+        name:&quot;sharpxiajun&quot;,
+        job:&quot;Software&quot;,
+        show:function()&#123;
+            console.log(&quot;Name:&quot; + this.name + &quot;;Job:&quot; + this.job);
+            console.log(this);// Object &#123; name=&quot;sharpxiajun&quot;, job=&quot;Software&quot;, show=function()&#125;
+        &#125;
+    &#125;;
+    var otherObj = new Object();
+    otherObj.name = &quot;xtq&quot;;
+    otherObj.job = &quot;good&quot;;
+    otherObj.show = function()&#123;
+        console.log(&quot;Name:&quot; + this.name + &quot;;Job:&quot; + this.job);
+        console.log(this);// Object &#123; name=&quot;xtq&quot;, job=&quot;good&quot;, show=function()&#125;
+    &#125;;
+    obj.show();//Name:sharpxiajun;Job:Software
+    otherObj.show();//Name:xtq;Job:good
+&lt;/script&gt;
+</code></pre>
+<p>这是我上篇讲到的关于this指向Object的实例。Javascript里通过字面量方式定义对象的方式是new Object的简写，二者是等价的，本质也是new操作符。</p>
+<p>下面我使用javascript来重写本篇开头用java定义的类，代码如下：</p>
+<pre><code class="javascript">&lt;script type=&quot;text/javascript&quot;&gt;
+    function Person(name,sex,age,job)&#123;
+        this.name = name;
+        this.sex = sex;
+        this.age = age;
+        this.job = job;
+        this.showPerson = function()&#123;
+            console.log(&quot;姓名:&quot; + this.name);
+            console.log(&quot;性别:&quot; + this.sex);
+            console.log(&quot;年龄:&quot; + this.age);
+            console.log(&quot;工作:&quot; + this.job);
+            console.log(this);// Person &#123; name=&quot;马云&quot;, sex=&quot;男&quot;, age=46, 更多...&#125;
+        &#125;
+    &#125;
+    var person = new Person(&quot;马云&quot;, &quot;男&quot;, 46, &quot;董事长&quot;);
+    person.showPerson();
+&lt;/script&gt;
+</code></pre>
+<p>function Person相当于在定义一个类，javascript的function既是函数又是对象；javascript的构造函数可以理解为类和构造函数合二为一，当然javascript语言规范里是没有类的概念。</p>
+<p><strong>new操作符会让构造函数产生如下变化：</strong></p>
+<p><strong>1. 创建一个新对象；</strong></p>
+<p><strong>2. 将构造函数的作用域赋给新对象（因此this就指向了这个新对象）；</strong></p>
+<p><strong>3. 执行构造函数中的代码（为这个新对象添加属性）；</strong></p>
+<p><strong>4. 返回新对象</strong></p>
+<p>第四点要着重讲下，记住构造函数被new操作，要让new正常作用最好不要在构造函数里写return，没有return的构造函数都是按上面四点执行，有了return情况就复杂了，这个知识我会在讲prototype时候讲到。</p>
+<p><strong>Javascript改变this指针还有call和apply，它们的作用相同，只是参数不同。call和apply的第一个参数一样，apply第二个参数是数组，call从第二个参数开始后面有许多参数。</strong></p>
+<p>我们看看下面的码：</p>
+<pre><code class="javascript">&lt;script type=&quot;text/javascript&quot;&gt;
+    var name = &quot;sharpxiajun&quot;;
+    function ftn(name)&#123;
+        console.log(name);
+        console.log(this.name);
+        console.log(this);
+    &#125;
+    ftn(&quot;101&quot;);
+    var obj = &#123;
+      name:&quot;xtq&quot;
+    &#125;;
+    ftn.call(obj,&quot;102&quot;);
+    /*
+    * 结果如下所示：
+    *101
+     T002.html (第 73 行)
+     sharpxiajun
+     T002.html (第 74 行)
+     Window T002.html
+     T002.html (第 75 行)
+     T002.html (第 73 行)
+     xtq
+     T002.html (第 74 行)
+     Object &#123; name=&quot;xtq&quot;&#125;
+    * */
+&lt;/script&gt;
+</code></pre>
+<p>其实理清上面情况也是有迹可循的，就以定义对象里的方法有传入函数参数为例：</p>
+<p>情形一：传入的参数是函数的别名，那么函数的this就是指向window；</p>
+<p>情形二：传入的参数是被new过的构造函数，那么this就是指向实例化的对象本身；</p>
+<p>情形三：如果想把被传入的函数对象里this的指针指向外部字面量定义的对象，那么我们就是用apply和call</p>
+<p>我们可以通过代码看出我的结论，代码如下：</p>
+<pre><code class="javascript">&lt;script type=&quot;text/javascript&quot;&gt;
+var name = &quot;I am window&quot;;
+var obj = &#123;
+    name:&quot;sharpxiajun&quot;,
+    job:&quot;Software&quot;,
+    ftn01:function(obj)&#123;
+        obj.show();
+    &#125;,
+    ftn02:function(ftn)&#123;
+        ftn();
+    &#125;,
+    ftn03:function(ftn)&#123;
+        ftn.call(this)
+    &#125;
+&#125;;
+function Person(name)&#123;
+    this.name = name;
+    this.show = function()&#123;
+        console.log(&quot;姓名:&quot; + this.name);
+        console.log(this);
+    &#125;
+&#125;
+var p = new Person(&quot;Person&quot;);
+obj.ftn01(p);
+obj.ftn02(function()&#123;
+   console.log(this.name);
+   console.log(this);
+&#125;);
+obj.ftn03(function()&#123;
+    console.log(this.name);
+    console.log(this);
+&#125;);
+&lt;/script&gt;
+</code></pre>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E6%95%99%E7%A8%8B/">教程</a><a class="link-muted mr-2" rel="tag" href="/tags/JS/">JS</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/03/23/gulpyasuo/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">gulp压缩</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/02/14/JSnxfx/"><span class="level-item">JS逆向的简单分析</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>

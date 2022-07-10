@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>intro to serverless functions - 一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="最近喵了下 Introduction to Serverless Functions 视频感觉还不错。下面主要根据视频作者Jason Lengstorf 的ppt 简单做下笔记，最底下会列出相关链接。 示例代码 示例网站"><meta property="og:type" content="blog"><meta property="og:title" content="intro to serverless functions"><meta property="og:url" content="http://example.com/2021/09/10/of/"><meta property="og:site_name" content="一枝清寒."><meta property="og:description" content="最近喵了下 Introduction to Serverless Functions 视频感觉还不错。下面主要根据视频作者Jason Lengstorf 的ppt 简单做下笔记，最底下会列出相关链接。 示例代码 示例网站"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:published_time" content="2021-09-10T15:51:57.000Z"><meta property="article:modified_time" content="2021-09-10T15:51:58.790Z"><meta property="article:author" content="ChenShang"><meta property="article:tag" content="serverless"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2021/09/10/of/"},"headline":"intro to serverless functions","image":["http://example.com/img/og_image.png"],"datePublished":"2021-09-10T15:51:57.000Z","dateModified":"2021-09-10T15:51:58.790Z","author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":"最近喵了下 Introduction to Serverless Functions 视频感觉还不错。下面主要根据视频作者Jason Lengstorf 的ppt 简单做下笔记，最底下会列出相关链接。 示例代码 示例网站"}</script><link rel="canonical" href="http://example.com/2021/09/10/of/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-09-10T15:51:57.000Z" title="2021/9/10 23:51:57">2021-09-10</time>发表</span><span class="level-item"><time dateTime="2021-09-10T15:51:58.790Z" title="2021/9/10 23:51:58">2021-09-10</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile">intro to serverless functions</h1><div class="content"><p>最近喵了下 <a target="_blank" rel="noopener" href="https://frontendmasters.com/courses/serverless-functions/">Introduction to Serverless Functions</a> 视频感觉还不错。下面主要根据视频作者<code>Jason Lengstorf</code> 的<code>ppt</code> 简单做下笔记，最底下会列出相关链接。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/jianchengwang/todo-web/raw/master/serverless/frontendmasters-serverless">示例代码</a> <a target="_blank" rel="noopener" href="https://demo-frontentedmaster-serverless-functions.netlify.app/">示例网站</a></p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><strong>serverless</strong> 一般分为<strong>bass</strong>(Backend as a Service)和<strong>fass</strong>(Function as a Service)两种，今天我们主要学习一下<strong>fass</strong>，国内云厂商一般称为<strong>云函数</strong>。简单来说，就是依赖云厂商的平台建设，使我们只关注业务代码，不需要考虑服务器相关内容，也更容易的进行资源的弹性扩容，基于事件驱动，避免闲时资源浪费。</p>
+<p>当然有利也有弊，<strong>fass</strong>基于<strong>Data-shipping</strong>架构，即：<strong>将数据传输到代码所在处执行</strong>，而不是<strong>将代码传输到数据所在处执行</strong>，因为数据一般都比代码的传输量要大得多。而目前主流的 Faas 平台都是『<strong>将数据传输到代码所在处执行</strong>』这种架构，所以这是 Faas 的最大缺陷，同时也不好维护状态，事务啥的。</p>
+<p>所以，一般就作为一些公共基础建设，比如图片预处理，API网关数据拉取，这种<strong>无状态</strong>的<strong>独立功能</strong>函数。</p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>今天我们主要使用<strong>node.js</strong>构建我们的函数应用，所以你要先安装下<strong>node.js v12 or higher</strong>，</p>
+<p>需要云服务商<a target="_blank" rel="noopener" href="https://netlify.com/">Netlify</a>跟<a target="_blank" rel="noopener" href="https://hasura.io/">Hasura</a>提供服务，所以需要你有这两个网站的账号，都提供免费额度使用，所以无需担心费用问题。</p>
+<p>还需要，<a target="_blank" rel="noopener" href="http://www.omdbapi.com/">omdbapi</a>，提供模拟数据，所以创建一个<strong>API KEY</strong>即可，</p>
+<p>另外有的网站可能需要科学上网，这个需要你自己解决了。</p>
+<h2 id="搭建本地环境"><a href="#搭建本地环境" class="headerlink" title="搭建本地环境"></a>搭建本地环境</h2><pre><code class="shell"># install the Netlify CLI for local development
+npm install -g netlify-cli@latest
+# clone the starting point for development
+git clone --branch start https://github.com/jlengstorf/frontendmasters-serverless.git
+# recommended use vscode
+code frontendmasters-serverless
+# create functions dir
+cd frontendmasters-serverless
+mkdir functions
+# cofnig functions location
+vim netlify.toml
+[build]
+  command = &quot;npm run build&quot;
+  publish = &quot;_site&quot;
+  functions = &quot;functions&quot;
+</code></pre>
+<p>最终目录结构如下：</p>
+<pre><code class="shell">.eleventy.js
+.env # 环境变量
+.gitignore
+_site
+data # 静态数据
+functions # 函数目录
+netlify.toml # 配置文件
+node_modules
+package.json
+package-lock.json
+README.md
+src # 网站代码
+</code></pre>
+<p>这个看你使用哪个云厂商提供服务了，目录跟配置项可能不一样，本示例使用的是<a target="_blank" rel="noopener" href="https://www.netlify.com/products/functions/">Netlify Functions</a>，</p>
+<p>我们现在就来使用<strong>serverless functions</strong> 搭建一个简单的我看过的电影展示列表，网站静态页面跟样式已经有了，你可以启动服务看下效果</p>
+<pre><code class="shell">ntl dev
+</code></pre>
+<h2 id="Boop"><a href="#Boop" class="headerlink" title="Boop"></a>Boop</h2><pre><code class="shell">cd functions
+vim boop.js
+</code></pre>
+<pre><code class="js">exports.handler = (event, context, callback) =&gt; &#123;
+  // &quot;event&quot; has information about the path, body, headers, etc. of the request
+  console.log(&#39;event&#39;, event)
+  // &quot;context&quot; has information about the lambda environment and user details
+  console.log(&#39;context&#39;, context)
+  // The &quot;callback&quot; ends the execution of the function and returns a response back to the caller
+  return callback(null, &#123;
+    statusCode: 200,
+    body: JSON.stringify(&#123;
+      data: &#39;Boop!&#39;
+    &#125;)
+  &#125;)
+&#125;
+</code></pre>
+<p>可以看到，<strong>serverless functions</strong> 函数结构很简单，就是声明一个方法，预处理，然后执行回调函数。</p>
+<p>当然你直接使用<code>return</code> </p>
+<pre><code class="js">exports.handler = async () =&gt; &#123;
+    return &#123;
+        statusCode: 200,
+        body: &#39;Boop!&#39;
+    &#125;
+&#125;
+</code></pre>
+<p>然后，我们访问<code>http://localhost:8888/.netlify/functions/boop</code>，即可看到返回的数据了</p>
+<h2 id="获取本地数据"><a href="#获取本地数据" class="headerlink" title="获取本地数据"></a>获取本地数据</h2><p>现在我们要从本地，<code>data/movies.json</code> 获取数据，然后渲染在页面上，<code>functions</code> 目录下创建<code>movies.js</code></p>
+<pre><code class="js">//  get movies from local json
+const movies = require(&#39;../data/movies.json&#39;)
+exports.handler = async () =&gt; &#123;
+    return &#123;
+        statusCode: 200,
+        body: JSON.stringify(moviesWithRatings),
+    &#125;
+&#125;
+</code></pre>
+<p>然后<code>src/index.html</code> 请求数据，渲染页面即可</p>
+<pre><code class="html">&lt;script&gt;
+async function initialize() &#123;
+    const movies = await fetch(&#39;/.netlify/functions/movies&#39;).then((response) =&gt;
+      response.json(),
+    );
+
+    const container = document.querySelector(&#39;.movies&#39;);
+    const template = document.querySelector(&#39;#movie-template&#39;);
+
+    movies.forEach((movie) =&gt; &#123;
+      const element = template.content.cloneNode(true);
+
+      const img = element.querySelector(&#39;img&#39;);
+      img.src = movie.poster;
+      img.alt = movie.title;
+
+      element.querySelector(&#39;h2&#39;).innerText = movie.title;
+      element.querySelector(&#39;.tagline&#39;).innerText = movie.tagline;
+
+      container.appendChild(element);
+    &#125;);
+  &#125;
+&lt;/script&gt; 
+</code></pre>
+<h2 id="获取请求参数"><a href="#获取请求参数" class="headerlink" title="获取请求参数"></a>获取请求参数</h2><p>用过<code>event</code>参数获取，<code>functions</code> 目录下创建<code>movie-by-id.js</code></p>
+<pre><code class="js">const movies = require(&#39;../data/movies.json&#39;)
+
+exports.handler = async(&#123; queryStringParameters &#125;) =&gt; &#123;
+    const &#123; id &#125; = queryStringParameters;
+    const moive = movies.find(m =&gt; m.id === id);
+
+    if(!moive) &#123;
+        return &#123;
+            statusCode: 404,
+            body: &#39;Not Found&#39;
+        &#125;
+    &#125;
+
+    return &#123;
+        statusCode: 200,
+        body: JSON.stringify(moive)
+    &#125;
+&#125;
+</code></pre>
+<p>然后访问<code>http://localhost:8888/.netlify/functions/movie-by-id?id=tt2975590</code></p>
+<p>当然<code>event</code>还包含很多其他信息，有兴趣的话可以喵下官方文档，或者，把<code>event</code>返回出来看看。</p>
+<h2 id="拉取OMDBAPI数据"><a href="#拉取OMDBAPI数据" class="headerlink" title="拉取OMDBAPI数据"></a>拉取OMDBAPI数据</h2><p>获取第三方接口，一般需要<strong>API-KEY</strong>提供凭证，一般配置在环境变量里面，</p>
+<pre><code class="shell">vim .env
+OMDB_API_KEY=
+</code></pre>
+<p>这边使用<code>node-fetch</code>请求第三方接口</p>
+<pre><code class="shell">npm install node-fetch
+</code></pre>
+<p>我们这里，通过<strong>OMDBAPI</strong>获取影片的评分信息，调整<code>functions/movies.js</code>代码示例如下：</p>
+<pre><code class="js">
+const &#123; URL &#125; = require(&#39;url&#39;)
+const fetch = require(&#39;node-fetch&#39;)
+
+//  get movies from local json
+const movies = require(&#39;../data/movies.json&#39;)
+
+exports.handler = async () =&gt; &#123;
+
+    const movieScoreApi = new URL(&quot;https://www.omdbapi.com/&quot;);
+    // add the secret API key to the query string
+    movieScoreApi.searchParams.set(&#39;apiKey&#39;, process.env.OMDB_API_KEY)
+
+    const promises = movies.map(movie =&gt; &#123;
+        movieScoreApi.searchParams.set(&#39;i&#39;, movie.id);
+        return fetch(movieScoreApi)
+        .then(response =&gt; response.json())
+        .then(data =&gt; &#123;
+            const scores = data.Ratings;
+            return &#123;
+                ...movie,
+                scores
+            &#125;
+        &#125;)
+    &#125;)
+
+    // awaiting all Promises lets the requests happen in parallel
+    // see: https://lwj.dev/blog/keep-async-await-from-blocking-execution/
+    const moviesWithRatings = await Promise.all(promises);
+
+    return &#123;
+        statusCode: 200,
+        body: JSON.stringify(moviesWithRatings),
+    &#125;
+&#125;
+</code></pre>
+<p><code>src/index.html</code> 代码页面也做相应调整，这里就不多赘述。</p>
+<h2 id="Hasura-Graphql"><a href="#Hasura-Graphql" class="headerlink" title="Hasura Graphql"></a>Hasura Graphql</h2><p><code>movies.json</code>的数据到达一定量的话，一般会存到数据库便于管理，这边使用<strong>Hasura Graphql</strong>，创建一张表<code>movies</code>表存储，并将<code>movies.json</code>数据填充几条到<code>movies</code>表中。</p>
+<p>所以这边也要配置下<strong>Hasura Graphql</strong> 请求的环境变量：</p>
+<pre><code class="shell">vim .env
+HASURA_API_URL=
+HASURA_ADMIN_SECRET=
+</code></pre>
+<p>关于<strong>Hasura Graphql</strong>的使用，语法等可以参考官方文档<a target="_blank" rel="noopener" href="https://hasura.io/docs/1.0/graphql/core/index.html">hasura graphql</a>，</p>
+<p><code>HASURA_ADMIN_SECRET</code> 其实就是<code>NEW ENV VARS</code>即可，</p>
+<p>首先我们写一个工具方法，用来调用<strong>Hasura Graphql</strong>接口，<code>functions/util/hasura.js</code></p>
+<pre><code class="js">const fetch = require(&#39;node-fetch&#39;)
+
+async function query(&#123; query, variables = &#123;&#125; &#125;) &#123;
+    const result = await fetch(process.env.HASURA_API_URL, &#123;
+        method: &#39;POST&#39;,
+        headers: &#123;
+            &#39;Content-Type&#39;: &#39;application/json&#39;,
+            &#39;X-Hasura-Admin-Secret&#39;: process.env.HASURA_ADMIN_SECRET,
+        &#125;,
+        body: JSON.stringify(&#123; query, variables &#125;),
+    &#125;)
+    .then(response =&gt; response.json())
+    .catch(function(e) &#123;
+        console.log(e);
+    &#125;);
+    // TODO send back helpful information if there are errors
+
+    console.info(result)
+    return result.data;
+&#125;
+
+exports.query = query;
+</code></pre>
+<p>然后再调整一下，<code>functions/movies.js</code></p>
+<pre><code class="js">
+const &#123; query &#125; = require(&#39;./util/hasura&#39;);
+
+exports.handler = async () =&gt; &#123;
+
+    // get movies from db
+    const &#123; movies &#125; = await query(&#123;
+        query: `
+            query &#123;
+                movies &#123;
+                    id
+                    title
+                    tagline
+                    poster
+                &#125;
+            &#125;
+        `,
+    &#125;);
+
+    ...other code
+
+    return &#123;
+        statusCode: 200,
+        body: JSON.stringify(moviesWithRatings),
+    &#125;
+&#125;
+</code></pre>
+<p>然后再写个添加方法<code>functions/add-movie.js</code></p>
+<pre><code class="js">const &#123; query &#125; = require(&#39;./util/hasura&#39;)
+
+exports.handler = async function(event) &#123;
+    const &#123; id, title, tagline, poster &#125; = JSON.parse(event.body);
+
+    const result = await query(&#123;
+        query: `
+            mutation CreateMovie($id: String!, $poster: String!, $tagline: String!, $title: String!) &#123;
+                insert_movies_one(object: &#123;id: $id, poster: $poster, tagline: $tagline, title: $title&#125;) &#123;
+                    id
+                    poster
+                    tagline
+                    title
+                &#125;
+            &#125;
+        `,
+        variables: &#123; id, title, tagline, poster &#125;,
+    &#125;);
+
+    return &#123;
+        statusCode: 200,
+        body: JSON.stringify(result),
+    &#125;;
+&#125;
+</code></pre>
+<p>调整下添加页面，<code>src/admin.html</code></p>
+<pre><code class="html">&lt;script&gt;
+  async function handleSubmit(event) &#123;
+    event.preventDefault();
+    const data = new FormData(event.target);
+    const result = await fetch(&#39;/.netlify/functions/add-movie&#39;, &#123;
+      method: &#39;POST&#39;,
+      body: JSON.stringify(&#123;
+        id: data.get(&#39;id&#39;),
+        title: data.get(&#39;title&#39;),
+        tagline: data.get(&#39;tagline&#39;),
+        poster: data.get(&#39;poster&#39;),
+      &#125;),
+    &#125;).then((response) =&gt; &#123;
+      document.querySelector(
+        &#39;.message&#39;,
+      ).innerText = `Response: $&#123;response.status&#125; — $&#123;response.statusText&#125;`;
+    &#125;);
+  &#125;
+
+  document.querySelector(&#39;#add-movie&#39;).addEventListener(&#39;submit&#39;, handleSubmit);
+&lt;/script&gt;
+</code></pre>
+<h2 id="Netlify-Identify"><a href="#Netlify-Identify" class="headerlink" title="Netlify Identify"></a>Netlify Identify</h2><p>网站一般要进行身份验证，然后不同身份认证有不同的操作权限。比如我的影片列表，我可以进行添加编辑操作，其他人只能进行浏览。所以，一般要引入身份认证，如果从头自己搞登录逻辑，可能比较繁琐，一般也是独立出一个认证的微服务。</p>
+<p>这边简单的使用<a target="_blank" rel="noopener" href="https://docs.netlify.com/visitor-access/identity/">Netlify Identify</a>来进行网站的身份认证，如果你使用其他云厂商，这部分可以略过</p>
+<p>此时需要我们先部署一个网站，你可以直接使用<code>netlify-cli</code></p>
+<pre><code class="shell">ntl init
+</code></pre>
+<p>我这边不知道是因为网络原因还是啥的，<code>netlify-cli</code>认证不了，所以我直接登录<a target="_blank" rel="noopener" href="https://app.netlify.com/">app.netlify</a>操作了，部署后，可以直接<a target="_blank" rel="noopener" href="https://demo-frontentedmaster-serverless-functions.netlify.app/">在线访问</a>，</p>
+<p><strong>app.netlify</strong> 对应站点管理，对我们刚部署的站点启用<code>Identify</code>，</p>
+<p><strong>Netlify Identify</strong> 已经集成了UI界面，所以我们要引入 <a target="_blank" rel="noopener" href="https://github.com/netlify/netlify-identity-widget">netlify-identity-widget</a></p>
+<pre><code class="html">&lt;!-- include the widget --&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;https://identity.netlify.com/v1/netlify-identity-widget.js&quot;&gt;&lt;/script &gt;
+</code></pre>
+<p>这里，我只在<code>src/admin.html</code>  <code>src/login.html</code>引入了，</p>
+<p>这边我想要实现的效果是，用户登录才能访问<code>src/admin</code>页面进行添加电影的操作，</p>
+<p>首先，我们在<code>src/login.html</code> 添加如下代码：</p>
+<pre><code class="html">&lt;div data-netlify-identity-button&gt;&lt;/div&gt;
+&lt;script
+  type=&quot;text/javascript&quot;
+  src=&quot;https://identity.netlify.com/v1/netlify-identity-widget.js&quot;
+&gt;&lt;/script&gt;
+
+&lt;script&gt;
+  function handleLogin(user) &#123;
+    if (!user || !user.token) &#123;
+      return;
+    &#125;
+
+    // if we get here, we have an active user; redirect to the admin page!
+    window.location.pathname = &#39;/admin/&#39;;
+  &#125;
+
+  window.netlifyIdentity.on(&#39;init&#39;, handleLogin);
+  window.netlifyIdentity.on(&#39;login&#39;, handleLogin);
+&lt;/script&gt;
+</code></pre>
+<p>调整<code>src/admin.html</code> 代码，</p>
+<pre><code class="html">&lt;script
+  type=&quot;text/javascript&quot;
+  src=&quot;https://identity.netlify.com/v1/netlify-identity-widget.js&quot;
+&gt;&lt;/script&gt;
+&lt;script&gt;
+
+  function handleIdentityEvent(user) &#123;
+    if (user &amp;&amp; user.token) &#123;
+      return;
+    &#125;
+
+    window.location.pathname = &#39;/login/&#39;;
+  &#125;
+
+  netlifyIdentity.on(&#39;init&#39;, handleIdentityEvent);
+  netlifyIdentity.on(&#39;logout&#39;, handleIdentityEvent);
+
+  document.querySelector(&#39;.logout&#39;).addEventListener(&#39;click&#39;, (event) =&gt; &#123;
+    event.preventDefault();
+    netlifyIdentity.logout();
+  &#125;);
+    
+  ....
+</code></pre>
+<h2 id="腾讯云函数"><a href="#腾讯云函数" class="headerlink" title="腾讯云函数"></a>腾讯云函数</h2><p>这里简单举个小例子，比如做一个返回json数据的接口，触发管理为<strong>API网关触发器</strong>，可以看到语言规范基本一致。</p>
+<pre><code class="js">&#39;use strict&#39;;
+
+exports.main_handler = (event, context, callback) =&gt; &#123;
+    console.log(&quot;Hello World&quot;)
+    console.log(event)
+    console.log(event[&quot;non-exist&quot;])
+    console.log(context)
+    callback(null, require(&#39;data/fooddata.js&#39;))
+&#125;;
+</code></pre>
+<p>跟据自己的需要选择合适的云平台，当然也有很多完善云平台使用的<code>serverless</code>框架，</p>
+<p>本篇仅作为一个简单的入门<code>demo</code>，回调方法也不仅仅是返回<code>JSON</code>，也有很多<code>OUTPUT</code>形式，各个云平台也会跟据自己现有的服务，提供各种集成机制，感兴趣的自己自行扩展阅读。</p>
+<h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><p><a target="_blank" rel="noopener" href="https://github.com/serverless/serverless">github:serverless</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/anaibol/awesome-serverless">github:awesome-serverless</a></p>
+<p><a target="_blank" rel="noopener" href="https://frontendmasters.com/courses/serverless-functions/">Introduction to Serverless Functions</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/jlengstorf/frontendmasters-serverless">gihub:frontendmasters-serverless</a></p>
+<p><a href="netlify.com">netlify</a></p>
+<p><a target="_blank" rel="noopener" href="http://hasura.io/">hasura</a></p>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/serverless/">serverless</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">从Linux内核理解JAVA的NIO</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/09/10/gradle/"><span class="level-item">Gradle</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>

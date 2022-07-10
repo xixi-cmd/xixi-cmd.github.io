@@ -1,0 +1,2715 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>我们来聊聊JAVA8 - 一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Java8 从2014年发行到现在已经有六个年头了，之前公司的项目都还是基于Java7，所以对 Java8 不甚了解。于是乎，花一两个礼拜学习下，做个记录，以下部分文字复制于其他文章，最底下会列出相关链接，感兴趣的可以去了解下。"><meta property="og:type" content="blog"><meta property="og:title" content="我们来聊聊JAVA8"><meta property="og:url" content="http://example.com/2021/09/10/JAVA8/"><meta property="og:site_name" content="一枝清寒."><meta property="og:description" content="Java8 从2014年发行到现在已经有六个年头了，之前公司的项目都还是基于Java7，所以对 Java8 不甚了解。于是乎，花一两个礼拜学习下，做个记录，以下部分文字复制于其他文章，最底下会列出相关链接，感兴趣的可以去了解下。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/2-AnonymousClass.png"><meta property="og:image" content="https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/2-Lambda.png"><meta property="og:image" content="https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/Stream.reduce_parameter.png"><meta property="og:image" content="https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/Java_stream_pipeline_classes.png"><meta property="og:image" content="https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/Stream_pipeline_example.png"><meta property="article:published_time" content="2021-09-10T15:50:23.000Z"><meta property="article:modified_time" content="2021-09-10T15:50:31.576Z"><meta property="article:author" content="ChenShang"><meta property="article:tag" content="JAVA"><meta property="article:tag" content="JVM"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/2-AnonymousClass.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2021/09/10/JAVA8/"},"headline":"我们来聊聊JAVA8","image":["https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/2-AnonymousClass.png","https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/2-Lambda.png","https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/Stream.reduce_parameter.png","https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/Java_stream_pipeline_classes.png","https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/Stream_pipeline_example.png"],"datePublished":"2021-09-10T15:50:23.000Z","dateModified":"2021-09-10T15:50:31.576Z","author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":"Java8 从2014年发行到现在已经有六个年头了，之前公司的项目都还是基于Java7，所以对 Java8 不甚了解。于是乎，花一两个礼拜学习下，做个记录，以下部分文字复制于其他文章，最底下会列出相关链接，感兴趣的可以去了解下。"}</script><link rel="canonical" href="http://example.com/2021/09/10/JAVA8/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-09-10T15:50:23.000Z" title="2021/9/10 23:50:23">2021-09-10</time>发表</span><span class="level-item"><time dateTime="2021-09-10T15:50:31.576Z" title="2021/9/10 23:50:31">2021-09-10</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile">我们来聊聊JAVA8</h1><div class="content"><p><strong>Java8</strong> 从2014年发行到现在已经有六个年头了，之前公司的项目都还是基于Java7，所以对 <strong>Java8</strong> 不甚了解。于是乎，花一两个礼拜学习下，做个记录，以下部分文字复制于其他文章，最底下会列出相关链接，感兴趣的可以去了解下。</p>
+<span id="more"></span>
+
+<h2 id="JAVA8-的发展"><a href="#JAVA8-的发展" class="headerlink" title="JAVA8 的发展"></a>JAVA8 的发展</h2><h3 id="JDK-5"><a href="#JDK-5" class="headerlink" title="JDK 5"></a>JDK 5</h3><h4 id="自动装箱与拆箱"><a href="#自动装箱与拆箱" class="headerlink" title="自动装箱与拆箱"></a>自动装箱与拆箱</h4><p>JDK1.5为每一个基本数据类型定义了一个封装类。使java中的基本数据类型也有自己的对象</p>
+<pre><code class="java">int --&gt;Integer
+double --&gt; Double
+long --&gt; Long
+char --&gt; Character
+float --&gt; Float
+boolean --&gt; Boolean
+short --&gt; Short
+byte -- &gt; Byte
+</code></pre>
+<ul>
+<li>自动装箱：将基本类型转换成为对象，例如：<code>int --&gt; Integer</code></li>
+<li>自动拆箱：将对象转换成为基本数据类型，例如：<code>Integer --&gt; int</code></li>
+</ul>
+<p>对于 JDK1.5 之前集合总不能存放基本数据类型的问题，现在也能够解决。</p>
+<h4 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h4><p>枚举是 JDK1.5 推出的一个比较重要的特性。其关键字为 <code>enum</code> 例如：定义代表交通灯的枚举</p>
+<pre><code class="java">public enum MyEnum&#123;
+    RED,GREEN,YELLOW
+&#125;
+</code></pre>
+<h4 id="静态导入"><a href="#静态导入" class="headerlink" title="静态导入"></a>静态导入</h4><ul>
+<li>优点：使用静态导入可以使被导入类的所有静态变量和静态方法在当前类直接可见，使用这些静态成员无需再给出他们的类名。</li>
+<li>缺点：过度使用会降低代码的可读性</li>
+</ul>
+<h4 id="变长参数"><a href="#变长参数" class="headerlink" title="变长参数"></a>变长参数</h4><p>在JDK1.5以前，当我们要为一个方法传递多个类型相同的参数时， 我们有两种方法解决</p>
+<ol>
+<li>直接传递一个数组过去</li>
+<li>有多少个参数就传递多少个参数。</li>
+</ol>
+<p>例如：</p>
+<pre><code class="java">public void printColor(String red,String green,String yellow)&#123; 
+&#125;
+</code></pre>
+<p>或者</p>
+<pre><code class="java">public void printColor(String[] colors)&#123;
+
+&#125;
+</code></pre>
+<p>这样编写方法参数虽然能够实现我们想要的效果，但是，这样是不是有点麻烦呢？ 再者，如果参数个数不确定，我们怎么办呢？Java JDK1.5为我们提供的可变参数就能够完美的解决这个问题.</p>
+<p>例如：</p>
+<pre><code class="java">public void printColor(String... colors)&#123;
+
+&#125;
+</code></pre>
+<p>如果参数的类型相同，那么可以使用 <code>类型+三个点</code> ，后面跟一个参数名称的形式。 这样的好处就是，只要参数类型相同，无论传递几个参数都没有限制 注意：可变参数必须是参数列表的最后一项（该特性对对象和基本数据类型都适用）</p>
+<h4 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h4><pre><code class="java">//给集合指定存入类型，上面这个集合在存入数据的时候必须存入String类型的数据，否则编译器会报错
+List&lt;String&gt; strs = new ArrayList&lt;String&gt;();
+</code></pre>
+<p><strong>泛型</strong> 意味着编写的代码可以被不同类型的对象所重用。 可见泛型的提出是为了编写重用性更好的代码。 泛型的本质是参数化类型，也就是说所操作的数据类型被指定为一个参数。</p>
+<p>比如常见的集合类 <code>LinkedList</code>，其实现的接口名后有个特殊的部分 <code>&lt;&gt;</code>，而且它的成员的类型 Link 也包含一个 <code>&lt;&gt;</code>，这个符号的就是类型参数， 它使得在运行中，创建一个 LinkedList 时可以传入不同的类型，比如 <code>new LinkedList</code>，这样它的成员存放的类型也是 <code>String</code>。</p>
+<h4 id="For-Each循环"><a href="#For-Each循环" class="headerlink" title="For-Each循环"></a>For-Each循环</h4><p>例如上面这个集合我们可以通过for-each遍历，这样更加简单清晰</p>
+<pre><code class="java">for(String s : strs)&#123; 
+     System.out.println(s); 
+&#125;
+</code></pre>
+<blockquote>
+<p>注意：使用for-each遍历集合时，要遍历的集合必须实现了Iterator接口</p>
+</blockquote>
+<h4 id="线程并发库-JUC"><a href="#线程并发库-JUC" class="headerlink" title="线程并发库 JUC"></a>线程并发库 JUC</h4><p>线程并发库是 Java1.5 提出的关于多线程处理的高级功能，所在包：<code>java.util.concurrent</code> 包括</p>
+<ol>
+<li>线程互斥工具类：Lock，ReadWriteLock</li>
+<li>线程通信：Condition</li>
+<li>线程池：ExecutorService</li>
+<li>同步队列：ArrayBlockingQueue</li>
+<li>同步集合：ConcurrentHashMap，CopyOnWriteArrayList</li>
+<li>线程同步工具：Semaphore</li>
+</ol>
+<h3 id="JDK-6"><a href="#JDK-6" class="headerlink" title="JDK 6"></a>JDK 6</h3><h4 id="Desktop类和SystemTray类"><a href="#Desktop类和SystemTray类" class="headerlink" title="Desktop类和SystemTray类"></a>Desktop类和SystemTray类</h4><p>前者可以用来打开系统默认浏览器浏览指定的URL，打开系统默认邮件客户端给指定的邮箱发邮件， 用默认应用程序打开或编辑文件(比如，用记事本打开以 txt 为后缀名的文件)，<br>用系统默认的打印机打印文档；后者可以用来在系统托盘区创建一个托盘程序。</p>
+<h4 id="使用Compiler-API"><a href="#使用Compiler-API" class="headerlink" title="使用Compiler API"></a>使用Compiler API</h4><p>现在我们可以用JDK1.6 的Compiler API(JSR 199)去动态编译Java源文件， Compiler API结合反射功能就可以实现动态的产生Java代码并编译执行这些代码，有点动态语言的特征。</p>
+<p>这个特性对于某些需要用到动态编译的应用程序相当有用，比如JSP Web Server，当我们手动修改JSP后， 是不希望需要重启Web Server才可以看到效果的，这时候我们就可以用Compiler API来实现动态编译JSP文件。 当然，现在的JSP Web Server也是支持JSP热部署的，现在的JSP Web Server通过在运行期间通过Runtime.exec或ProcessBuilder来调用javac来编译代码， 这种方式需要我们产生另一个进程去做编译工作，不够优雅而且容易使代码依赖与特定的操作系统； Compiler API通过一套易用的标准的API提供了更加丰富的方式去做动态编译，而且是跨平台的。</p>
+<h4 id="轻量级Http-Server-API"><a href="#轻量级Http-Server-API" class="headerlink" title="轻量级Http Server API"></a>轻量级Http Server API</h4><p>JDK1.6 提供了一个简单的 Http Server API，据此我们可以构建自己的嵌入式 Http Server， 它支持Http和Https协议，提供了HTTP1.1的部分实现，没有被实现的那部分可以通过扩展已有的 Http Server API来实现， 程序员必须自己实现 HttpHandler 接口，HttpServer 会调用 <code>HttpHandler</code> 实现类的回调方法来处理客户端请求， 在这里，我们把一个 Http 请求和它的响应称为一个交换，包装成 <code>HttpExchange</code> 类，<code>HttpServer</code> 负责将 <code>HttpExchange</code> 传给 <code>HttpHandler</code> 实现类的回调方法。</p>
+<h4 id="用Console开发控制台程序"><a href="#用Console开发控制台程序" class="headerlink" title="用Console开发控制台程序"></a>用Console开发控制台程序</h4><p>JDK1.6 中提供了 <code>java.io.Console</code> 类专用来访问基于字符的控制台设备。 你的程序如果要与 Windows 下的 cmd 或者 Linux 下的 Terminal 交互，就可以用 <code>Console</code> 类代劳。 但我们不总是能得到可用的 Console，一个JVM是否有可用的 Console 依赖于底层平台和 JVM 如何被调用。 如果JVM是在交互式命令行(比如 Windows 的 cmd)中启动的，并且输入输出没有重定向到另外的地方，那么就可以得到一个可用的 Console 实例。</p>
+<h4 id="对脚本语言的支持"><a href="#对脚本语言的支持" class="headerlink" title="对脚本语言的支持"></a>对脚本语言的支持</h4><p>如：ruby，groovy，javascript。</p>
+<h3 id="JDK-7"><a href="#JDK-7" class="headerlink" title="JDK 7"></a>JDK 7</h3><h4 id="数字变量对下滑线的支持"><a href="#数字变量对下滑线的支持" class="headerlink" title="数字变量对下滑线的支持"></a>数字变量对下滑线的支持</h4><p>JDK1.7可以在数值类型的变量里添加下滑线，但是有几个地方是不能添加的</p>
+<ol>
+<li>数字的开头和结尾</li>
+<li>小数点前后</li>
+<li>F或者L前</li>
+</ol>
+<p>例如：</p>
+<pre><code class="java">int num = 1234_5678_9; 
+float num2 = 222_33F; 
+long num3 = 123_000_111L;
+</code></pre>
+<h4 id="switch对String的支持"><a href="#switch对String的支持" class="headerlink" title="switch对String的支持"></a>switch对String的支持</h4><pre><code class="java">String status = &quot;orderState&quot;;     
+switch (status) &#123;   
+    case &quot;ordercancel&quot;:   
+        System.out.println(&quot;订单取消&quot;);   
+        break;   
+    case &quot;orderSuccess&quot;:   
+        System.out.println(&quot;预订成功&quot;);   
+        break;   
+    default:   
+        System.out.println(&quot;状态未知&quot;);   
+&#125;  
+</code></pre>
+<h4 id="try-with-resource"><a href="#try-with-resource" class="headerlink" title="try-with-resource"></a>try-with-resource</h4><ul>
+<li><code>try-with-resources</code> 是一个定义了一个或多个资源的 try 声明，这个资源是指程序处理完它之后需要关闭它的对象。</li>
+<li><code>try-with-resources</code> 确保每一个资源在处理完成后都会被关闭。</li>
+</ul>
+<p>可以使用try-with-resources的资源有： 任何实现了 <code>java.lang.AutoCloseable</code> 接口 <code>java.io.Closeable</code> 接口的对象。</p>
+<p>例如：</p>
+<pre><code class="java">public static String readFirstLineFromFile(String path) throws IOException &#123;   
+
+    try (BufferedReader br = new BufferedReader(new FileReader(path))) &#123;   
+        return br.readLine();   
+    &#125;   
+&#125;   
+</code></pre>
+<p>在 java 7 以及以后的版本里，<code>BufferedReader</code> 实现了 <code>java.lang.AutoCloseable</code> 接口。 由于 <code>BufferedReader</code> 定义在 <code>try-with-resources</code> 声明里，无论 <code>try</code> 语句正常还是异常的结束， 它都会自动的关掉。而在 java7 以前，你需要使用 <code>finally</code> 块来关掉这个对象。</p>
+<h4 id="捕获多种异常并用改进后的类型检查来重新抛出异常"><a href="#捕获多种异常并用改进后的类型检查来重新抛出异常" class="headerlink" title="捕获多种异常并用改进后的类型检查来重新抛出异常"></a>捕获多种异常并用改进后的类型检查来重新抛出异常</h4><pre><code>public static void first()&#123;   
+    try &#123;   
+        BufferedReader reader = new BufferedReader(new FileReader(&quot;&quot;));   
+        Connection con = null;   
+        Statement stmt = con.createStatement();   
+    &#125; catch (IOException | SQLException e) &#123;   
+        //捕获多个异常，e就是final类型的   
+        e.printStackTrace();   
+    &#125;   
+&#125; 
+</code></pre>
+<p>优点：用一个 <code>catch</code> 处理多个异常，比用多个 <code>catch</code> 每个处理一个异常生成的字节码要更小更高效。</p>
+<h4 id="创建泛型时类型推断"><a href="#创建泛型时类型推断" class="headerlink" title="创建泛型时类型推断"></a>创建泛型时类型推断</h4><p>只要编译器可以从上下文中推断出类型参数，你就可以用一对空着的尖括号 <code>&lt;&gt;</code> 来代替泛型参数。 这对括号私下被称为菱形(diamond)。 在Java SE 7之前，你声明泛型对象时要这样</p>
+<pre><code class="java">List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+</code></pre>
+<p>而在Java SE7以后，你可以这样</p>
+<pre><code class="java">List&lt;String&gt; list = new ArrayList&lt;&gt;();
+</code></pre>
+<p>因为编译器可以从前面(List)推断出推断出类型参数，所以后面的 <code>ArrayList</code> 之后可以不用写泛型参数了，只用一对空着的尖括号就行。 当然，你必须带着菱形 <code>&lt;&gt;</code>，否则会有警告的。 Java SE7 只支持有限的类型推断：只有构造器的参数化类型在上下文中被显著的声明了，你才可以使用类型推断，否则不行。</p>
+<pre><code class="java">List&lt;String&gt; list = new ArrayList&lt;&gt;();l
+list.add(&quot;A&quot;); 
+//这个不行 
+list.addAll(new ArrayList&lt;&gt;()); 
+// 这个可以 
+List&lt;? extends String&gt; list2 = new ArrayList&lt;&gt;(); 
+list.addAll(list2);
+</code></pre>
+<h3 id="JDK-8"><a href="#JDK-8" class="headerlink" title="JDK 8"></a>JDK 8</h3><h4 id="Lambda表达式和函数式接口"><a href="#Lambda表达式和函数式接口" class="headerlink" title="Lambda表达式和函数式接口"></a>Lambda表达式和函数式接口</h4><p>Lambda表达式（也称为闭包）是Java 8中最大和最令人期待的语言改变。它允许我们将函数当成参数传递给某个方法， 或者把代码本身当作数据处理：函数式开发者非常熟悉这些概念。很多JVM平台上的语言（Groovy、Scala等）从诞生之日就支持Lambda表达式，但是Java开发者没有选择，只能使用匿名内部类代替Lambda表达式。 Lambda的设计耗费了很多时间和很大的社区力量，最终找到一种折中的实现方案，可以实现简洁而紧凑的语言结构。最简单的Lambda表达式可由逗号分隔的参数列表、-&gt;符号和语句块组成。</p>
+<p>Lambda的设计者们为了让现有的功能与Lambda表达式良好兼容，考虑了很多方法，于是产生了函数接口这个概念。函数接口指的是只有一个函数的接口，这样的接口可以隐式转换为Lambda表达式。java.lang.Runnable和java.util.concurrent.Callable是函数式接口的最佳例子。在实践中，函数式接口非常脆弱：只要某个开发者在该接口中添加一个函数，则该接口就不再是函数式接口进而导致编译失败。为了克服这种代码层面的脆弱性，并显式说明某个接口是函数式接口，Java 8 提供了一个特殊的注解@FunctionalInterface（Java 库中的所有相关接口都已经带有这个注解了），举个简单的函数式接口的定义</p>
+<h4 id="接口的默认方法和静态方法"><a href="#接口的默认方法和静态方法" class="headerlink" title="接口的默认方法和静态方法"></a>接口的默认方法和静态方法</h4><p>Java 8使用两个新概念扩展了接口的含义：默认方法和静态方法。默认方法使得接口有点类似traits，不过要实现的目标不一样。默认方法使得开发者可以在 不破坏二进制兼容性的前提下，往现存接口中添加新的方法，即不强制那些实现了该接口的类也同时实现这个新加的方法。 默认方法和抽象方法之间的区别在于抽象方法需要实现，而默认方法不需要。接口提供的默认方法会被接口的实现类继承或者覆写 由于JVM上的默认方法的实现在字节码层面提供了支持，因此效率非常高。默认方法允许在不打破现有继承体系的基础上改进接口。该特性在官方库中的应用是：给java.util.Collection接口添加新方法，如stream()、parallelStream()、forEach()和removeIf()等等。 尽管默认方法有这么多好处，但在实际开发中应该谨慎使用：在复杂的继承体系中，默认方法可能引起歧义和编译错误。如果你想了解更多细节，可以参考官方文档。</p>
+<h4 id="更好的类型推断"><a href="#更好的类型推断" class="headerlink" title="更好的类型推断"></a>更好的类型推断</h4><p>Java 8 编译器在类型推断方面有很大的提升，在很多场景下编译器可以推导出某个参数的数据类型，从而使得代码更为简洁。</p>
+<p>参数 <code>Value.defaultValue()</code> 的类型由编译器推导得出，不需要显式指明。在Java 7中这段代码会有编译错误，除非使用 <code>Value.&lt;String&gt;defaultValue()</code>。</p>
+<h4 id="Optional"><a href="#Optional" class="headerlink" title="Optional"></a>Optional</h4><p>Java应用中最常见的bug就是空值异常。在Java 8之前，Google Guava引入了 <code>Optionals</code> 类来解决 <code>NullPointerException</code>， 从而避免源码被各种 <code>null</code> 检查污染，以便开发者写出更加整洁的代码。Java 8也将Optional加入了官方库。 <code>Optional</code> 仅仅是一个容易存放T类型的值或者null。它提供了一些有用的接口来避免显式的null检查，可以参考Java 8官方文档了解更多细节。</p>
+<p>如果Optional实例持有一个非空值，则 <code>isPresent()</code> 方法返回true，否则返回false；<code>orElseGet()</code> 方法，Optional实例持有null， 则可以接受一个lambda表达式生成的默认值；map()方法可以将现有的 <code>Optional</code> 实例的值转换成新的值；orElse()方法与orElseGet()方法类似， 但是在持有null的时候返回传入的默认值。</p>
+<h4 id="Streams"><a href="#Streams" class="headerlink" title="Streams"></a>Streams</h4><p>新增的Stream API（java.util.stream）将生成环境的函数式编程引入了Java库中。 这是目前为止最大的一次对Java库的完善，以便开发者能够写出更加有效、更加简洁和紧凑的代码。</p>
+<p>Task 类有一个分数（或伪复杂度）的概念，另外还有两种状态：OPEN 或者 CLOSED。现在假设有一个task集合， 首先看一个问题：在这个task集合中一共有多少个OPEN状态的点？在Java 8之前，要解决这个问题，则需要使用foreach循环遍历task集合； 但是在Java 8中可以利用steams解决：包括一系列元素的列表，并且支持顺序和并行处理。</p>
+<pre><code class="java">final Collection&lt;Task&gt; tasks = Arrays.asList(
+        new Task(Status.OPEN, 5),
+        new Task(Status.OPEN, 13),
+        new Task(Status.CLOSED, 8)
+);
+
+// Calculate total points of all active tasks using sum()
+final long totalPointsOfOpenTasks = tasks
+        .stream()
+        .filter(task -&gt; task.getStatus() == Status.OPEN)
+        .mapToInt(Task::getPoints)
+        .sum();
+
+System.out.println(&quot;Total points: &quot; + totalPointsOfOpenTasks);
+</code></pre>
+<p>这里有很多知识点值得说。首先，tasks集合被转换成steam表示；其次，在steam上的filter操作会过滤掉所有CLOSED的task； 第三，mapToInt操作基于每个task实例的Task::getPoints方法将task流转换成Integer集合；最后，通过sum方法计算总和，得出最后的结果。</p>
+<h4 id="新的日期时间-API"><a href="#新的日期时间-API" class="headerlink" title="新的日期时间 API"></a>新的日期时间 API</h4><p>Java 8引入了新的Date-Time API(JSR 310)来改进时间、日期的处理。时间和日期的管理一直是最令Java开发者痛苦的问题。 java.util.Date 和后来的 java.util.Calendar 一直没有解决这个问题（甚至令开发者更加迷茫）。</p>
+<p>因为上面这些原因，诞生了第三方库Joda-Time，可以替代Java的时间管理API。 Java 8中新的时间和日期管理API深受Joda-Time影响，并吸收了很多Joda-Time的精华。 新的java.time包包含了所有关于日期、时间、时区、Instant（跟日期类似但是精确到纳秒）、duration（持续时间）和时钟操作的类。 新设计的API认真考虑了这些类的不变性（从java.util.Calendar吸取的教训），如果某个实例需要修改，则返回一个新的对象。</p>
+<p>第二，关注下LocalDate和LocalTime类。LocalDate仅仅包含ISO-8601日历系统中的日期部分；LocalTime则仅仅包含该日历系统中的时间部分。这两个类的对象都可以使用Clock对象构建得到。 LocalDateTime类包含了LocalDate和LocalTime的信息，但是不包含ISO-8601日历系统中的时区信息。这里有一些关于LocalDate和LocalTime的例子： 如果你需要特定时区的data&#x2F;time信息，则可以使用ZoneDateTime，它保存有ISO-8601日期系统的日期和时间，而且有时区信息。</p>
+<h4 id="Nashorn-JavaScript引擎"><a href="#Nashorn-JavaScript引擎" class="headerlink" title="Nashorn JavaScript引擎"></a>Nashorn JavaScript引擎</h4><p>Java 8提供了新的Nashorn JavaScript引擎，使得我们可以在JVM上开发和运行JS应用。 Nashorn JavaScript引擎是javax.script.ScriptEngine的另一个实现版本，这类Script引擎遵循相同的规则，允许Java和JavaScript交互使用，例子代码如下：</p>
+<pre><code class="js">var fun1 = function(name) &#123;
+    print(&#39;Hi there from Javascript, &#39; + name);
+    return &quot;greetings from javascript&quot;;
+&#125;;
+
+var fun2 = function (object) &#123;
+    print(&quot;JS Class Definition: &quot; + Object.prototype.toString.call(object));
+&#125;;
+</code></pre>
+<pre><code class="java">ScriptEngine engine = new ScriptEngineManager().getEngineByName(&quot;nashorn&quot;);
+        engine.eval(new FileReader(&quot;java8-nashorn/src/main/resources/nashorn1.js&quot;));
+
+        Invocable invocable = (Invocable) engine;
+        Object result = invocable.invokeFunction(&quot;fun1&quot;, &quot;Peter Parker&quot;);
+        System.out.println(result);
+        System.out.println(result.getClass());
+
+        invocable.invokeFunction(&quot;fun2&quot;, new Date());
+        invocable.invokeFunction(&quot;fun2&quot;, LocalDateTime.now());
+        invocable.invokeFunction(&quot;fun2&quot;, new Person());
+</code></pre>
+<h4 id="Base64"><a href="#Base64" class="headerlink" title="Base64"></a>Base64</h4><p>对 Base64 编码的支持已经被加入到Java 8官方库中，这样不需要使用第三方库就可以进行Base64编码，例子代码如下：</p>
+<pre><code class="java">final String text = &quot;Lets Learn Java 8!&quot;;
+
+final String encoded = Base64
+        .getEncoder()
+        .encodeToString(text.getBytes(StandardCharsets.UTF_8));
+System.out.println(encoded);
+
+final String decoded = new String(
+        Base64.getDecoder().decode(encoded),
+        StandardCharsets.UTF_8);
+System.out.println(decoded);
+</code></pre>
+<p>新的Base64API也支持URL和MINE的编码解码。</p>
+<h2 id="Default-Methods-for-Interface"><a href="#Default-Methods-for-Interface" class="headerlink" title="Default Methods for Interface"></a>Default Methods for Interface</h2><p>Java 8 允许我们为接口添加非抽象的方法通过 <strong>default</strong>  关键字。当然静态方法的实现也是允许的。</p>
+<pre><code class="java">interface Formula &#123;
+    double calculate(int a);
+
+    // 默认方法实现
+    default double sqrt(int a) &#123;
+        return Math.sqrt(a);
+    &#125;
+    
+    // 静态方法实现
+    static void hello() &#123; System.out.println(&quot;hello world&quot;);&#125;
+&#125;
+</code></pre>
+<p>所以我们实现接口的时候只需要实现抽象方法就可以了，默认方法可以直接使用。下面例子 The formula is implemented as an anonymous object.</p>
+<pre><code class="java">Formula formula = new Formula() &#123;
+    @Override
+    public double calculate(int a) &#123;
+        return sqrt(a * 100);
+    &#125;
+&#125;;
+
+formula.calculate(100);     // 100.0
+formula.sqrt(16);           // 4.0
+</code></pre>
+<h2 id="Lambda-expression"><a href="#Lambda-expression" class="headerlink" title="Lambda expression"></a>Lambda expression</h2><p><strong>λ演算</strong>（英语：lambda calculus，λ-calculus）是一套从数学逻辑中发展，以变量绑定和替换的规则，来研究<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%87%BD%E6%95%B0">函数</a>如何抽象化定义、函数如何被应用以及<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%80%92%E5%BD%92">递归</a>的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%BD%A2%E5%BC%8F%E7%B3%BB%E7%B5%B1">形式系统</a>。它由数学家<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%98%BF%E9%9A%86%E4%BD%90%C2%B7%E9%82%B1%E5%A5%87">阿隆佐·邱奇</a>在20世纪30年代首次发表。lambda演算作为一种广泛用途的计算模型，可以清晰地定义什么是一个可计算函数，而任何可计算函数都能以这种形式表达和求值，它能模拟单一磁带<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9B%BE%E7%81%B5%E6%9C%BA">图灵机</a>的计算过程；尽管如此，lambda演算强调的是变换规则的运用，而非实现它们的具体机器。</p>
+<p>更多介绍请教wiki爸爸，虽然我看的一脸懵逼 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%CE%9B%E6%BC%94%E7%AE%97"><strong>wiki</strong></a></p>
+<p>简单的说 lambda expression就是一个匿名的函数，通常作为其他函数的参数。</p>
+<p>下面通过一个例子简单介绍下</p>
+<p>之前版本的我们写</p>
+<pre><code class="java">List&lt;String&gt; names = Arrays.asList(&quot;peter&quot;, &quot;anna&quot;, &quot;mike&quot;, &quot;xenia&quot;);
+
+Collections.sort(names, new Comparator&lt;String&gt;() &#123;
+    @Override
+    public int compare(String a, String b) &#123;
+        return b.compareTo(a);
+    &#125;
+&#125;);
+</code></pre>
+<p>取代之前创建匿名内部类的方法，通过 Java8 我们可以用更少的代码来实现：</p>
+<pre><code class="java">Collections.sort(names, (String a, String b) -&gt; &#123;
+    return b.compareTo(a);
+&#125;);
+</code></pre>
+<p>如果方法只有一行语句，那么花括号 <strong>{}</strong> 是可选的，并且假如这一行语句有返回值，那么 <strong>return</strong> 关键字也是可选的。所以我们的代码更精简了：</p>
+<pre><code class="java">Collections.sort(names, (String a, String b) -&gt; b.compareTo(a));
+</code></pre>
+<p>Lambda 的参数类型可以由上下文推算而出，所以，参数类型也是可选的，</p>
+<pre><code class="java">Collections.sort(names, (a, b) -&gt; b.compareTo(a));
+</code></pre>
+<p>下面我们就看看 lambda的相关特性和实现</p>
+<h3 id="Diff-with-Anonymous-Classes"><a href="#Diff-with-Anonymous-Classes" class="headerlink" title="Diff with Anonymous Classes"></a>Diff with Anonymous Classes</h3><p>在JVM层面，Lambda表达式和匿名内部类有着明显的差别。</p>
+<p><strong>匿名内部类仍然是一个类，只是不需要程序员显示指定类名，编译器会自动为该类取名</strong>。因此如果有如下形式的代码，编译之后将会产生两个class文件：</p>
+<pre><code class="java">public class MainAnonymousClass &#123;
+    public static void main(String[] args) &#123;
+        new Thread(new Runnable()&#123;
+            @Override
+            public void run()&#123;
+                System.out.println(&quot;Anonymous Class Thread run()&quot;);
+            &#125;
+        &#125;).start();;
+    &#125;
+&#125;
+</code></pre>
+<p>编译之后文件分布如下，两个class文件分别是主类和匿名内部类产生的：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/CarpenterLee/JavaLambdaInternals/blob/master/Figures/2-AnonymousClass.png"><img src="https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/2-AnonymousClass.png" alt="2-AnonymousClass.png"></a></p>
+<p>进一步分析主类MainAnonymousClass.class的字节码，可发现其创建了匿名内部类的对象：</p>
+<pre><code class="java">// javap -c MainAnonymousClass.class
+public class MainAnonymousClass &#123;
+  ...
+  public static void main(java.lang.String[]);
+    Code:
+       0: new           #2                  // class java/lang/Thread
+       3: dup
+       4: new           #3                  // class MainAnonymousClass$1 /*创建内部类对象*/
+       7: dup
+       8: invokespecial #4                  // Method MainAnonymousClass$1.&quot;&lt;init&gt;&quot;:()V
+      11: invokespecial #5                  // Method java/lang/Thread.&quot;&lt;init&gt;&quot;:(Ljava/lang/Runnable;)V
+      14: invokevirtual #6                  // Method java/lang/Thread.start:()V
+      17: return
+&#125;
+</code></pre>
+<p><strong>Lambda表达式通过invokedynamic指令实现，书写Lambda表达式不会产生新的类</strong>。如果有如下代码，编译之后只有一个class文件：</p>
+<pre><code class="java">public class MainLambda &#123;
+    public static void main(String[] args) &#123;
+        new Thread(
+                () -&gt; System.out.println(&quot;Lambda Thread run()&quot;)
+            ).start();;
+    &#125;
+&#125;
+</code></pre>
+<p>编译之后的结果：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/CarpenterLee/JavaLambdaInternals/blob/master/Figures/2-Lambda.png"><img src="https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/2-Lambda.png" alt="2-Lambda"></a></p>
+<p>通过javap反编译命名，我们更能看出Lambda表达式内部表示的不同：</p>
+<pre><code class="java">// javap -c -p MainLambda.class
+public class MainLambda &#123;
+  ...
+  public static void main(java.lang.String[]);
+    Code:
+       0: new           #2                  // class java/lang/Thread
+       3: dup
+       4: invokedynamic #3,  0              // InvokeDynamic #0:run:()Ljava/lang/Runnable; /*使用invokedynamic指令调用*/
+       9: invokespecial #4                  // Method java/lang/Thread.&quot;&lt;init&gt;&quot;:(Ljava/lang/Runnable;)V
+      12: invokevirtual #5                  // Method java/lang/Thread.start:()V
+      15: return
+
+  private static void lambda$main$0();  /*Lambda表达式被封装成主类的私有方法*/
+    Code:
+       0: getstatic     #6                  // Field java/lang/System.out:Ljava/io/PrintStream;
+       3: ldc           #7                  // String Lambda Thread run()
+       5: invokevirtual #8                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+       8: return
+&#125;
+</code></pre>
+<p>反编译之后我们发现Lambda表达式被封装成了主类的一个私有方法，并通过<em>invokedynamic</em>指令进行调用。</p>
+<p>既然Lambda表达式不是内部类的简写，那么Lambda内部的<code>this</code>引用也就跟内部类对象没什么关系了。在Lambda表达式中<code>this</code>的意义跟在表达式外部完全一样。因此下列代码将输出两遍<code>Hello Hoolee</code>，而不是两个引用地址。</p>
+<pre><code class="java">public class Hello &#123;
+    Runnable r1 = () -&gt; &#123; System.out.println(this); &#125;;
+    Runnable r2 = () -&gt; &#123; System.out.println(toString()); &#125;;
+    public static void main(String[] args) &#123;
+        new Hello().r1.run();
+        new Hello().r2.run();
+    &#125;
+    public String toString() &#123; return &quot;Hello Hoolee&quot;; &#125;
+&#125;
+</code></pre>
+<h3 id="lambda-Scope"><a href="#lambda-Scope" class="headerlink" title="lambda Scope"></a>lambda Scope</h3><p>lambda Scope实际上跟匿名内部类差不多，只不过 <strong>local variables</strong> 可以不声明未final，但是实际上是一个隐final。因为java8 中 lambda 代码块相当于闭包，闭包中被引用的局部变量是不能进行更改的。这也是为什么函数式编程可以很容易做到线程安全，很适合并发编程的原因。</p>
+<p>下面通过几个小例子说明一下 lambda 的作用域</p>
+<pre><code class="java">final int num = 1;
+Converter&lt;Integer, String&gt; stringConverter =
+        (from) -&gt; String.valueOf(from + num);
+stringConverter.convert(2);     // 3
+
+int num = 1;
+Converter&lt;Integer, String&gt; stringConverter =
+        (from) -&gt; String.valueOf(from + num);
+stringConverter.convert(2);     // 3
+
+int num = 1;
+// Variable used in lambda expression should be final or effectively final
+Converter&lt;Integer, String&gt; stringConverter =
+        (from) -&gt; String.valueOf(from + num); // 无法编译
+num = 3;
+</code></pre>
+<p>在lambda表达式中更改局部变量 num 的值同样是不允许的。</p>
+<p>如果是 <strong>static variables</strong> 或是 <strong>fields</strong> 就跟匿名内部类一样了，无论在lambda 表达式内部还是外部都是进行修改</p>
+<pre><code class="java">class Lambda4 &#123;
+    static int outerStaticNum;
+    int outerNum;
+
+    void testScopes() &#123;
+        Converter&lt;Integer, String&gt; stringConverter1 = (from) -&gt; &#123;
+            outerNum = 23;
+            return String.valueOf(from);
+        &#125;;
+
+        Converter&lt;Integer, String&gt; stringConverter2 = (from) -&gt; &#123;
+            outerStaticNum = 72;
+            return String.valueOf(from);
+        &#125;;
+    &#125;
+&#125;
+</code></pre>
+<p>还记得前面我们定义的函数接口 <strong>Formula</strong> 吗，接口公式定义了一个默认方法sqrt，可以从包括匿名对象在内的每个公式实例访问该方法。这不适用于lambda表达式。</p>
+<p>不能从lambda表达式中访问 <strong>default interface method</strong>，以下代码无法编译</p>
+<pre><code class="java">Formula formula = (a) -&gt; sqrt( a * 100);
+</code></pre>
+<h3 id="Functional-Interfaces"><a href="#Functional-Interfaces" class="headerlink" title="Functional Interfaces"></a>Functional Interfaces</h3><p><strong>lambda</strong> 表达式如何适应Java的类型系统呢？转换lambda表达式的类型总是函数接口类型。所以，一个函数接口必须<strong>有且只有一个抽象方法声明</strong>。该类型的每个lambda表达式都将匹配到这个抽象方法。</p>
+<p>下面有个小例子，Runnable是一个函数接口，它只有一个方法run()。因此，当您将lambda表达式传递给Thread类的构造函数时，编译器会尝试将该表达式转换为等价的可运行代码，如第一个代码示例所示。如果编译器成功，则一切正常运行，如果编译器无法将表达式转换为等效的实现代码，则会产生错误。在上面的例子中，lambda表达式被转换为Runnable类型。</p>
+<pre><code class="java">new Thread(new Runnable() &#123;
+    @Override
+    public void run() &#123;
+        System.out.println(&quot;howtodoinjava&quot;);
+    &#125;
+&#125;).start();
+
+new Thread(
+            () -&gt;   &#123;
+                        System.out.println(&quot;My Runnable&quot;);
+                    &#125;
+         ).start();
+</code></pre>
+<p>为了确保接口满足需求，您应该添加 <strong>@FunctionalInterface</strong> 注解，编译器知道这个注释，并在您试图向接口添加第二个抽象方法声明时抛出编译器错误。当然，注解省略也是可以的。</p>
+<p>因为默认方法有一个实现，所以它们不是抽象的。因为默认方法不是抽象的，所以您可以随意将默认方法添加到您的函数接口中。当然静态方法也同理。</p>
+<p>如果接口声明一个抽象方法覆盖 <strong>java.lang.Object</strong> 的一个公共方法，这也不计入接口的抽象方法计数，因为该接口的任何实现都有一个来自 java.lang.Object 的实现。Comparator是一个函数接口，尽管它声明了两个抽象方法。为什么?因为其中一个抽象方法equals()它的签名等于Object类中的public方法。</p>
+<pre><code class="java">@FunctionalInterface
+interface Converter&lt;F, T&gt; &#123;
+    T convert(F from);
+    void haha(); // 编译错误
+    // 默认方法
+    default void hello() &#123;
+        System.out.println(&quot;hello world&quot;);
+    &#125;
+    // 静态方法也是允许的，可以少写工具类
+    static void fourWork() &#123;
+        System.out.println(&quot;today is a nice day&quot;);
+    &#125;
+    @Override
+    public String toString();                //Overridden from Object class
+    @Override
+    public boolean equals(Object obj);        //Overridden from Object class	
+&#125;
+Converter&lt;String, Integer&gt; converter = (from) -&gt; Integer.valueOf(from);
+Integer converted = converter.convert(&quot;123&quot;);
+System.out.println(converted);    // 123
+</code></pre>
+<p>功能接口只显示一个功能。例如，使用具有单个方法 compareTo 的可比较接口进行比较。</p>
+<h3 id="Method-References"><a href="#Method-References" class="headerlink" title="Method References"></a>Method References</h3><p>简单的说就是对于 lambda 表达式中只有一个参数，并且箭头右边的逻辑是对入参执行一个函数：</p>
+<p>即 <code>x =&gt; f(x)</code><br>则可以简写为<code>f</code></p>
+<p>Java8 用 <strong>class::methodName</strong> 来表示 <strong>eta-conversion</strong></p>
+<p>Method references help to point to methods by their names. A method reference is described using <code>::</code> symbol. A method reference can be used to point the following types of methods −</p>
+<ul>
+<li>Static methods</li>
+<li>Instance methods</li>
+<li>Constructors using new operator (TreeSet::new)</li>
+</ul>
+<p>下面看一些简单例子</p>
+<pre><code class="java">// static method -&gt; Math::max = Math.max(x,y)
+List&lt;Integer&gt; integers = Arrays.asList(1,12,433,5);
+Optional&lt;Integer&gt; max = integers.stream().reduce( Math::max );
+max.ifPresent(value -&gt; System.out.println(value));
+
+// instance method from instance -&gt; System.out::println = System.out.println(x)
+ArrayList&lt;Integer&gt; numberList = new ArrayList&lt;&gt;(Arrays.asList(1,2,3,4,5));
+Consumer&lt;Integer&gt; action = System.out::println;
+numberList.forEach(action);
+
+// instance method from class type -&gt; String::compareTo = s1.compareTo(s2)
+List&lt;String&gt; strings = Arrays
+                .asList(&quot;how&quot;, &quot;to&quot;, &quot;do&quot;, &quot;in&quot;, &quot;java&quot;, &quot;dot&quot;, &quot;com&quot;);
+
+List&lt;String&gt; sorted = strings
+                .stream()
+    .sorted((s1, s2) -&gt; s1.compareTo(s2))
+    .collect(Collectors.toList());
+
+System.out.println(sorted);
+
+List&lt;String&gt; sortedAlt = strings
+                .stream()
+    .sorted(String::compareTo)
+    .collect(Collectors.toList());
+
+System.out.println(sortedAlt);
+
+// constructor -&gt; ArrayList::new = new ArrayList
+List&lt;Integer&gt; integers1 = IntStream
+                .range(1, 100)
+    .boxed()
+    .collect(Collectors.toCollection( ArrayList::new ));
+Optional&lt;Integer&gt; max1 = integers.stream().reduce(Math::max);
+max.ifPresent(System.out::println);
+</code></pre>
+<h3 id="Built-in-Functional-Interfaces"><a href="#Built-in-Functional-Interfaces" class="headerlink" title="Built-in Functional Interfaces"></a>Built-in Functional Interfaces</h3><p>Java 8 内置了许多函数接口，可在lambda表达式中广泛使用。</p>
+<p>有一些是兼容旧版本的比如 <code>Comparator</code> 或者 <code>Runnable</code>，</p>
+<p>还有一些是吸取了 <a target="_blank" rel="noopener" href="https://code.google.com/p/guava-libraries/">Google Guava</a> library ，比如在  <strong>java.util.Function package</strong> 就定义了很多实用的函数接口。</p>
+<p>不过一般我们不需要去死记它们，因为类型推导帮我们做了一切。</p>
+<p>比如举个简单的例子，collection 的forEach方法，该方法的签名为<code>void forEach(Consumer&lt;? super E&gt; action)</code>，作用是对容器中的每个元素执行<code>action</code>指定的动作，其中<code>Consumer</code>是个函数接口，里面只有一个待实现方法<code>void accept(T t)</code>（后面我们会看到，这个方法叫什么根本不重要，你甚至不需要记忆它的名字）。</p>
+<p>需求：<em>假设有一个字符串列表，需要打印出其中所有长度大于3的字符串.</em></p>
+<p>Java7及以前我们可以用增强的for循环实现：</p>
+<pre><code class="java">// 使用增强for循环迭代
+ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;(Arrays.asList(&quot;I&quot;, &quot;love&quot;, &quot;you&quot;, &quot;too&quot;));
+for(String str : list)&#123;
+    if(str.length()&gt;3)
+        System.out.println(str);
+&#125;
+</code></pre>
+<p>现在使用<code>forEach()</code>方法结合匿名内部类，可以这样实现：</p>
+<pre><code class="java">// 使用forEach()结合匿名内部类迭代
+ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;(Arrays.asList(&quot;I&quot;, &quot;love&quot;, &quot;you&quot;, &quot;too&quot;));
+list.forEach(new Consumer&lt;String&gt;()&#123;
+    @Override
+    public void accept(String str)&#123;
+        if(str.length()&gt;3)
+            System.out.println(str);
+    &#125;
+&#125;);
+</code></pre>
+<p>上述代码调用<code>forEach()</code>方法，并使用匿名内部类实现<code>Comsumer</code>接口。到目前为止我们没看到这种设计有什么好处，但是不要忘记Lambda表达式，使用Lambda表达式实现如下：</p>
+<pre><code class="java">// 使用forEach()结合Lambda表达式迭代
+ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;(Arrays.asList(&quot;I&quot;, &quot;love&quot;, &quot;you&quot;, &quot;too&quot;));
+list.forEach(str -&gt; &#123;
+        if(str.length()&gt;3)
+            System.out.println(str);
+    &#125;);
+</code></pre>
+<p>上述代码给<code>forEach()</code>方法传入一个Lambda表达式，我们不需要知道<code>accept()</code>方法，也不需要知道<code>Consumer</code>接口，类型推导帮我们做了一切。</p>
+<p>这里，简单列几个常用的函数接口，</p>
+<h4 id="Predicate"><a href="#Predicate" class="headerlink" title="Predicate"></a>Predicate<T></h4><p><code>Represents a predicate (Boolean-valued function) of one argument.The interface contains various default methods for composing predicates to complex logical terms (and, or, negate)</code></p>
+<pre><code class="java">
+public static void main(String args[]) &#123;
+      List&lt;Integer&gt; list = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        
+      // Predicate&lt;Integer&gt; predicate = n -&gt; true
+      // n is passed as parameter to test method of Predicate interface
+      // test method will always return true no matter what value n has.
+        
+      System.out.println(&quot;Print all numbers:&quot;);
+        
+      //pass n as parameter
+      eval(list, n-&gt;true);
+        
+      // Predicate&lt;Integer&gt; predicate1 = n -&gt; n%2 == 0
+      // n is passed as parameter to test method of Predicate interface
+      // test method will return true if n%2 comes to be zero
+        
+      System.out.println(&quot;Print even numbers:&quot;);
+      eval(list, n-&gt; n%2 == 0 );
+        
+      // Predicate&lt;Integer&gt; predicate2 = n -&gt; n &gt; 3
+      // n is passed as parameter to test method of Predicate interface
+      // test method will return true if n is greater than 3.
+        
+      System.out.println(&quot;Print numbers greater than 3:&quot;);
+      eval(list, n-&gt; n &gt; 3 );
+   &#125;
+    
+   public static void eval(List&lt;Integer&gt; list, Predicate&lt;Integer&gt; predicate) &#123;
+
+      for(Integer n: list) &#123;
+
+         if(predicate.test(n)) &#123;
+            System.out.println(n + &quot; &quot;);
+         &#125;
+      &#125;
+   &#125;
+</code></pre>
+<h4 id="Function-lt-T-R-gt"><a href="#Function-lt-T-R-gt" class="headerlink" title="Function&lt;T,R&gt;"></a>Function&lt;T,R&gt;</h4><p><code>Represents a function that accepts one argument and produces a result.Default methods can be used to chain multiple functions together (compose, andThen).</code></p>
+<pre><code class="java">Function&lt;String, Integer&gt; toInteger = Integer::valueOf;
+Function&lt;String, String&gt; backToString = toInteger.andThen(String::valueOf);
+
+backToString.apply(&quot;123&quot;);     // &quot;123&quot;
+</code></pre>
+<h4 id="Supplier"><a href="#Supplier" class="headerlink" title="Supplier"></a>Supplier<T></h4><p><code>Suppliers produce a result of a given generic type. Unlike Functions, Suppliers don&#39;t accept arguments.</code></p>
+<pre><code class="java">Supplier&lt;Person&gt; personSupplier = Person::new;
+personSupplier.get();   // new Person
+</code></pre>
+<h4 id="Consumer"><a href="#Consumer" class="headerlink" title="Consumer"></a>Consumer<T></h4><p><code>Consumers represents operations to be performed on a single input argument.</code></p>
+<pre><code class="java">consumer&lt;Person&gt; greeter = (p) -&gt; System.out.println(&quot;Hello, &quot; + p.firstName);
+greeter.accept(new Person(&quot;Luke&quot;, &quot;Skywalker&quot;));
+</code></pre>
+<h4 id="Comparators"><a href="#Comparators" class="headerlink" title="Comparators"></a>Comparators</h4><p><code>Comparators are well known from older versions of Java. Java 8 adds various default methods to the interface.</code></p>
+<pre><code class="java">Comparator&lt;Person&gt; comparator = (p1, p2) -&gt; p1.firstName.compareTo(p2.firstName);
+
+Person p1 = new Person(&quot;John&quot;, &quot;Doe&quot;);
+Person p2 = new Person(&quot;Alice&quot;, &quot;Wonderland&quot;);
+
+comparator.compare(p1, p2);             // &gt; 0
+comparator.reversed().compare(p1, p2);  // &lt; 0
+</code></pre>
+<h2 id="Streams-1"><a href="#Streams-1" class="headerlink" title="Streams"></a>Streams</h2><p>A <strong>Collection is an in-memory data structure</strong>, </p>
+<p>A <strong>Stream is a conceptually fixed data structure, in which elements are computed on demand</strong>.</p>
+<p>This is a form of a <strong>producer-consumer</strong> relationship.</p>
+<p>In java, java.util.Stream represents a stream on which one or more operations can be performed. Stream <strong>operations are either intermediate or terminal</strong>. While <strong>terminal operations return a result of a certain type</strong>, <strong>intermediate operations return the stream itself</strong> so you can chain multiple method calls in a row. Streams are created on a source, e.g. a java.util.Collection like lists or sets (maps are not supported). Stream operations can either be executed sequential or parallel.</p>
+<p>简单来说，流就相当于我们在线看电影一样，不需要下载整部电影，只关注我们感兴趣的地方。流只是数据源的一个视图，我们可以对这个视图进行过滤，映射，排序，统计等一系列操作，而不会影响到数据源，并且在流上的操作是按需执行的，执行后即失效，所以很适合于函数编程。</p>
+<h3 id="Streams-processing-order"><a href="#Streams-processing-order" class="headerlink" title="Streams  processing order"></a>Streams  processing order</h3><p>衔接操作的一个重要特性就是延迟性。观察下面没有终止操作的例子：</p>
+<pre><code class="java">Stream.of(&quot;d2&quot;, &quot;a2&quot;, &quot;b1&quot;, &quot;b3&quot;, &quot;c&quot;)
+.filter(s -&gt; &#123;
+System.out.println(&quot;filter: &quot; + s);
+return true;
+&#125;);
+</code></pre>
+<p>执行这段代码时，不向控制台打印任何东西。这是因为衔接操作只在终止操作调用时被执行。</p>
+<p>让我们通过添加终止操作<code>forEach</code>来扩展这个例子：</p>
+<pre><code class="java">Stream.of(&quot;d2&quot;, &quot;a2&quot;, &quot;b1&quot;, &quot;b3&quot;, &quot;c&quot;)
+.filter(s -&gt; &#123;
+System.out.println(&quot;filter: &quot; + s);
+return true;
+&#125;)
+.forEach(s -&gt; System.out.println(&quot;forEach: &quot; + s));
+</code></pre>
+<p>执行这段代码会得到如下输出：</p>
+<pre><code class="java">filter:  d2
+forEach: d2
+filter:  a2
+forEach: a2
+filter:  b1
+forEach: b1
+filter:  b3
+forEach: b3
+filter:  c
+forEach: c
+</code></pre>
+<p>结果的顺序可能出人意料。原始的方法会在数据流的所有元素上，一个接一个地水平执行所有操作。但是每个元素在调用链上垂直移动。第一个字符串<code>&quot;d2&quot;</code>首先经过<code>filter</code>然后是<code>forEach</code>，执行完后才开始处理第二个字符串<code>&quot;a2&quot;</code>。</p>
+<p>这种行为可以减少每个元素上所执行的实际操作数量，就像我们在下个例子中看到的那样：</p>
+<pre><code class="java">Stream.of(&quot;d2&quot;, &quot;a2&quot;, &quot;b1&quot;, &quot;b3&quot;, &quot;c&quot;)
+.map(s -&gt; &#123;
+System.out.println(&quot;map: &quot; + s);
+return s.toUpperCase();
+&#125;)
+.anyMatch(s -&gt; &#123;
+System.out.println(&quot;anyMatch: &quot; + s);
+return s.startsWith(&quot;A&quot;);
+&#125;);
+
+// map:      d2
+// anyMatch: D2
+// map:      a2
+// anyMatch: A2
+</code></pre>
+<p>只要提供的数据元素满足了谓词，<code>anyMatch</code>操作就会返回<code>true</code>。对于第二个传递<code>&quot;A2&quot;</code>的元素，它的结果为真。由于数据流的链式调用是垂直执行的，<code>map</code>这里只需要执行两次。所以<code>map</code>会执行尽可能少的次数，而不是把所有元素都映射一遍。</p>
+<h4 id="为什么顺序如此重要"><a href="#为什么顺序如此重要" class="headerlink" title="为什么顺序如此重要"></a>为什么顺序如此重要</h4><p>下面的例子由两个衔接操作<code>map</code>和<code>filter</code>，以及一个终止操作<code>forEach</code>组成。让我们再来看看这些操作如何执行：</p>
+<pre><code class="java">Stream.of(&quot;d2&quot;, &quot;a2&quot;, &quot;b1&quot;, &quot;b3&quot;, &quot;c&quot;)
+.map(s -&gt; &#123;
+System.out.println(&quot;map: &quot; + s);
+return s.toUpperCase();
+&#125;)
+.filter(s -&gt; &#123;
+System.out.println(&quot;filter: &quot; + s);
+return s.startsWith(&quot;A&quot;);
+&#125;)
+.forEach(s -&gt; System.out.println(&quot;forEach: &quot; + s));
+
+// map:     d2
+// filter:  D2
+// map:     a2
+// filter:  A2
+// forEach: A2
+// map:     b1
+// filter:  B1
+// map:     b3
+// filter:  B3
+// map:     c
+// filter:  C
+</code></pre>
+<p>就像你可能猜到的那样，<code>map</code>和<code>filter</code>会对底层集合的每个字符串调用五次，而<code>forEach</code>只会调用一次。</p>
+<p>如果我们调整操作顺序，将<code>filter</code>移动到调用链的顶端，就可以极大减少操作的执行次数:</p>
+<pre><code class="java">Stream.of(&quot;d2&quot;, &quot;a2&quot;, &quot;b1&quot;, &quot;b3&quot;, &quot;c&quot;)
+    .filter(s -&gt; &#123;
+        System.out.println(&quot;filter: &quot; + s);
+        return s.startsWith(&quot;a&quot;);
+    &#125;)
+    .map(s -&gt; &#123;
+        System.out.println(&quot;map: &quot; + s);
+        return s.toUpperCase();
+    &#125;)
+    .forEach(s -&gt; System.out.println(&quot;forEach: &quot; + s));
+
+// filter:  d2
+// filter:  a2
+// map:     a2
+// forEach: A2
+// filter:  b1
+// filter:  b3
+// filter:  c
+</code></pre>
+<p>现在，<code>map</code>只会调用一次，所以操作流水线对于更多的输入元素会执行更快。在整合复杂的方法链时，要记住这一点。</p>
+<p>让我们通过添加额外的方法<code>sorted</code>来扩展上面的例子：</p>
+<pre><code class="java">Stream.of(&quot;d2&quot;, &quot;a2&quot;, &quot;b1&quot;, &quot;b3&quot;, &quot;c&quot;)
+    .sorted((s1, s2) -&gt; &#123;
+        System.out.printf(&quot;sort: %s; %s\n&quot;, s1, s2);
+        return s1.compareTo(s2);
+    &#125;)
+    .filter(s -&gt; &#123;
+        System.out.println(&quot;filter: &quot; + s);
+        return s.startsWith(&quot;a&quot;);
+    &#125;)
+    .map(s -&gt; &#123;
+        System.out.println(&quot;map: &quot; + s);
+        return s.toUpperCase();
+    &#125;)
+    .forEach(s -&gt; System.out.println(&quot;forEach: &quot; + s));
+</code></pre>
+<p>排序是一类特殊的衔接操作。它是有状态的操作，因为你需要在处理中保存状态来对集合中的元素排序。</p>
+<p>执行这个例子会得到如下输入：</p>
+<pre><code class="bash">sort:    a2; d2
+sort:    b1; a2
+sort:    b1; d2
+sort:    b1; a2
+sort:    b3; b1
+sort:    b3; d2
+sort:    c; b3
+sort:    c; d2
+filter:  a2
+map:     a2
+forEach: A2
+filter:  b1
+filter:  b3
+filter:  c
+filter:  d2
+</code></pre>
+<p>首先，排序操作在整个输入集合上执行。也就是说，<code>sorted</code>以水平方式执行。所以这里<code>sorted</code>对输入集合中每个元素的多种组合调用了八次。</p>
+<p>我们同样可以通过重排调用链来优化性能：</p>
+<pre><code class="java">Stream.of(&quot;d2&quot;, &quot;a2&quot;, &quot;b1&quot;, &quot;b3&quot;, &quot;c&quot;)
+    .filter(s -&gt; &#123;
+        System.out.println(&quot;filter: &quot; + s);
+        return s.startsWith(&quot;a&quot;);
+    &#125;)
+    .sorted((s1, s2) -&gt; &#123;
+        System.out.printf(&quot;sort: %s; %s\n&quot;, s1, s2);
+        return s1.compareTo(s2);
+    &#125;)
+    .map(s -&gt; &#123;
+        System.out.println(&quot;map: &quot; + s);
+        return s.toUpperCase();
+    &#125;)
+    .forEach(s -&gt; System.out.println(&quot;forEach: &quot; + s));
+
+// filter:  d2
+// filter:  a2
+// filter:  b1
+// filter:  b3
+// filter:  c
+// map:     a2
+// forEach: A2
+</code></pre>
+<p>这个例子中<code>sorted</code>永远不会调用，因为<code>filter</code>把输入集合减少至只有一个元素。所以对于更大的输入集合会极大提升性能。</p>
+<h4 id="复用数据流"><a href="#复用数据流" class="headerlink" title="复用数据流"></a>复用数据流</h4><p>Java8的数据流不能被复用。一旦你调用了任何终止操作，数据流就关闭了：</p>
+<pre><code class="java">Stream&lt;String&gt; stream =
+Stream.of(&quot;d2&quot;, &quot;a2&quot;, &quot;b1&quot;, &quot;b3&quot;, &quot;c&quot;)
+.filter(s -&gt; s.startsWith(&quot;a&quot;));
+
+stream.anyMatch(s -&gt; true); // ok
+stream.noneMatch(s -&gt; true); // exception
+</code></pre>
+<p>在相同数据流上，在<code>anyMatch</code>之后调用<code>noneMatch</code>会产生下面的异常：</p>
+<pre><code class="java">java.lang.IllegalStateException: stream has already been operated upon or closed
+   at java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:229)
+   at java.util.stream.ReferencePipeline.noneMatch(ReferencePipeline.java:459)
+   at com.winterbe.java8.Streams5.test7(Streams5.java:38)
+   at com.winterbe.java8.Streams5.main(Streams5.java:28)
+</code></pre>
+<p>要克服这个限制，我们需要为每个我们想要执行的终止操作创建新的数据流调用链。例如，我们创建一个数据流供应器，来构建新的数据流，并且设置好所有衔接操作：</p>
+<pre><code class="java">Supplier&lt;Stream&lt;String&gt;&gt; streamSupplier =
+    () -&gt; Stream.of(&quot;d2&quot;, &quot;a2&quot;, &quot;b1&quot;, &quot;b3&quot;, &quot;c&quot;)
+    .filter(s -&gt; s.startsWith(&quot;a&quot;));
+
+streamSupplier.get().anyMatch(s -&gt; true); // ok
+streamSupplier.get().noneMatch(s -&gt; true); // ok 
+</code></pre>
+<p>每次对<code>get()</code>的调用都构造了一个新的数据流，我们将其保存来调用终止操作。</p>
+<h3 id="Create-Stream"><a href="#Create-Stream" class="headerlink" title="Create Stream"></a>Create Stream</h3><pre><code class="java">// Stream.of(val1, val2, val3….)
+Stream&lt;Integer&gt; stream1 = Stream.of(1,2,3,4,5,6,7,8,9);
+stream1.forEach(p -&gt; System.out.println(p));
+
+// Stream.of(arrayOfElements)
+Stream&lt;Integer&gt; stream2 = Stream.of( new Integer[]&#123;1,2,3,4,5,6,7,8,9&#125; );
+stream2.forEach(p -&gt; System.out.println(p));
+
+// List.stream()
+List&lt;Integer&gt; list = new ArrayList&lt;Integer&gt;();
+for(int i = 1; i&lt; 10; i++)&#123;
+    list.add(i);
+&#125;
+Stream&lt;Integer&gt; stream3 = list.stream();
+stream3.forEach(p -&gt; System.out.println(p));
+
+// String chars or String tokens
+IntStream stream5 = &quot;12345_abcdefg&quot;.chars();
+stream5.forEach(p -&gt; System.out.println(p));
+//OR
+Stream&lt;String&gt; stream6 = Stream.of(&quot;A$B$C&quot;.split(&quot;\\$&quot;));
+stream6.forEach(p -&gt; System.out.println(p));
+
+// file
+try(Stream lines = Files.lines(Paths.get(&quot;文件路径名&quot;),Charset.defaultCharset()))&#123;
+    //可对lines做一些操作
+&#125;catch(IOException e)&#123;
+&#125;
+
+// create iterator stream, 创建迭代或者无限流，大都数情况需要添加limit函数限制
+// Stream.generate() or Stream.iterate()
+Stream&lt;Date&gt; stream4 = Stream.generate(() -&gt; &#123; return new Date(); &#125;).limit(10);
+stream4.forEach(p -&gt; System.out.println(p));
+Stream.iterate(0, n -&gt; n + 2)
+    .limit(10)
+    .forEach(System.out::println);
+</code></pre>
+<h3 id="Convert-streams-to-collections"><a href="#Convert-streams-to-collections" class="headerlink" title="Convert streams to collections"></a>Convert streams to collections</h3><p>It’s just collecting the elements from the stream into a collection or array.</p>
+<pre><code class="java">  // Convert Stream to List – Stream.collect( Collectors.toList() )
+        List&lt;Integer&gt; list1 = new ArrayList&lt;Integer&gt;();
+        for(int i = 1; i&lt; 10; i++)&#123;
+            list1.add(i);
+        &#125;
+        Stream&lt;Integer&gt; stream1 = list1.stream();
+        List&lt;Integer&gt; evenNumbersList = stream1.filter(i -&gt; i%2 == 0).collect(Collectors.toList());
+        System.out.print(evenNumbersList);
+
+
+        // Convert Stream to array – Stream.toArray( EntryType[]::new )
+        List&lt;Integer&gt; list2 = new ArrayList&lt;Integer&gt;();
+        for(int i = 1; i&lt; 10; i++)&#123;
+            list2.add(i);
+        &#125;
+        Stream&lt;Integer&gt; stream2 = list2.stream();
+        Integer[] evenNumbersArr = stream2.filter(i -&gt; i%2 == 0).toArray(Integer[]::new);
+        System.out.print(evenNumbersArr);
+</code></pre>
+<h3 id="Core-stream-operations"><a href="#Core-stream-operations" class="headerlink" title="Core stream operations"></a>Core stream operations</h3><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>操作分类</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>操作</td>
+<td>类型</td>
+<td>返回类型</td>
+<td>使用的类型&#x2F;函数式接口</td>
+<td>函数描述符</td>
+</tr>
+<tr>
+<td><code>filter</code></td>
+<td>中间</td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td><code>Predicate&lt;T&gt;</code></td>
+<td><code>T -&gt; boolean</code></td>
+</tr>
+<tr>
+<td><code>distinct</code></td>
+<td>中间</td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>skip</code></td>
+<td>中间</td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>long</td>
+<td></td>
+</tr>
+<tr>
+<td><code>map</code></td>
+<td>中间</td>
+<td><code>Stream&lt;R&gt;</code></td>
+<td><code>Function&lt;T, R&gt;</code></td>
+<td><code>T -&gt; R</code></td>
+</tr>
+<tr>
+<td><code>flatMap</code></td>
+<td>中间</td>
+<td><code>Stream&lt;R&gt;</code></td>
+<td><code>Function&lt;T, Stream&lt;R&gt;&gt;</code></td>
+<td><code>T -&gt; Stream&lt;R&gt;</code></td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td>中间</td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>long</td>
+<td></td>
+</tr>
+<tr>
+<td><code>sorted</code></td>
+<td>中间</td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td><code>Comparator&lt;T&gt;</code></td>
+<td><code>(T, T) -&gt; int</code></td>
+</tr>
+<tr>
+<td><code>anyMatch</code></td>
+<td>终端</td>
+<td><code>boolean</code></td>
+<td><code>Predicate&lt;T&gt;</code></td>
+<td><code>T -&gt; boolean</code></td>
+</tr>
+<tr>
+<td><code>noneMatch</code></td>
+<td>终端</td>
+<td><code>boolean</code></td>
+<td><code>Predicate&lt;T&gt;</code></td>
+<td><code>T -&gt; boolean</code></td>
+</tr>
+<tr>
+<td><code>allMatch</code></td>
+<td>终端</td>
+<td><code>boolean</code></td>
+<td><code>Predicate&lt;T&gt;</code></td>
+<td><code>T -&gt; boolean</code></td>
+</tr>
+<tr>
+<td><code>findAny</code></td>
+<td>终端</td>
+<td><code>Optional&lt;T&gt;</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>findFirst</code></td>
+<td>终端</td>
+<td><code>Optional&lt;T&gt;</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>forEach</code></td>
+<td>终端</td>
+<td><code>void</code></td>
+<td><code>Consumer&lt;T&gt;</code></td>
+<td><code>T -&gt; void</code></td>
+</tr>
+<tr>
+<td><code>collect</code></td>
+<td>终端</td>
+<td><code>R</code></td>
+<td><code>Collector&lt;T, A, R&gt;</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>reduce</code></td>
+<td>终端</td>
+<td><code>Optional&lt;T&gt;</code></td>
+<td><code>BinaryOperator&lt;T&gt;</code></td>
+<td><code>(T, T) -&gt; T</code></td>
+</tr>
+<tr>
+<td><code>count</code></td>
+<td>终端</td>
+<td><code>long</code></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h4 id="Intermediate-operations"><a href="#Intermediate-operations" class="headerlink" title="Intermediate operations"></a>Intermediate operations</h4><p><strong>Intermediate operations return the stream itself</strong>, so you can chain multiple method calls in a row.</p>
+<p>中间流返回流本身。</p>
+<p>这个简单的说就是<em>pipeline</em>操作了，类比linux的管道流，</p>
+<p>比如我要统计一个目录下所有文件包含hello的字数并且统计出现的次数并且排序，然后筛选出前几个</p>
+<pre><code class="shell">grep -l &#39;hello&#39; /tmp/* | xargs wc -w | sort -nr | head -3
+</code></pre>
+<p>更多介绍请戳 <a target="_blank" rel="noopener" href="https://martinfowler.com/articles/collection-pipeline/">collection-pipeline</a></p>
+<p>下面我们先定义一个集合然后操作几种常用的流操作。</p>
+<pre><code class="java"> List&lt;String&gt; memberNames = new ArrayList&lt;&gt;();
+memberNames.add(&quot;Amitabh&quot;);
+memberNames.add(&quot;Shekhar&quot;);
+memberNames.add(&quot;Aman&quot;);
+memberNames.add(&quot;Rahul&quot;);
+memberNames.add(&quot;Shahrukh&quot;);
+memberNames.add(&quot;Salman&quot;);
+memberNames.add(&quot;Yana&quot;);
+memberNames.add(&quot;Lokesh&quot;);
+</code></pre>
+<h5 id="Stream-filter"><a href="#Stream-filter" class="headerlink" title="Stream.filter()"></a>Stream.filter()</h5><p>Filter accepts a predicate to filter all elements of the stream. This operation is intermediate which enables us to call another stream operation (e.g. forEach) on the result.</p>
+<p>过滤流获取我们需要的数据</p>
+<pre><code class="java">memberNames.stream().filter((s) -&gt; s.startsWith(&quot;A&quot;))
+    .forEach(System.out::println);
+</code></pre>
+<h5 id="Stream-distinct"><a href="#Stream-distinct" class="headerlink" title="Stream.distinct()"></a>Stream.distinct()</h5><p>函数原型为<code>Stream&lt;T&gt; distinct()</code>，作用是返回一个去除重复元素之后的<code>Stream</code></p>
+<pre><code class="java">Stream&lt;String&gt; stream= Stream.of(&quot;I&quot;, &quot;love&quot;, &quot;you&quot;, &quot;too&quot;, &quot;too&quot;);
+stream.distinct()
+    .forEach(str -&gt; System.out.println(str));
+</code></pre>
+<h5 id="Stream-map"><a href="#Stream-map" class="headerlink" title="Stream.map()"></a>Stream.map()</h5><p>The intermediate operation map converts each element into another object via the given function</p>
+<p>映射流的每个元素进行转换等操作</p>
+<pre><code class="java">memberNames.stream().filter((s) -&gt; s.startsWith(&quot;A&quot;))
+    .map(String::toUpperCase)
+    .forEach(System.out::println);
+</code></pre>
+<h5 id="Stream-flatMap"><a href="#Stream-flatMap" class="headerlink" title="Stream.flatMap"></a>Stream.flatMap</h5><p>函数原型为<code>&lt;R&gt; Stream&lt;R&gt; flatMap(Function&lt;? super T,? extends Stream&lt;? extends R&gt;&gt; mapper)</code>，作用是对每个元素执行<code>mapper</code>指定的操作，并用所有<code>mapper</code>返回的<code>Stream</code>中的元素组成一个新的<code>Stream</code>作为最终返回结果。说起来太拗口，通俗的讲<code>flatMap()</code>的作用就相当于把原<em>stream</em>中的所有元素都”摊平”之后组成的<code>Stream</code>，转换前后元素的个数和类型都可能会改变。</p>
+<pre><code class="java">Stream&lt;List&lt;Integer&gt;&gt; stream = Stream.of(Arrays.asList(1,2), Arrays.asList(3, 4, 5));
+stream.flatMap(list -&gt; list.stream())
+    .forEach(i -&gt; System.out.println(i));
+</code></pre>
+<h5 id="Stream-sorted"><a href="#Stream-sorted" class="headerlink" title="Stream.sorted()"></a>Stream.sorted()</h5><p>Sorted is an intermediate operation which returns a sorted view of the stream. The elements are sorted in natural order unless you pass a custom Comparator.</p>
+<p>对流的元素进行排序，除非传递自定义比较器，否则元素按自然顺序排序。</p>
+<p>注意，流排序只是创建已排序的流视图，不改变原本集合的顺序。</p>
+<pre><code class="java"> memberNames.stream().sorted()
+     .map(String::toUpperCase)
+     .forEach(System.out::println);
+</code></pre>
+<h4 id="Terminal-operations"><a href="#Terminal-operations" class="headerlink" title="Terminal operations"></a>Terminal operations</h4><p><strong>Terminal operations return a result of a certain type</strong> instead of again a Stream.</p>
+<p>终端流返回特定类型的结果，表示流操作完成。</p>
+<h5 id="Stream-forEach"><a href="#Stream-forEach" class="headerlink" title="Stream.forEach()"></a>Stream.forEach()</h5><p>This method helps in iterating over all elements of a stream and perform some operation on each of them. The operation is passed as lambda expression parameter.</p>
+<p>遍历流的所有元素并对每个元素执行某些操作。作为lambda表达式参数传递。</p>
+<pre><code class="java">memberNames.forEach(System.out::println);
+</code></pre>
+<h5 id="Stream-match"><a href="#Stream-match" class="headerlink" title="Stream.match()"></a>Stream.match()</h5><p>Various matching operations can be used to check whether a certain predicate matches the stream. All of those operations are terminal and return a boolean result.</p>
+<p>返回布尔值，流匹配</p>
+<pre><code class="java">  boolean matchedResult = memberNames.stream()
+      .anyMatch((s) -&gt; s.startsWith(&quot;A&quot;));
+
+    System.out.println(matchedResult);
+
+    matchedResult = memberNames.stream()
+        .allMatch((s) -&gt; s.startsWith(&quot;A&quot;));
+
+    System.out.println(matchedResult);
+
+    matchedResult = memberNames.stream()
+        .noneMatch((s) -&gt; s.startsWith(&quot;A&quot;));
+
+    System.out.println(matchedResult);
+</code></pre>
+<h5 id="Stream-count"><a href="#Stream-count" class="headerlink" title="Stream.count()"></a>Stream.count()</h5><p>Count is a terminal operation returning the number of elements in the stream as a long.</p>
+<p>返回流元素的数量</p>
+<pre><code class="java">  long totalMatched = memberNames.stream()
+      .filter((s) -&gt; s.startsWith(&quot;A&quot;))
+      .count();
+
+    System.out.println(totalMatched);
+</code></pre>
+<h5 id="Stream-reduce"><a href="#Stream-reduce" class="headerlink" title="Stream.reduce()"></a>Stream.reduce()</h5><p>This terminal operation performs a reduction on the elements of the stream with the given function. The result is an Optional holding the reduced value.</p>
+<p><em>reduce</em>操作可以实现从一组元素中生成一个值，<code>sum()</code>、<code>max()</code>、<code>min()</code>、<code>count()</code>等都是<em>reduce</em>操作，将他们单独设为函数只是因为常用。<code>reduce()</code>的方法定义有三种重写形式：</p>
+<ul>
+<li><code>Optional&lt;T&gt; reduce(BinaryOperator&lt;T&gt; accumulator)</code></li>
+<li><code>T reduce(T identity, BinaryOperator&lt;T&gt; accumulator)</code></li>
+<li><code>&lt;U&gt; U reduce(U identity, BiFunction&lt;U,? super T,U&gt; accumulator, BinaryOperator&lt;U&gt; combiner)</code></li>
+</ul>
+<p>虽然函数定义越来越长，但语义不曾改变，多的参数只是为了指明初始值（参数<em>identity</em>），或者是指定并行执行时多个部分结果的合并方式（参数<em>combiner</em>）。<code>reduce()</code>最常用的场景就是从一堆值中生成一个值。用这么复杂的函数去求一个最大或最小值，你是不是觉得设计者有病。其实不然，因为“大”和“小”或者“求和”有时会有不同的语义。</p>
+<p>需求：<em>从一组单词中找出最长的单词</em>。这里“大”的含义就是“长”。</p>
+<pre><code class="java">// 找出最长的单词
+Stream&lt;String&gt; stream = Stream.of(&quot;I&quot;, &quot;love&quot;, &quot;you&quot;, &quot;too&quot;);
+Optional&lt;String&gt; longest = stream.reduce((s1, s2) -&gt; s1.length()&gt;=s2.length() ? s1 : s2);
+//Optional&lt;String&gt; longest = stream.max((s1, s2) -&gt; s1.length()-s2.length());
+System.out.println(longest.get());
+</code></pre>
+<p>上述代码会选出最长的单词<em>love</em>，其中<em>Optional</em>是（一个）值的容器，使用它可以避免<em>null</em>值的麻烦。当然可以使用<code>Stream.max(Comparator&lt;? super T&gt; comparator)</code>方法来达到同等效果，但<code>reduce()</code>自有其存在的理由。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/CarpenterLee/JavaLambdaInternals/blob/master/Figures/Stream.reduce_parameter.png"><img src="https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/Stream.reduce_parameter.png" alt="Stream.reduce_parameter"></a></p>
+<p>需求：<em>求出一组单词的长度之和</em>。这是个“求和”操作，操作对象输入类型是<em>String</em>，而结果类型是<em>Integer</em>。</p>
+<pre><code>// 求单词长度之和
+Stream&lt;String&gt; stream = Stream.of(&quot;I&quot;, &quot;love&quot;, &quot;you&quot;, &quot;too&quot;);
+Integer lengthSum = stream.reduce(0,　// 初始值　// (1)
+        (sum, str) -&gt; sum+str.length(), // 累加器 // (2)
+        (a, b) -&gt; a+b);　// 部分和拼接器，并行执行时才会用到 // (3)
+// int lengthSum = stream.mapToInt(str -&gt; str.length()).sum();
+System.out.println(lengthSum);
+</code></pre>
+<p>上述代码标号(2)处将i. 字符串映射成长度，ii. 并和当前累加和相加。这显然是两步操作，使用<code>reduce()</code>函数将这两步合二为一，更有助于提升性能。如果想要使用<code>map()</code>和<code>sum()</code>组合来达到上述目的，也是可以的。</p>
+<h5 id="Boxed-Stream"><a href="#Boxed-Stream" class="headerlink" title="Boxed Stream"></a>Boxed Stream</h5><p>采用reduce进行数值操作会涉及到基本数值类型和引用数值类型之间的装箱、拆箱操作，因此效率较低。 当流操作为纯数值操作时，使用<strong>数值流</strong>能获得较高的效率。</p>
+<p><strong>将普通流转换成数值流</strong></p>
+<p>StreamAPI提供了三种数值流：IntStream、DoubleStream、LongStream，也提供了将普通流转换成数值流的三种方法：mapToInt、mapToDouble、mapToLong。 如，将Person中的age转换成数值流：</p>
+<pre><code>IntStream stream = list.stream().mapToInt(Person::getAge);
+</code></pre>
+<p><strong>数值计算</strong></p>
+<p>每种数值流都提供了数值计算函数，如max、min、sum等。如，找出最大的年龄：</p>
+<pre><code>OptionalInt maxAge = list.stream()
+                                .mapToInt(Person::getAge)
+                                .max();
+</code></pre>
+<p>由于数值流可能为空，并且给空的数值流计算最大值是没有意义的，因此max函数返回OptionalInt，它是Optional的一个子类，能够判断流是否为空，并对流为空的情况作相应的处理。 此外，mapToInt、mapToDouble、mapToLong进行数值操作后的返回结果分别为：OptionalInt、OptionalDouble、OptionalLong</p>
+<p><code>reduce()</code>擅长的是生成一个值，如果想要从<em>Stream</em>生成一个集合或者<em>Map</em>等复杂的对象该怎么办呢？终极武器<code>collect()</code>横空出世！</p>
+<h5 id="Stream-collect"><a href="#Stream-collect" class="headerlink" title="Stream.collect()"></a>Stream.collect()</h5><p><strong>Collectors 类的静态工厂方法</strong></p>
+<table>
+<thead>
+<tr>
+<th>工厂方法</th>
+<th>返回类型</th>
+<th>用途</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>toList</code></td>
+<td><code>List&lt;T&gt;</code></td>
+<td>把流中所有项目收集到一个 List</td>
+<td><code>List&lt;Project&gt; projects = projectStream.collect(toList());</code></td>
+</tr>
+<tr>
+<td><code>toSet</code></td>
+<td><code>Set&lt;T&gt;</code></td>
+<td>把流中所有项目收集到一个 Set，删除重复项</td>
+<td><code>Set&lt;Project&gt; projects = projectStream.collect(toSet());</code></td>
+</tr>
+<tr>
+<td><code>toCollection</code></td>
+<td><code>Collection&lt;T&gt;</code></td>
+<td>把流中所有项目收集到给定的供应源创建的集合</td>
+<td><code>Collection&lt;Project&gt; projects = projectStream.collect(toCollection(), ArrayList::new);</code></td>
+</tr>
+<tr>
+<td><code>counting</code></td>
+<td><code>Long</code></td>
+<td>计算流中元素的个数</td>
+<td><code>long howManyProjects = projectStream.collect(counting());</code></td>
+</tr>
+<tr>
+<td><code>summingInt</code></td>
+<td><code>Integer</code></td>
+<td>对流中项目的一个整数属性求和</td>
+<td><code>int totalStars = projectStream.collect(summingInt(Project::getStars));</code></td>
+</tr>
+<tr>
+<td><code>averagingInt</code></td>
+<td><code>Double</code></td>
+<td>计算流中项目 Integer 属性的平均值</td>
+<td><code>double avgStars = projectStream.collect(averagingInt(Project::getStars));</code></td>
+</tr>
+<tr>
+<td><code>summarizingInt</code></td>
+<td><code>IntSummaryStatistics</code></td>
+<td>收集关于流中项目 Integer 属性的统计值，例如最大、最小、 总和与平均值</td>
+<td><code>IntSummaryStatistics projectStatistics = projectStream.collect(summarizingInt(Project::getStars));</code></td>
+</tr>
+<tr>
+<td><code>joining</code></td>
+<td><code>String</code></td>
+<td>连接对流中每个项目调用 toString 方法所生成的字符串</td>
+<td><code>String shortProject = projectStream.map(Project::getName).collect(joining(&quot;, &quot;));</code></td>
+</tr>
+<tr>
+<td><code>maxBy</code></td>
+<td><code>Optional&lt;T&gt;</code></td>
+<td>按照给定比较器选出的最大元素的 Optional， 或如果流为空则为 Optional.empty()</td>
+<td><code>Optional&lt;Project&gt; fattest = projectStream.collect(maxBy(comparingInt(Project::getStars)));</code></td>
+</tr>
+<tr>
+<td><code>minBy</code></td>
+<td><code>Optional&lt;T&gt;</code></td>
+<td>按照给定比较器选出的最小元素的 Optional， 或如果流为空则为 Optional.empty()</td>
+<td><code>Optional&lt;Project&gt; fattest = projectStream.collect(minBy(comparingInt(Project::getStars)));</code></td>
+</tr>
+<tr>
+<td><code>reducing</code></td>
+<td>归约操作产生的类型</td>
+<td>从一个作为累加器的初始值开始，利用 BinaryOperator 与流中的元素逐个结合，从而将流归约为单个值</td>
+<td><code>int totalStars = projectStream.collect(reducing(0, Project::getStars, Integer::sum));</code></td>
+</tr>
+<tr>
+<td><code>collectingAndThen</code></td>
+<td>转换函数返回的类型</td>
+<td>包含另一个收集器，对其结果应用转换函数</td>
+<td><code>int howManyProjects = projectStream.collect(collectingAndThen(toList(), List::size));</code></td>
+</tr>
+<tr>
+<td><code>groupingBy</code></td>
+<td><code>Map&lt;K, List&lt;T&gt;&gt;</code></td>
+<td>根据项目的一个属性的值对流中的项目作问组，并将属性值作 为结果 Map 的键</td>
+<td><code>Map&lt;String,List&lt;Project&gt;&gt; projectByLanguage = projectStream.collect(groupingBy(Project::getLanguage));</code></td>
+</tr>
+<tr>
+<td><code>partitioningBy</code></td>
+<td><code>Map&lt;Boolean,List&lt;T&gt;&gt;</code></td>
+<td>根据对流中每个项目应用断言的结果来对项目进行分区</td>
+<td><code>Map&lt;Boolean,List&lt;Project&gt;&gt; vegetarianDishes = projectStream.collect(partitioningBy(Project::isVegetarian));</code></td>
+</tr>
+</tbody></table>
+<p>collect() method used to recieve elements from a sream and store them in a collection and metioned in parameter funcion.</p>
+<p>collect ( )方法，用于从Stream接收元素，并将它们存储在集合中，并在参数函数中进行赋值。</p>
+<pre><code class="java">List&lt;String&gt; memNamesInUppercase = memberNames.stream().sorted()
+    .map(String::toUpperCase)
+    .collect(Collectors.toList());
+System.out.print(memNamesInUppercase);
+</code></pre>
+<p>不夸张的讲，如果你发现某个功能在<em>Stream</em>接口中没找到，十有八九可以通过<code>collect()</code>方法实现。<code>collect()</code>是<em>Stream</em>接口方法中最灵活的一个。</p>
+<pre><code class="java">// 将Stream转换成容器或Map
+Stream&lt;String&gt; stream = Stream.of(&quot;I&quot;, &quot;love&quot;, &quot;you&quot;, &quot;too&quot;);
+List&lt;String&gt; list = stream.collect(Collectors.toList()); // (1)
+// Set&lt;String&gt; set = stream.collect(Collectors.toSet()); // (2)
+// Map&lt;String, Integer&gt; map = stream.collect(Collectors.toMap(Function.identity(), String::length)); // (3)
+</code></pre>
+<p>上述代码分别列举了如何将<em>Stream</em>转换成<em>List</em>、<em>Set</em>和<em>Map</em>。</p>
+<p><code>Collectors.toMap() internally uses Map.merge() to add mappings to the map. Map.merge() is spec&#39;d not to allow null values, regardless of whether the underlying Map supports null values. This could probably use some clarification in the Collectors.toMap() specifications.</code></p>
+<p>前面已经说过<em>Stream</em>背后依赖于某种数据源，数据源可以是数组、容器等，但不能是<em>Map</em>。反过来从<em>Stream</em>生成<em>Map</em>是可以的，但我们要想清楚<em>Map</em>的<em>key</em>和<em>value</em>分别代表什么，根本原因是我们要想清楚要干什么。通常在三种情况下<code>collect()</code>的结果会是<em>Map</em>：</p>
+<ol>
+<li>使用<code>Collectors.toMap()</code>生成的收集器，用户需要指定如何生成<em>Map</em>的<em>key</em>和<em>value</em>。</li>
+<li>使用<code>Collectors.partitioningBy()</code>生成的收集器，对元素进行二分区操作时用到。</li>
+<li>使用<code>Collectors.groupingBy()</code>生成的收集器，对元素做<em>group</em>操作时用到。</li>
+</ol>
+<p>情况1：使用<code>toMap()</code>生成的收集器，这种情况是最直接的，前面例子中已提到，这是和<code>Collectors.toCollection()</code>并列的方法。如下代码展示将学生列表转换成由&lt;学生，GPA&gt;组成的<em>Map</em>。非常直观，无需多言。</p>
+<pre><code class="java">// 使用toMap()统计学生GPA
+Map&lt;Student, Double&gt; studentToGPA =
+     students.stream().collect(Collectors.toMap(Function.identity(),// 如何生成key
+           student -&gt; computeGPA(student)));// 如何生成value
+</code></pre>
+<p>情况2：使用<code>partitioningBy()</code>生成的收集器，这种情况适用于将<code>Stream</code>中的元素依据某个二值逻辑（满足条件，或不满足）分成互补相交的两部分，比如男女性别、成绩及格与否等。下列代码展示将学生分成成绩及格或不及格的两部分。</p>
+<pre><code class="java">// Partition students into passing and failing
+Map&lt;Boolean, List&lt;Student&gt;&gt; passingFailing = students.stream()
+    .collect(Collectors.partitioningBy(s -&gt; s.getGrade() &gt;= PASS_THRESHOLD));
+</code></pre>
+<p>情况3：使用<code>groupingBy()</code>生成的收集器，这是比较灵活的一种情况。跟SQL中的<em>group by</em>语句类似，这里的<em>groupingBy()也是按照某个属性对数据进行分组，属性相同的元素会被对应到Map</em>的同一个<em>key</em>上。下列代码展示将员工按照部门进行分组：</p>
+<pre><code class="java">// Group employees by department
+Map&lt;Department, List&lt;Employee&gt;&gt; byDept = employees.stream()
+    .collect(Collectors.groupingBy(Employee::getDepartment));
+</code></pre>
+<p>以上只是分组的最基本用法，有些时候仅仅分组是不够的。在SQL中使用<em>group by</em>是为了协助其他查询，比如<em>1. 先将员工按照部门分组，2. 然后统计每个部门员工的人数</em>。Java类库设计者也考虑到了这种情况，增强版的<code>groupingBy()</code>能够满足这种需求。增强版的<code>groupingBy()</code>允许我们对元素分组之后再执行某种运算，比如求和、计数、平均值、类型转换等。这种先将元素分组的收集器叫做<strong>上游收集器</strong>，之后执行其他运算的收集器叫做<strong>下游收集器</strong>(<em>downstream Collector</em>)。</p>
+<pre><code class="java">// 使用下游收集器统计每个部门的人数
+Map&lt;Department, Integer&gt; totalByDept = employees.stream()
+    .collect(Collectors.groupingBy(Employee::getDepartment,
+        Collectors.counting()));// 下游收集器
+</code></pre>
+<p>上面代码的逻辑是不是越看越像SQL？高度非结构化。还有更狠的，下游收集器还可以包含更下游的收集器，这绝不是为了炫技而增加的把戏，而是实际场景需要。考虑将员工按照部门分组的场景，如果<em>我们想得到每个员工的名字（字符串），而不是一个个</em>Employee<em>对象</em>，可通过如下方式做到：</p>
+<pre><code class="java">// 按照部门对员工分布组，并只保留员工的名字
+Map&lt;Department, List&lt;String&gt;&gt; byDept = employees.stream()
+    .collect(Collectors.groupingBy(Employee::getDepartment,
+        Collectors.mapping(Employee::getName,// 下游收集器
+            Collectors.toList())));// 更下游的收集器
+</code></pre>
+<p>字符串拼接时使用<code>Collectors.joining()</code>生成的收集器，从此告别<em>for</em>循环。<code>Collectors.joining()</code>方法有三种重写形式，分别对应三种不同的拼接方式。无需多言，代码过目难忘。</p>
+<pre><code class="java">// 使用Collectors.joining()拼接字符串
+Stream&lt;String&gt; stream = Stream.of(&quot;I&quot;, &quot;love&quot;, &quot;you&quot;);
+//String joined = stream.collect(Collectors.joining());// &quot;Iloveyou&quot;
+//String joined = stream.collect(Collectors.joining(&quot;,&quot;));// &quot;I,love,you&quot;
+String joined = stream.collect(Collectors.joining(&quot;,&quot;, &quot;&#123;&quot;, &quot;&#125;&quot;));// &quot;&#123;I,love,you&#125;&quot;
+</code></pre>
+<p>了可以使用<em>Collectors</em>工具类已经封装好的收集器，我们还可以自定义收集器，或者直接调用<code>collect(Supplier&lt;R&gt; supplier, BiConsumer&lt;R,? super T&gt; accumulator, BiConsumer&lt;R,R&gt; combiner)</code>方法，<strong>收集任何形式你想要的信息</strong>。不过<em>Collectors</em>工具类应该能满足我们的绝大部分需求，手动实现之间请先看看文档。</p>
+<h4 id="Stream-short-circuit-operations"><a href="#Stream-short-circuit-operations" class="headerlink" title="Stream short-circuit operations"></a>Stream short-circuit operations</h4><p>尽管流操作是在满足谓词的集合中的所有元素上执行的，但是在迭代过程中每当遇到匹配的元素时，通常都希望中断该操作。在外部迭代中，您将使用if-else块。在内部迭代中，有一些特定的方法可以用于此目的。</p>
+<pre><code class="java">// anyMatch() -&gt; 一旦条件 满足 predicate ，则返回true。它将不再处理任何元素。
+boolean matched = memberNames.stream()
+    .anyMatch((s) -&gt; s.startsWith(&quot;A&quot;));
+
+System.out.println(matched);
+
+// findFirst() -&gt; 它将从流返回第一个元素，然后不再处理任何元素。
+String firstMatchedName = memberNames.stream()
+    .filter((s) -&gt; s.startsWith(&quot;L&quot;))
+    .findFirst().get();
+
+System.out.println(firstMatchedName);
+</code></pre>
+<h4 id="Streams-pipeline"><a href="#Streams-pipeline" class="headerlink" title="Streams pipeline"></a>Streams pipeline</h4><p>这里我们来阐述一下，Streams 流水线工作原理。</p>
+<h5 id="中间操作怎么保存跟记录"><a href="#中间操作怎么保存跟记录" class="headerlink" title="中间操作怎么保存跟记录"></a>中间操作怎么保存跟记录</h5><p>首先，我们上面介绍了Streams的很多中间操作，那么这些中间操作是如果保存跟记录呢，很多Stream操作会需要一个回调函数（Lambda表达式），因此一个完整的操作是&lt;<em>数据来源，操作，回调函数*&gt;构成的三元组。Stream中使用Stage的概念来描述一个完整的操作，并用某种实例化后的</em>PipelineHelper*来代表Stage，将具有先后顺序的各个Stage连到一起，就构成了整个流水线。跟Stream相关类和接口的继承关系图示。</p>
+<p><img src="https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/Java_stream_pipeline_classes.png" alt="Java_stream_pipeline_classes"></p>
+<p>还有<em>IntPipeline, LongPipeline, DoublePipeline</em>没在图中画出，这三个类专门为三种基本类型（不是包装类型）而定制的，跟<em>ReferencePipeline</em>是并列关系。图中<em>Head</em>用于表示第一个Stage，即调用调用诸如<em>Collection.stream()方法产生的Stage，很显然这个Stage里不包含任何操作；StatelessOp和StatefulOp</em>分别表示无状态和有状态的Stage，对应于无状态和有状态的中间操作。</p>
+<p>Stream流水线组织结构示意图如下：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/CarpenterLee/JavaLambdaInternals/blob/master/Figures/Stream_pipeline_example.png"><img src="https://github.com/CarpenterLee/JavaLambdaInternals/raw/master/Figures/Stream_pipeline_example.png" alt="Stream_pipeline_example"></a></p>
+<p>图中通过<code>Collection.stream()</code>方法得到<em>Head</em>也就是stage0，紧接着调用一系列的中间操作，不断产生新的Stream。<strong>这些Stream对象以双向链表的形式组织在一起，构成整个流水线，由于每个Stage都记录了前一个Stage和本次的操作以及回调函数，依靠这种结构就能建立起对数据源的所有操作</strong>。这就是Stream记录操作的方式。</p>
+<h5 id="中间操作怎么叠加"><a href="#中间操作怎么叠加" class="headerlink" title="中间操作怎么叠加"></a>中间操作怎么叠加</h5><p>以上只是解决了操作记录的问题，要想让流水线起到应有的作用我们需要一种将所有操作叠加到一起的方案。你可能会觉得这很简单，只需要从流水线的head开始依次执行每一步的操作（包括回调函数）就行了。这听起来似乎是可行的，但是你忽略了前面的Stage并不知道后面Stage到底执行了哪种操作，以及回调函数是哪种形式。换句话说，只有当前Stage本身才知道该如何执行自己包含的动作。这就需要有某种协议来协调相邻Stage之间的调用关系。</p>
+<p>这种协议由<em>Sink</em>接口完成，<em>Sink</em>接口包含的方法如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>void begin(long size)</td>
+<td>开始遍历元素之前调用该方法，通知Sink做好准备。</td>
+</tr>
+<tr>
+<td>void end()</td>
+<td>所有元素遍历完成之后调用，通知Sink没有更多的元素了。</td>
+</tr>
+<tr>
+<td>boolean cancellationRequested()</td>
+<td>是否可以结束操作，可以让短路操作尽早结束。</td>
+</tr>
+<tr>
+<td>void accept(T t)</td>
+<td>遍历元素时调用，接受一个待处理元素，并对元素进行处理。Stage把自己包含的操作和回调方法封装到该方法里，前一个Stage只需要调用当前Stage.accept(T t)方法就行了。</td>
+</tr>
+</tbody></table>
+<p>有了上面的协议，相邻Stage之间调用就很方便了，每个Stage都会将自己的操作封装到一个Sink里，前一个Stage只需调用后一个Stage的<code>accept()</code>方法即可，并不需要知道其内部是如何处理的。当然对于有状态的操作，Sink的<code>begin()</code>和<code>end()</code>方法也是必须实现的。比如Stream.sorted()是一个有状态的中间操作，其对应的Sink.begin()方法可能创建一个乘放结果的容器，而accept()方法负责将元素添加到该容器，最后end()负责对容器进行排序。对于短路操作，<code>Sink.cancellationRequested()</code>也是必须实现的，比如Stream.findFirst()是短路操作，只要找到一个元素，cancellationRequested()就应该返回<em>true</em>，以便调用者尽快结束查找。Sink的四个接口方法常常相互协作，共同完成计算任务。<strong>实际上Stream API内部实现的的本质，就是如何重载Sink的这四个接口方法</strong>。</p>
+<p>有了Sink对操作的包装，Stage之间的调用问题就解决了，执行时只需要从流水线的head开始对数据源依次调用每个Stage对应的Sink.{begin(), accept(), cancellationRequested(), end()}方法就可以了。一种可能的Sink.accept()方法流程是这样的：</p>
+<pre><code class="java">void accept(U u)&#123;
+    1. 使用当前Sink包装的回调函数处理u
+    2. 将处理结果传递给流水线下游的Sink
+&#125;
+</code></pre>
+<p>Sink接口的其他几个方法也是按照这种[处理-&gt;转发]的模型实现。下面我们结合具体例子看看Stream的中间操作是如何将自身的操作包装成Sink以及Sink是如何将处理结果转发给下一个Sink的。先看Stream.map()方法：</p>
+<pre><code class="java">// Stream.map()，调用该方法将产生一个新的Stream
+public final &lt;R&gt; Stream&lt;R&gt; map(Function&lt;? super P_OUT, ? extends R&gt; mapper) &#123;
+    ...
+    return new StatelessOp&lt;P_OUT, R&gt;(this, StreamShape.REFERENCE,
+                                 StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) &#123;
+        @Override /*opWripSink()方法返回由回调函数包装而成Sink*/
+        Sink&lt;P_OUT&gt; opWrapSink(int flags, Sink&lt;R&gt; downstream) &#123;
+            return new Sink.ChainedReference&lt;P_OUT, R&gt;(downstream) &#123;
+                @Override
+                public void accept(P_OUT u) &#123;
+                    R r = mapper.apply(u);// 1. 使用当前Sink包装的回调函数mapper处理u
+                    downstream.accept(r);// 2. 将处理结果传递给流水线下游的Sink
+                &#125;
+            &#125;;
+        &#125;
+    &#125;;
+&#125;
+</code></pre>
+<p>上述代码看似复杂，其实逻辑很简单，就是将回调函数<em>mapper</em>包装到一个Sink当中。由于Stream.map()是一个无状态的中间操作，所以map()方法返回了一个StatelessOp内部类对象（一个新的Stream），调用这个新Stream的opWripSink()方法将得到一个包装了当前回调函数的Sink。</p>
+<p>再来看一个复杂一点的例子。Stream.sorted()方法将对Stream中的元素进行排序，显然这是一个有状态的中间操作，因为读取所有元素之前是没法得到最终顺序的。抛开模板代码直接进入问题本质，sorted()方法是如何将操作封装成Sink的呢？sorted()一种可能封装的Sink代码如下：</p>
+<pre><code class="java">// Stream.sort()方法用到的Sink实现
+class RefSortingSink&lt;T&gt; extends AbstractRefSortingSink&lt;T&gt; &#123;
+    private ArrayList&lt;T&gt; list;// 存放用于排序的元素
+    RefSortingSink(Sink&lt;? super T&gt; downstream, Comparator&lt;? super T&gt; comparator) &#123;
+        super(downstream, comparator);
+    &#125;
+    @Override
+    public void begin(long size) &#123;
+        ...
+        // 创建一个存放排序元素的列表
+        list = (size &gt;= 0) ? new ArrayList&lt;T&gt;((int) size) : new ArrayList&lt;T&gt;();
+    &#125;
+    @Override
+    public void end() &#123;
+        list.sort(comparator);// 只有元素全部接收之后才能开始排序
+        downstream.begin(list.size());
+        if (!cancellationWasRequested) &#123;// 下游Sink不包含短路操作
+            list.forEach(downstream::accept);// 2. 将处理结果传递给流水线下游的Sink
+        &#125;
+        else &#123;// 下游Sink包含短路操作
+            for (T t : list) &#123;// 每次都调用cancellationRequested()询问是否可以结束处理。
+                if (downstream.cancellationRequested()) break;
+                downstream.accept(t);// 2. 将处理结果传递给流水线下游的Sink
+            &#125;
+        &#125;
+        downstream.end();
+        list = null;
+    &#125;
+    @Override
+    public void accept(T t) &#123;
+        list.add(t);// 1. 使用当前Sink包装动作处理t，只是简单的将元素添加到中间列表当中
+    &#125;
+&#125;
+</code></pre>
+<p>上述代码完美的展现了Sink的四个接口方法是如何协同工作的：</p>
+<ol>
+<li>首先begin()方法告诉Sink参与排序的元素个数，方便确定中间结果容器的的大小；</li>
+<li>之后通过accept()方法将元素添加到中间结果当中，最终执行时调用者会不断调用该方法，直到遍历所有元素；一个</li>
+<li>最后end()方法告诉Sink所有元素遍历完毕，启动排序步骤，排序完成后将结果传递给下游的Sink；</li>
+<li>如果下游的Sink是短路操作，将结果传递给下游时不断询问下游cancellationRequested()是否可以结束处理。</li>
+</ol>
+<h5 id="操作叠加后如何执行"><a href="#操作叠加后如何执行" class="headerlink" title="操作叠加后如何执行"></a>操作叠加后如何执行</h5><p>Sink完美封装了Stream每一步操作，并给出了[处理-&gt;转发]的模式来叠加操作。这一连串的齿轮已经咬合，就差最后一步拨动齿轮启动执行。是什么启动这一连串的操作呢？也许你已经想到了启动的原始动力就是结束操作(Terminal Operation)，一旦调用某个结束操作，就会触发整个流水线的执行。</p>
+<p>结束操作之后不能再有别的操作，所以结束操作不会创建新的流水线阶段(Stage)，直观的说就是流水线的链表不会在往后延伸了。结束操作会创建一个包装了自己操作的Sink，这也是流水线中最后一个Sink，这个Sink只需要处理数据而不需要将结果传递给下游的Sink（因为没有下游）。对于Sink的[处理-&gt;转发]模型，结束操作的Sink就是调用链的出口。</p>
+<p>我们再来考察一下上游的Sink是如何找到下游Sink的。一种可选的方案是在<em>PipelineHelper</em>中设置一个Sink字段，在流水线中找到下游Stage并访问Sink字段即可。但Stream类库的设计者没有这么做，而是设置了一个<code>Sink AbstractPipeline.opWrapSink(int flags, Sink downstream)</code>方法来得到Sink，该方法的作用是返回一个新的包含了当前Stage代表的操作以及能够将结果传递给downstream的Sink对象。为什么要产生一个新对象而不是返回一个Sink字段？这是因为使用opWrapSink()可以将当前操作与下游Sink（上文中的downstream参数）结合成新Sink。试想只要从流水线的最后一个Stage开始，不断调用上一个Stage的opWrapSink()方法直到最开始（不包括stage0，因为stage0代表数据源，不包含操作），就可以得到一个代表了流水线上所有操作的Sink，用代码表示就是这样：</p>
+<pre><code>// AbstractPipeline.wrapSink()
+// 从下游向上游不断包装Sink。如果最初传入的sink代表结束操作，
+// 函数返回时就可以得到一个代表了流水线上所有操作的Sink。
+final &lt;P_IN&gt; Sink&lt;P_IN&gt; wrapSink(Sink&lt;E_OUT&gt; sink) &#123;
+    ...
+    for (AbstractPipeline p=AbstractPipeline.this; p.depth &gt; 0; p=p.previousStage) &#123;
+        sink = p.opWrapSink(p.previousStage.combinedFlags, sink);
+    &#125;
+    return (Sink&lt;P_IN&gt;) sink;
+&#125;
+</code></pre>
+<p>现在流水线上从开始到结束的所有的操作都被包装到了一个Sink里，执行这个Sink就相当于执行整个流水线，执行Sink的代码如下：</p>
+<pre><code>// AbstractPipeline.copyInto(), 对spliterator代表的数据执行wrappedSink代表的操作。
+final &lt;P_IN&gt; void copyInto(Sink&lt;P_IN&gt; wrappedSink, Spliterator&lt;P_IN&gt; spliterator) &#123;
+    ...
+    if (!StreamOpFlag.SHORT_CIRCUIT.isKnown(getStreamAndOpFlags())) &#123;
+        wrappedSink.begin(spliterator.getExactSizeIfKnown());// 通知开始遍历
+        spliterator.forEachRemaining(wrappedSink);// 迭代
+        wrappedSink.end();// 通知遍历结束
+    &#125;
+    ...
+&#125;
+</code></pre>
+<p>上述代码首先调用wrappedSink.begin()方法告诉Sink数据即将到来，然后调用spliterator.forEachRemaining()方法对数据进行迭代（Spliterator是容器的一种迭代器，<a target="_blank" rel="noopener" href="https://github.com/CarpenterLee/JavaLambdaInternals/blob/master/3-Lambda%20and%20Collections.md#spliterator">参阅</a>），最后调用wrappedSink.end()方法通知Sink数据处理结束。逻辑如此清晰。</p>
+<h5 id="执行后的结果怎么保存"><a href="#执行后的结果怎么保存" class="headerlink" title="执行后的结果怎么保存"></a>执行后的结果怎么保存</h5><p>最后一个问题是流水线上所有操作都执行后，用户所需要的结果（如果有）在哪里？首先要说明的是不是所有的Stream结束操作都需要返回结果，有些操作只是为了使用其副作用(<em>Side-effects</em>)，比如使用<code>Stream.forEach()</code>方法将结果打印出来就是常见的使用副作用的场景（事实上，除了打印之外其他场景都应避免使用副作用），对于真正需要返回结果的结束操作结果存在哪里呢？</p>
+<blockquote>
+<p>特别说明：副作用不应该被滥用，也许你会觉得在Stream.forEach()里进行元素收集是个不错的选择，就像下面代码中那样，但遗憾的是这样使用的正确性和效率都无法保证，因为Stream可能会并行执行。大多数使用副作用的地方都可以使用<a target="_blank" rel="noopener" href="https://github.com/CarpenterLee/JavaLambdaInternals/blob/master/5-Streams%20API(II).md">归约操作</a>更安全和有效的完成。</p>
+</blockquote>
+<pre><code>// 错误的收集方式
+ArrayList&lt;String&gt; results = new ArrayList&lt;&gt;();
+stream.filter(s -&gt; pattern.matcher(s).matches())
+      .forEach(s -&gt; results.add(s));  // Unnecessary use of side-effects!
+// 正确的收集方式
+List&lt;String&gt;results =
+     stream.filter(s -&gt; pattern.matcher(s).matches())
+             .collect(Collectors.toList());  // No side-effects!
+</code></pre>
+<p>回到流水线执行结果的问题上来，需要返回结果的流水线结果存在哪里呢？这要分不同的情况讨论，下表给出了各种有返回结果的Stream结束操作。</p>
+<table>
+<thead>
+<tr>
+<th>返回类型</th>
+<th>对应的结束操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>boolean</td>
+<td>anyMatch() allMatch() noneMatch()</td>
+</tr>
+<tr>
+<td>Optional</td>
+<td>findFirst() findAny()</td>
+</tr>
+<tr>
+<td>归约结果</td>
+<td>reduce() collect()</td>
+</tr>
+<tr>
+<td>数组</td>
+<td>toArray()</td>
+</tr>
+</tbody></table>
+<ol>
+<li>对于表中返回boolean或者Optional的操作（Optional是存放 一个 值的容器）的操作，由于值返回一个值，只需要在对应的Sink中记录这个值，等到执行结束时返回就可以了。</li>
+<li>对于归约操作，最终结果放在用户调用时指定的容器中（容器类型通过<a target="_blank" rel="noopener" href="https://github.com/CarpenterLee/JavaLambdaInternals/blob/master/5-Streams%20API(II).md#%E6%94%B6%E9%9B%86%E5%99%A8">收集器</a>指定）。collect(), reduce(), max(), min()都是归约操作，虽然max()和min()也是返回一个Optional，但事实上底层是通过调用<a target="_blank" rel="noopener" href="https://github.com/CarpenterLee/JavaLambdaInternals/blob/master/5-Streams%20API(II).md#%E5%A4%9A%E9%9D%A2%E6%89%8Breduce">reduce()</a>方法实现的。</li>
+<li>对于返回是数组的情况，毫无疑问的结果会放在数组当中。这么说当然是对的，但在最终返回数组之前，结果其实是存储在一种叫做<em>Node</em>的数据结构中的。Node是一种多叉树结构，元素存储在树的叶子当中，并且一个叶子节点可以存放多个元素。这样做是为了并行执行方便。</li>
+</ol>
+<h3 id="Parallelism-in-Java-Steam"><a href="#Parallelism-in-Java-Steam" class="headerlink" title="Parallelism in Java Steam"></a>Parallelism in Java Steam</h3><p>并行流</p>
+<pre><code class="java">List&lt;Integer&gt; list = new ArrayList&lt;Integer&gt;();
+for(int i = 1; i&lt; 10; i++)&#123;
+    list.add(i);
+&#125;
+//Here creating a parallel stream
+Stream&lt;Integer&gt; stream = list.parallelStream();
+Integer[] evenNumbersArr = stream.filter(i -&gt; i%2 == 0).toArray(Integer[]::new);
+System.out.print(evenNumbersArr);
+</code></pre>
+<h2 id="Concurrent"><a href="#Concurrent" class="headerlink" title="Concurrent"></a>Concurrent</h2><h3 id="Thread-和-Runnable"><a href="#Thread-和-Runnable" class="headerlink" title="Thread 和 Runnable"></a>Thread 和 Runnable</h3><p>所有的现代操作系统都通过进程和线程来支持并发。进程是通常彼此独立运行的程序的实例，比如，如果你启动了一个Java程序，操作系统产生一个新的进程，与其他程序一起并行执行。 在这些进程的内部，我们使用线程并发执行代码，因此，我们可以最大限度的利用CPU可用的核心（core）。</p>
+<p>Java从JDK1.0开始执行线程。在开始一个新的线程之前，你必须指定由这个线程执行的代码，通常称为task。这可以通过实现Runnable——一个定义了一个无返回值无参数的 <code>run()</code> 方法的函数接口。</p>
+<h4 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h4><p>在执行一个异步任务或并发任务时，往往是通过直接 <code>new Thread()</code> 方法来创建新的线程，这样做弊端较多，更好的解决方案是合理地利用线程池，线程池的优势很明显，如下：</p>
+<ol>
+<li>降低系统资源消耗，通过重用已存在的线程，降低线程创建和销毁造成的消耗；</li>
+<li>提高系统响应速度，当有任务到达时，无需等待新线程的创建便能立即执行；</li>
+<li>方便线程并发数的管控，线程若是无限制的创建，不仅会额外消耗大量系统资源，更是占用过多资源而阻塞系统或oom等状况，从而降低系统的稳定性。线程池能有效管控线程，统一分配、调优，提供资源使用率；</li>
+<li>更强大的功能，线程池提供了定时、定期以及可控线程数等功能的线程池，使用方便简单。</li>
+</ol>
+<h4 id="线程池用法"><a href="#线程池用法" class="headerlink" title="线程池用法"></a>线程池用法</h4><h5 id="newCachedThreadPool"><a href="#newCachedThreadPool" class="headerlink" title="newCachedThreadPool"></a>newCachedThreadPool</h5><p>创建一个可缓存的无界线程池，该方法无参数。当线程池中的线程空闲时间超过60s则会自动回收该线程，当任务超过线程池的线程数则创建新线程。线程池的大小上限为 <code>Integer.MAX_VALUE</code>，可看做是无限大。</p>
+<pre><code>public void cachedThreadPoolDemo()&#123;
+    ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
+    for (int i = 0; i &lt; 5; i++) &#123;
+        final int index = i;
+
+        cachedThreadPool.execute(new Runnable() &#123;
+
+            @Override
+            public void run() &#123;
+                System.out.println(Thread.currentThread().getName()+&quot;, index=&quot;+index);
+            &#125;
+        &#125;);
+
+        try &#123;
+            Thread.sleep(1000);
+        &#125; catch (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>运行结果：</p>
+<pre><code>pool-1-thread-1, index=0
+pool-1-thread-1, index=1
+pool-1-thread-1, index=2
+pool-1-thread-1, index=3
+pool-1-thread-1, index=4
+</code></pre>
+<p>从运行结果可以看出，整个过程都在同一个线程pool-1-thread-1中运行，后面线程复用前面的线程。</p>
+<h5 id="newFixedThreadPool"><a href="#newFixedThreadPool" class="headerlink" title="newFixedThreadPool"></a>newFixedThreadPool</h5><p>创建一个固定大小的线程池，该方法可指定线程池的固定大小，对于超出的线程会在 <code>LinkedBlockingQueue</code> 队列中等待。</p>
+<pre><code>public void fixedThreadPoolDemo()&#123;
+    ExecutorService fixedThreadPool = Executors.newFixedThreadPool(3);
+    for (int i = 0; i &lt; 6; i++) &#123;
+        final int index = i;
+
+        fixedThreadPool.execute(new Runnable() &#123;
+
+            @Override
+            public void run() &#123;
+                System.out.println(Thread.currentThread().getName()+&quot;, index=&quot;+index);
+            &#125;
+        &#125;);
+
+        try &#123;
+            Thread.sleep(1000);
+        &#125; catch (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>运行结果：</p>
+<pre><code>pool-1-thread-1, index=0
+pool-1-thread-2, index=1
+pool-1-thread-3, index=2
+pool-1-thread-1, index=3
+pool-1-thread-2, index=4
+pool-1-thread-3, index=5
+</code></pre>
+<p>从运行结果可以看出，线程池大小为3，每休眠1s后将任务提交给线程池的各个线程轮番交错地执行。线程池的大小设置，可参数 <code>Runtime.getRuntime().availableProcessors()</code>。</p>
+<h5 id="newSingleThreadExecutor"><a href="#newSingleThreadExecutor" class="headerlink" title="newSingleThreadExecutor"></a>newSingleThreadExecutor</h5><p>创建只有一个线程的线程池，该方法无参数，所有任务都保存队列LinkedBlockingQueue中，等待唯一的单线程来执行任务，并保证所有任务按照指定顺序(FIFO或优先级)执行。</p>
+<pre><code>public void singleThreadExecutorDemo()&#123;
+    ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+    for (int i = 0; i &lt; 3; i++) &#123;
+        final int index = i;
+
+        singleThreadExecutor.execute(new Runnable() &#123;
+
+            @Override
+            public void run() &#123;
+                System.out.println(Thread.currentThread().getName()+&quot;, index=&quot;+index);
+            &#125;
+        &#125;);
+
+        try &#123;
+            Thread.sleep(1000);
+        &#125; catch (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>运行结果：</p>
+<pre><code>pool-1-thread-1, index=0
+pool-1-thread-1, index=1
+pool-1-thread-1, index=2
+</code></pre>
+<p>从运行结果可以看出，所有任务都是在单一线程运行的。</p>
+<h5 id="newScheduledThreadPool"><a href="#newScheduledThreadPool" class="headerlink" title="newScheduledThreadPool"></a>newScheduledThreadPool</h5><p>创建一个可定时执行或周期执行任务的线程池，该方法可指定线程池的核心线程个数。</p>
+<pre><code>public void scheduledThreadPoolDemo()&#123;
+    ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(3);
+    //定时执行一次的任务，延迟1s后执行
+    scheduledThreadPool.schedule(new Runnable() &#123;
+
+        @Override
+        public void run() &#123;
+            System.out.println(Thread.currentThread().getName()+&quot;, delay 1s&quot;);
+        &#125;
+    &#125;, 1, TimeUnit.SECONDS);
+
+    //周期性地执行任务，延迟2s后，每3s一次地周期性执行任务
+    scheduledThreadPool.scheduleAtFixedRate(new Runnable() &#123;
+
+        @Override
+        public void run() &#123;
+            System.out.println(Thread.currentThread().getName()+&quot;, every 3s&quot;);
+        &#125;
+    &#125;, 2, 3, TimeUnit.SECONDS);
+&#125;
+</code></pre>
+<p>运行结果：</p>
+<pre><code>pool-1-thread-1, delay 1s
+pool-1-thread-1, every 3s
+pool-1-thread-2, every 3s
+pool-1-thread-2, every 3s
+...
+</code></pre>
+<ul>
+<li><code>schedule(Runnable command, long delay, TimeUnit unit)</code>: 延迟一定时间后执行 <code>Runnable</code> 任务；</li>
+<li><code>schedule(Callable callable, long delay, TimeUnit unit)</code>: 延迟一定时间后执行 <code>Callable</code> 任务；</li>
+<li><code>scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit)</code>: 延迟一定时间后，以间隔period时间的频率周期性地执行任务；</li>
+<li><code>scheduleWithFixedDelay(Runnable command, long initialDelay, long delay,TimeUnit unit)</code>: 与 <code>scheduleAtFixedRate()</code> 方法很类似， 但是不同的是scheduleWithFixedDelay()方法的周期时间间隔是以上一个任务执行结束到下一个任务开始执行的间隔， 而scheduleAtFixedRate()方法的周期时间间隔是以上一个任务开始执行到下一个任务开始执行的间隔，也就是这一些任务系列的触发时间都是可预知的。</li>
+</ul>
+<blockquote>
+<p>ScheduledExecutorService 功能强大，对于定时执行的任务，建议多采用该方法。</p>
+</blockquote>
+<p><strong>方法对比</strong></p>
+<table>
+<thead>
+<tr>
+<th>工厂方法</th>
+<th>corePoolSize</th>
+<th>maximumPoolSize</th>
+<th>keepAliveTime</th>
+<th>workQueue</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>newCachedThreadPool</code></td>
+<td>0</td>
+<td>Integer.MAX_VALUE</td>
+<td>60s<code>SynchronousQueue</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>newFixedThreadPool</code></td>
+<td>nThreads</td>
+<td>nThreads</td>
+<td>0</td>
+<td><code>LinkedBlockingQueue</code></td>
+</tr>
+<tr>
+<td><code>newSingleThreadExecutor</code></td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td><code>LinkedBlockingQueue</code></td>
+</tr>
+<tr>
+<td><code>newScheduledThreadPool</code></td>
+<td>corePoolSize</td>
+<td>Integer.MAX_VALUE</td>
+<td>0</td>
+<td><code>DelayedWorkQueue</code></td>
+</tr>
+</tbody></table>
+<p>其他参数都相同，其中线程工厂的默认类为 <code>DefaultThreadFactory</code>，线程饱和的默认策略为 <code>ThreadPoolExecutor.AbortPolicy</code>。</p>
+<h3 id="简单使用-Lock-锁"><a href="#简单使用-Lock-锁" class="headerlink" title="简单使用 Lock 锁"></a>简单使用 Lock 锁</h3><p>Java 5 中引入了新的锁机制——java.util.concurrent.locks 中的显式的互斥锁：Lock 接口，它提供了比 <code>synchronized</code> 更加广泛的锁定操作。 Lock 接口有 3 个实现它的类：ReentrantLock、ReetrantReadWriteLock.ReadLock 和 ReetrantReadWriteLock.WriteLock，即重入锁、读锁和写锁。 lock 必须被显式地创建、锁定和释放，为了可以使用更多的功能，一般用 ReentrantLock 为其实例化。为了保证锁最终一定会被释放（可能会有异常发生），要把互斥区放在 try 语句块内，并在 finally 语句块中释放锁，尤其当有 return 语句时，return 语句必须放在 try 字句中，以确保 unlock()不会过早发生，从而将数据暴露给第二个任务。因此，采用 lock 加锁和释放锁的一般形式如下：</p>
+<pre><code class="java">//默认使用非公平锁，如果要使用公平锁，需要传入参数true
+Lock lock = new ReentrantLock();  
+lock.lock();  
+try &#123;  
+    // 更新对象的状态  
+    // 捕获异常，必要时恢复到原来的不变约束  
+    // 如果有return语句，放在这里  
+&#125; finally &#123;  
+    //锁必须在finally块中释放
+    lock.unlock();
+&#125;
+</code></pre>
+<p>可重入锁，也叫做递归锁，指的是同一线程外层函数获得锁之后，内层递归函数仍然有获取该锁的代码，但不受影响。 在JAVA环境下 <code>ReentrantLock</code> 和 <code>synchronized</code> 都是可重入锁。</p>
+<h4 id="ReentrantReadWriteLock"><a href="#ReentrantReadWriteLock" class="headerlink" title="ReentrantReadWriteLock"></a>ReentrantReadWriteLock</h4><p>读写锁：分为读锁和写锁，多个读锁不互斥，读锁与写锁互斥，这是由jvm自己控制的，你只要上好相应的锁即可。 如果你的代码只读数据，可以很多人同时读，但不能同时写，那就上读锁；如果你的代码修改数据，只能有一个人在写，且不能同时读取，那就上写锁。 总之，读的时候上读锁，写的时候上写锁！</p>
+<p><code>ReentrantReadWriteLock</code> 会使用两把锁来解决问题，一个读锁，一个写锁</p>
+<ul>
+<li>线程进入读锁的前提条件<ul>
+<li>没有其他线程的写锁</li>
+<li>没有写请求或者有写请求，但调用线程和持有锁的线程是同一个</li>
+</ul>
+</li>
+<li>线程进入写锁的前提条件<ul>
+<li>没有其他线程的读锁</li>
+<li>没有其他线程的写锁</li>
+</ul>
+</li>
+</ul>
+<h3 id="StampedLock"><a href="#StampedLock" class="headerlink" title="StampedLock"></a>StampedLock</h3><p><code>StampedLock</code> 是 java 8 在 <code>java.util.concurrent.locks</code> 新增的一个API。</p>
+<p><code>ReentrantReadWriteLock</code> 在沒有任何读锁和写锁时，才可以取得写入锁，这可用于实现了悲观读取。 然而，如果读取很多，写入很少的情况下，使用 <code>ReentrantReadWriteLock</code> 可能会使写入线程遭遇饥饿问题，也就是写入线程无法竞争到锁定而一直处于等待状态。 <code>StampedLock</code> 有三种模式的锁，用于控制读取&#x2F;写入访问，StampedLock 的状态由版本和模式组成。 锁获取操作返回一个用于展示和访问锁状态的票据（stamp）变量，它用相应的锁状态表示并控制访问，数字0表示没有写锁被授权访问。 在读锁上分为悲观锁和乐观锁，锁释放以及其他相关方法需要使用邮戳（stamps）变量作为参数，如果他们和当前锁状态不符则失败，这三种模式为：</p>
+<ul>
+<li>写入：方法writeLock可能为了获取独占访问而阻塞当前线程，返回一个stamp变量，能够在unlockWrite方法中使用从而释放锁。也提供了tryWriteLock。 当锁被写模式所占有，没有读或者乐观的读操作能够成功。</li>
+<li>读取：方法readLock可能为了获取非独占访问而阻塞当前线程，返回一个stamp变量，能够在unlockRead方法中用于释放锁。也提供了tryReadLock。</li>
+<li>乐观读取：方法 <code>tryOptimisticRead</code> 返回一个非 0 邮戳变量，仅在当前锁没有以写入模式被持有。如果在获得stamp变量之后没有被写模式持有，方法validate将返回true。 这种模式可以被看做一种弱版本的读锁，可以被一个写入者在任何时间打断。乐观读取模式仅用于短时间读取操作时经常能够降低竞争和提高吞吐量。</li>
+</ul>
+<blockquote>
+<p>悲观锁（Pessimistic Lock），顾名思义，就是很悲观，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会block直到它拿到锁。 悲观锁：假定会发生并发冲突，屏蔽一切可能违反数据完整性的操作。 Java synchronized 就属于悲观锁的一种实现，每次线程要修改数据时都先获得锁，保证同一时刻只有一个线程能操作数据，其他线程则会被block。</p>
+</blockquote>
+<blockquote>
+<p>乐观锁（Optimistic Lock），顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在提交更新的时候会判断一下在此期间别人有没有去更新这个数据。 乐观锁适用于读多写少的应用场景，这样可以提高吞吐量。 乐观锁：假设不会发生并发冲突，只在提交操作时检查是否违反数据完整性。</p>
+</blockquote>
+<h3 id="AtomicInteger"><a href="#AtomicInteger" class="headerlink" title="AtomicInteger"></a>AtomicInteger</h3><p>JDK1.5之后的java.util.concurrent.atomic包里，多了一批原子处理类。 AtomicBoolean、AtomicInteger、AtomicLong、AtomicReference。 主要用于在高并发环境下的高效程序处理,来帮助我们简化同步处理.</p>
+<p>AtomicInteger，一个提供原子操作的Integer的类。 在Java语言中，++i和i++操作并不是线程安全的，在使用的时候，不可避免的会用到synchronized关键字。 而AtomicInteger则通过一种线程安全的加减操作接口。</p>
+<pre><code>public final int get()                  //获取当前的值
+public final int getAndSet(int newValue)//获取当前的值，并设置新的值
+public final int getAndIncrement()      //获取当前的值，并自增
+public final int getAndDecrement()      //获取当前的值，并自减
+public final int getAndAdd(int delta)   //获取当前的值，并加上预期的值
+</code></pre>
+<h3 id="LongAccumulator"><a href="#LongAccumulator" class="headerlink" title="LongAccumulator"></a>LongAccumulator</h3><p><code>LongAdder</code> 是jdk1.8提供的累加器，基于 <code>Striped64</code> 实现。 它常用于状态采集、统计等场景。 AtomicLong也可以用于这种场景，但在线程竞争激烈的情况下，LongAdder要比AtomicLong拥有更高的吞吐量，但会耗费更多的内存空间。</p>
+<p><code>LongAccumulator</code> 和 <code>LongAdder</code> 类似，也基于Striped64实现。但要比LongAdder更加灵活(要传入一个函数接口)， LongAdder相当于是LongAccumulator的一种特例。</p>
+<h3 id="Semaphore"><a href="#Semaphore" class="headerlink" title="Semaphore"></a>Semaphore</h3><p>Semaphore（信号量）是用来控制同时访问特定资源的线程数量，它通过协调各个线程，以保证合理的使用公共资源。 很多年以来，我都觉得从字面上很难理解Semaphore所表达的含义，只能把它比作是控制流量的红绿灯，比如XX马路要限制流量，只允许同时有一百辆车在这条路上行使， 其他的都必须在路口等待，所以前一百辆车会看到绿灯，可以开进这条马路，后面的车会看到红灯，不能驶入XX马路， 但是如果前一百辆中有五辆车已经离开了XX马路，那么后面就允许有5辆车驶入马路，这个例子里说的车就是线程，驶入马路就表示线程在执行， 离开马路就表示线程执行完成，看见红灯就表示线程被阻塞，不能执行。</p>
+<p><strong>应用场景</strong></p>
+<p>Semaphore可以用于做流量控制，特别公用资源有限的应用场景，比如数据库连接。 假如有一个需求，要读取几万个文件的数据，因为都是IO密集型任务，我们可以启动几十个线程并发的读取， 但是如果读到内存后，还需要存储到数据库中，而数据库的连接数只有10个， 这时我们必须控制只有十个线程同时获取数据库连接保存数据，否则会报错无法获取数据库连接。 这个时候，我们就可以使用Semaphore来做流控。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h2 id="Time-API"><a href="#Time-API" class="headerlink" title="Time API"></a>Time API</h2><h3 id="ZoneId"><a href="#ZoneId" class="headerlink" title="ZoneId"></a>ZoneId</h3><p>Java 8中的时区操作被很大程度上简化了，新的时区类 <code>java.time.ZoneId</code> 是原有的 <code>java.util.TimeZone</code> 类的替代品。 ZoneId对象可以通过 <code>ZoneId.of()</code> 方法创建，也可以通过 <code>ZoneId.systemDefault()</code> 获取系统默认时区：</p>
+<pre><code class="java">ZoneId shanghaiZoneId = ZoneId.of(&quot;Asia/Shanghai&quot;);
+ZoneId systemZoneId = ZoneId.systemDefault();
+</code></pre>
+<p><code>of()</code> 方法接收一个“区域&#x2F;城市”的字符串作为参数，你可以通过 <code>getAvailableZoneIds()</code> 方法获取所有合法的“区域&#x2F;城市”字符串：</p>
+<pre><code class="java">Set&lt;String&gt; zoneIds = ZoneId.getAvailableZoneIds();
+</code></pre>
+<p>对于老的时区类 <code>TimeZone</code>，Java 8也提供了转化方法：</p>
+<pre><code class="java">ZoneId oldToNewZoneId = TimeZone.getDefault().toZoneId();
+</code></pre>
+<p>有了 <code>ZoneId</code>，我们就可以将一个 <code>LocalDate</code>、<code>LocalTime</code> 或 <code>LocalDateTime</code> 对象转化为 <code>ZonedDateTime</code> 对象：</p>
+<pre><code class="java">LocalDateTime localDateTime = LocalDateTime.now();
+ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime, shanghaiZoneId);
+</code></pre>
+<p><code>ZonedDateTime</code> 对象由两部分构成，<code>LocalDateTime</code> 和 <code>ZoneId</code>，其中 <code>2018-03-03T15:26:56.147</code> 部分为 <code>LocalDateTime</code>，<code>+08:00[Asia/Shanghai]</code> 部分为ZoneId。</p>
+<p>另一种表示时区的方式是使用 <code>ZoneOffset</code>，它是以当前时间和 <strong>世界标准时间（UTC）&#x2F;格林威治时间（GMT）</strong> 的偏差来计算，例如：</p>
+<pre><code class="java">ZoneOffset zoneOffset = ZoneOffset.of(&quot;+09:00&quot;);
+LocalDateTime localDateTime = LocalDateTime.now();
+OffsetDateTime offsetDateTime = OffsetDateTime.of(localDateTime, zoneOffset);
+</code></pre>
+<h3 id="Instant"><a href="#Instant" class="headerlink" title="Instant"></a>Instant</h3><p>Instant类在Java日期与时间功能中，表示了时间线上一个确切的点，定义为距离初始时间的时间差（初始时间为GMT 1970年1月1日00:00）经测量一天有86400秒，从初始时间开始不断向前移动。</p>
+<p><strong>创建一个Instant实例</strong></p>
+<p>你可以通过Instant类的工厂方法创建一个Instant实例，例如你可以调用instant.now()来创建一个确切的表达当前时间的Instant对象：</p>
+<pre><code class="java">Instant now = Instant.now();
+</code></pre>
+<p>另外也有一些其它方法能创建Instant，具体请查阅Java官方文档。</p>
+<p><strong>访问Instant的时间</strong></p>
+<p>一个Instant对象里有两个域：距离初始时间的秒钟数、在当前一秒内的第几纳秒，他们的组合表达了当前时间点。你可以通过以下两个方法得到它们的值：</p>
+<pre><code class="java">long seconds =  getEpochSecond()
+int nanos   =   getNano()
+</code></pre>
+<p><strong>Instant的计算</strong></p>
+<p>Instant类有一些方法，可以用于获得另一Instant的值，例如：</p>
+<ul>
+<li><code>plusSeconds()</code></li>
+<li><code>plusMillis()</code></li>
+<li><code>plusNanos()</code></li>
+<li><code>minusSeconds()</code></li>
+<li><code>minusMillis()</code></li>
+<li><code>minusNanos()</code></li>
+</ul>
+<p>我下面将向你展示两个例子，来说明这些方法如何使用：</p>
+<pre><code class="java">Instant now     = Instant.now();
+Instant later   = now.plusSeconds(3);
+Instant earlier = now.minusSeconds(3);
+</code></pre>
+<p>第一行获得了一个Instant对象，表示当前时间。第二行创建了一个Instant表示三秒后，第三行创建了一个Instant表示三秒前。</p>
+<blockquote>
+<p>seconds 表示从 <code>1970-01-01 00:00:00</code> 开始到现在的秒数，nanos 表示纳秒部分（nanos的值不会超过999,999,999）</p>
+</blockquote>
+<h3 id="Clock"><a href="#Clock" class="headerlink" title="Clock"></a>Clock</h3><p>Clock类提供了访问当前日期和时间的方法，Clock是时区敏感的，可以用来取代 <code>System.currentTimeMillis()</code> 来获取当前的微秒数。 某一个特定的时间点也可以使用Instant类来表示，Instant 类也可以用来创建老的 <code>java.util.Date</code> 对象。</p>
+<pre><code class="java">Clock clock = Clock.systemDefaultZone();  
+long millis = clock.millis();    
+Instant instant = clock.instant();  
+Date legacyDate = Date.from(instant);   // legacy java.util.Date  
+</code></pre>
+<h3 id="LocalDate"><a href="#LocalDate" class="headerlink" title="LocalDate"></a>LocalDate</h3><p>LocalDate类是Java 8中日期时间功能里表示一个本地日期的类，它的日期是无时区属性的。 可以用来表示生日、节假日期等等。这个类用于表示一个确切的日期，而不是这个日期所在的时间（如java.util.Date中的2000.01.01表示的实际是这一天的00:00这个瞬间）。</p>
+<p>LocalDate类位于java.time包下，名叫java.time.LocalDate，创建出来的实例也是不可变对象，所以涉及它的计算方法将返回一个新的LocalDate。</p>
+<p><strong>创建一个LocalDate实例</strong></p>
+<p>我们有多种方式可以创建出 <code>LocalDate</code> 实例。第一种方法是使用 <code>now()</code> 方法获得值为今天当日的 <code>LocalDate</code> 对象：</p>
+<pre><code class="java">LocalDate localDate = LocalDate.now();
+</code></pre>
+<p>另一种方法是使用年月日信息构造出LocalDate对象：</p>
+<pre><code class="java">LocalDate localDate2 = LocalDate.of(2018, 3, 3);
+</code></pre>
+<p>LocalDate 的 <code>of()</code> 方法创建出一个指定年月日的日期，并且没有时区信息。</p>
+<p><strong>访问日期信息</strong></p>
+<p>可以用如下方法访问LocalDate中的日期信息：</p>
+<pre><code class="java">int   year       = localDate.getYear();
+Month month      = localDate.getMonth();
+int   dayOfMonth = localDate.getDayOfMonth();
+int   dayOfYear  = localDate.getDayOfYear();
+DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+</code></pre>
+<p>可以注意到getMonth()与getDayOfWeek()方法返回了一个枚举类型代替一个int。你可以通过枚举类型中的getValue()来获得信息。</p>
+<p><strong>LocalDate计算</strong></p>
+<p>你可以进行一堆简单的日期计算，只要使用如下的方法：</p>
+<ul>
+<li><code>plusDays()</code></li>
+<li><code>plusWeeks()</code></li>
+<li><code>plusMonths()</code></li>
+<li><code>plusYears()</code></li>
+<li><code>minusDays()</code></li>
+<li><code>minusWeeks()</code></li>
+<li><code>minusMonths()</code></li>
+<li><code>minusYears()</code></li>
+</ul>
+<p>以下举几个使用的例子来帮助理解使用：</p>
+<pre><code class="java">LocalDate d  = LocalDate.of(2018, 3, 5);
+LocalDate d1 = localDate.plusYears(3);
+LocalDate d2 = localDate.minusYears(3);
+</code></pre>
+<ol>
+<li>第一行创建出一个新的LocalDate对象d，表示2018.3.5。</li>
+<li>第二行创建了值等于d日期3年后的LocalDate对象，第三行也是一样，只是值改为d日期的三年前。</li>
+</ol>
+<h3 id="LocalTime"><a href="#LocalTime" class="headerlink" title="LocalTime"></a>LocalTime</h3><p>LocalTime类是Java 8中日期时间功能里表示一整天中某个时间点的类，它的时间是无时区属性的（早上10点等等）。比如你需要描述学校几点开学，这个时间不涉及在什么城市，这个描述是对任何国家城市都适用的，此时使用无时区的LocalTime就足够了。 LocalTime类的对象也是不可变的，所以计算方法会返回一个新的LocalTime实例。</p>
+<p><strong>创建一个LocatTime实例</strong></p>
+<p>有多种方式可以新建LocalTime实例。比如使用当前时间作为值新建对象：</p>
+<pre><code class="java">LocalTime localTime = LocalTime.now();
+</code></pre>
+<p>另一种方式是使用指定的时分秒和纳秒来新建对象：</p>
+<pre><code class="java">LocalTime localTime2 = LocalTime.of(21, 30, 59, 11001);
+</code></pre>
+<p>也有另一种版本的 <code>of()</code> 方法只需要小时分钟两项，或时分秒三项值作为参数。</p>
+<p><strong>访问LocalTime对象的时间</strong></p>
+<p>你可以通过这些方法访问其时、分、秒、纳秒：</p>
+<ul>
+<li><code>getHour()</code></li>
+<li><code>getMinute()</code></li>
+<li><code>getSecond()</code></li>
+<li><code>getNano()</code></li>
+</ul>
+<p><strong>LocalTime的计算</strong></p>
+<p>LocalTime类包含一系列方法，能帮你完成时间计算：</p>
+<ul>
+<li><code>plusHours()</code></li>
+<li><code>plusMinutes()</code></li>
+<li><code>plusSeconds()</code></li>
+<li><code>plusNanos()</code></li>
+<li><code>minusHours()</code></li>
+<li><code>minusMinutes()</code></li>
+<li><code>minusSeconds()</code></li>
+<li><code>minusNanos()</code></li>
+</ul>
+<p>以下举一个例子：</p>
+<pre><code class="java">LocalTime localTime2 = LocalTime.of(21, 30, 59, 11001);
+LocalTime localTimeLater   = localTime.plusHours(3);
+LocalTime localTimeEarlier = localTime.minusHours(3);
+</code></pre>
+<ol>
+<li>第一行新建一个LocalTime实例，表示21:30:50的第11001纳秒。</li>
+<li>第二行新建了一个LocalTime实例表示这个时间的三小时后，第三行表示三小时前。</li>
+<li>LocalTime类是Java 8中日期时间功能里表示一整天中某个时间点的类，它的时间是无时区属性的（早上10点等等）。比如你需要描述学校几点开学，这个时间不涉及在什么城市，这个描述是对任何国家城市都适用的，此时使用无时区的LocalTime就足够了。</li>
+</ol>
+<p>LocalTime类的对象也是不可变的，所以计算方法会返回一个新的LocalTime实例。</p>
+<h3 id="LocalDateTime"><a href="#LocalDateTime" class="headerlink" title="LocalDateTime"></a>LocalDateTime</h3><p>LocalDateTime类是Java 8中日期时间功能里，用于表示当地的日期与时间的类，它的值是无时区属性的。你可以将其视为Java 8中LocalDate与LocalTime两个类的结合。</p>
+<p>LocalDateTime类的值是不可变的，所以其计算方法会返回一个新的LocalDateTime实例。</p>
+<p><strong>创建一个LocatDateTime实例</strong></p>
+<p>可以通过LocalDateTime的静态工厂方法来创建LocalDateTime实例。以下举例使用 <code>now()</code> 方法创建：</p>
+<pre><code class="java">LocalDateTime localDateTime = LocalDateTime.now();
+</code></pre>
+<p>另一种方式是使用指定的年月日、时分秒、纳秒来新建对象：</p>
+<pre><code class="java">LocalDateTime localDateTime2 = LocalDateTime.of(2018, 11, 26, 13, 55, 36, 123);
+</code></pre>
+<p><strong>访问LocalDateTime对象的时间</strong></p>
+<p>你可以通过这些方法访问其日期时间：</p>
+<ul>
+<li><code>getYear()</code></li>
+<li><code>getMonth()</code></li>
+<li><code>getDayOfMonth()</code></li>
+<li><code>getDayOfWeek()</code></li>
+<li><code>getDayOfYear()</code></li>
+<li><code>getHour()</code></li>
+<li><code>getMinute()</code></li>
+<li><code>getSecond()</code></li>
+<li><code>getNano()</code></li>
+</ul>
+<p>这些方法中有一些返回int有一些返回枚举类型，你可以通过枚举类型中的 <code>getValue()</code> 方法来获得int值。</p>
+<p><strong>LocalDateTime的计算</strong></p>
+<p>LocalDateTime 类包含一系列方法，能帮你完成时间计算：</p>
+<ul>
+<li><code>plusYears()</code></li>
+<li><code>plusMonths()</code></li>
+<li><code>plusDays()</code></li>
+<li><code>plusHours()</code></li>
+<li><code>plusMinutes()</code></li>
+<li><code>plusSeconds()</code></li>
+<li><code>plusNanos()</code></li>
+<li><code>minusYears()</code></li>
+<li><code>minusMonths()</code></li>
+<li><code>minusDays()</code></li>
+<li><code>minusHours()</code></li>
+<li><code>minusMinutes()</code></li>
+<li><code>minusSeconds()</code></li>
+<li><code>minusNanos()</code></li>
+</ul>
+<p>以下举一个例子：</p>
+<pre><code>LocalDateTime localDateTime  = LocalDateTime.now();
+LocalDateTime localDateTime1 = localDateTime.plusYears(3);
+LocalDateTime localDateTime2 = localDateTime.minusYears(3);
+</code></pre>
+<ol>
+<li>第一行新建一个LocalDateTime实例表示当前这个时间。</li>
+<li>第二行新建了一个LocalDateTime实例表示三年后。</li>
+<li>第三行也新建了一个LocalDateTime实例表示三小时前。</li>
+</ol>
+<h3 id="ZonedDateTime"><a href="#ZonedDateTime" class="headerlink" title="ZonedDateTime"></a>ZonedDateTime</h3><p>ZonedDateTime类是Java 8中日期时间功能里，用于表示带时区的日期与时间信息的类。可以用于表示一个真实事件的开始时间，如某火箭升空时间等等。</p>
+<p>ZonedDateTime 类的值是不可变的，所以其计算方法会返回一个新的ZonedDateTime 实例。</p>
+<p><strong>创建一个ZonedDateTime实例</strong></p>
+<p>有多种方式可以新建ZonedDateTime实例。比如使用当前时间作为值新建对象：</p>
+<pre><code class="java">ZonedDateTime dateTime = ZonedDateTime.now();
+</code></pre>
+<p>另一种方式是使用指定的年月日、时分秒、纳秒以及时区ID来新建对象：</p>
+<pre><code class="java">ZoneId zoneId = ZoneId.of(&quot;UTC+1&quot;);
+ZonedDateTime dateTime2 = ZonedDateTime.of(2015, 11, 30, 23, 45, 59, 1234, zoneId);
+</code></pre>
+<p><strong>访问ZonedDateTime对象的时间</strong></p>
+<p>你可以通过这些方法访问其日期时间：</p>
+<ul>
+<li><code>getYear()</code></li>
+<li><code>getMonth()</code></li>
+<li><code>getDayOfMonth()</code></li>
+<li><code>getDayOfWeek()</code></li>
+<li><code>getDayOfYear()</code></li>
+<li><code>getHour()</code></li>
+<li><code>getMinute()</code></li>
+<li><code>getSecond()</code></li>
+<li><code>getNano()</code></li>
+</ul>
+<p>这些方法中有一些返回int有一些返回枚举类型，但可以通过枚举类型中的getValue()方法来获得int值。</p>
+<p><strong>ZonedDateTime的计算</strong></p>
+<p>ZonedDateTime类包含一系列方法，能帮你完成时间计算：</p>
+<ul>
+<li><code>plusYears()</code></li>
+<li><code>plusMonths()</code></li>
+<li><code>plusDays()</code></li>
+<li><code>plusHours()</code></li>
+<li><code>plusMinutes()</code></li>
+<li><code>plusSeconds()</code></li>
+<li><code>plusNanos()</code></li>
+<li><code>minusYears()</code></li>
+<li><code>minusMonths()</code></li>
+<li><code>minusDays()</code></li>
+<li><code>minusHours()</code></li>
+<li><code>minusMinutes()</code></li>
+<li><code>minusSeconds()</code></li>
+<li><code>minusNanos()</code></li>
+</ul>
+<p>但注意计算时，若不巧跨越了夏令时（会补一小时或减一小时），可能得不到希望的结果。一个替代的正确做法是使用Period：</p>
+<pre><code class="java">ZonedDateTime zoneDateTime = previousDateTime.plus(Period.ofDays(3));
+</code></pre>
+<p><strong>时区</strong></p>
+<p>时区是用ZoneId类表示的，你可以使用ZoneId.now()或ZoneId.of(“xxx”)来实例化：</p>
+<pre><code>ZoneId zoneId = ZoneId.of(&quot;UTC+1&quot;);
+</code></pre>
+<p>传给 <code>of()</code> 方法的参数是时区的ID，如“UTC+1”指距离UTC（格林威治时间）有一小时的时差，你可以使用你想要的时差来表示ZoneId（如+1与-5等等） 你也可以使用另一种方式表示zone id，即使用地区名字，也是可以的：</p>
+<pre><code class="java">ZoneId zoneId2 = ZoneId.of(&quot;Europe/Copenhagen&quot;);
+ZoneId zoneId3 = ZoneId.of(&quot;Europe/Paris&quot;);
+</code></pre>
+<h3 id="DateTimeFormatter"><a href="#DateTimeFormatter" class="headerlink" title="DateTimeFormatter"></a>DateTimeFormatter</h3><p>DateTimeFormatter类是Java 8中日期时间功能里，用于解析和格式化日期时间的类，位于 <code>java.time.format</code> 包下。</p>
+<p><strong>预定义的DateTimeFormatter实例</strong></p>
+<p>DateTimeFormatter类包含一系列预定义（常量）的实例，可以解析和格式化一些标准时间格式。这将让你免除麻烦的时间格式定义，类中包含如下预定义的实例：</p>
+<pre><code class="java">BASIC_ISO_DATE
+
+ISO_LOCAL_DATE
+ISO_LOCAL_TIME
+ISO_LOCAL_DATE_TIME
+
+ISO_OFFSET_DATE
+ISO_OFFSET_TIME
+ISO_OFFSET_DATE_TIME
+
+ISO_ZONED_DATE_TIME
+
+ISO_INSTANT
+
+ISO_DATE
+ISO_TIME
+ISO_DATE_TIME
+
+ISO_ORDINAL_TIME
+ISO_WEEK_DATE
+
+RFC_1123_DATE_TIME
+</code></pre>
+<p>每个预定义的DateTimeFormatter实例都有不同的日期格式，我就不解释全部的了。具体的可以查阅Java官方文档，但我在这篇的后续中会解释其中几个，以方便理解。</p>
+<p><strong>它的格式化日期</strong></p>
+<p>当你获取一个DateTimeFormatter实例后，就可以用format()方便来将一个日期格式化为某种字符串，例如：</p>
+<pre><code class="java">DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
+String formattedDate = formatter.format(LocalDate.now());
+System.out.println(formattedDate);
+</code></pre>
+<p>这个样例把LocalDate对象格式化了，并输出20150703，这个输出表示现在2018年，3月5日。 再举一个关于ZonedDateTime的例子：</p>
+<pre><code class="java">DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
+String formattedZonedDate = formatter.format(ZonedDateTime.now());
+System.out.println(&quot;formattedZonedDate = &quot; + formattedZonedDate);
+</code></pre>
+<p>这个例子会输出：20180305+0800 表示今年2018年，3月5日，位于UTC+8时区。</p>
+<h3 id="Duration"><a href="#Duration" class="headerlink" title="Duration"></a>Duration</h3><p>一个Duration对象表示两个Instant间的一段时间，是在Java 8中加入的新功能。</p>
+<p>一个Duration实例是不可变的，当创建出对象后就不能改变它的值了。你只能通过Duration的计算方法，来创建出一个新的Durtaion对象。你会在之后的教程中见到的。</p>
+<p><strong>创建Duration实例</strong></p>
+<p>使用 <code>Duration</code> 类的工厂方法来创建一个 <code>Duration</code> 对象，以下是一个使用 <code>between()</code> 的例子：</p>
+<pre><code class="java">Instant first = Instant.now();
+// wait some time while something happens
+Instant second = Instant.now();
+Duration duration = Duration.between(first, second);
+</code></pre>
+<p><strong>访问Duration的时间</strong></p>
+<p>一个Duration对象里有两个域：纳秒值（小于一秒的部分），秒钟值（一共有几秒），他们的组合表达了时间长度。注意屯使用System.getCurrentTimeMillis()时不同，Duration不包含毫秒这个属性。 你可以通过以下两个方法得到它们的值：</p>
+<pre><code>long seconds =  getSeconds()
+int nanos   =   getNano()
+</code></pre>
+<p>你也可以转换整个时间到其它单位如纳秒、分钟、小时、天：</p>
+<ul>
+<li><code>toNanos()</code></li>
+<li><code>toMillis()</code></li>
+<li><code>toMinutes()</code></li>
+<li><code>toHours()</code></li>
+<li><code>toDays()</code></li>
+</ul>
+<p>举例而言：<code>toNanos()</code> 与 <code>getNano()</code> 不同，<code>toNanos()</code> 获得的是 <code>Duration</code> 整个时间共有多少纳秒， 而 <code>getNano()</code> 只是获得这段时间中小于一秒的部分。</p>
+<p>你也许会问，为什么没有 <code>toSeconds()</code> 方法，因为已经有 <code>getSeconds()</code> 这个方法能达到同样的功能了。</p>
+<p><strong>Duration计算</strong></p>
+<p>Duration类包含一系列的计算方法：</p>
+<ul>
+<li><code>plusNanos()</code></li>
+<li><code>plusMillis()</code></li>
+<li><code>plusSeconds()</code></li>
+<li><code>plusMinutes()</code></li>
+<li><code>plusHours()</code></li>
+<li><code>plusDays()</code></li>
+<li><code>minusNanos()</code></li>
+<li><code>minusMillis()</code></li>
+<li><code>minusSeconds()</code></li>
+<li><code>minusMinutes()</code></li>
+<li><code>minusHours()</code></li>
+<li><code>minusDays()</code></li>
+</ul>
+<p>这些方法所做的事都是相似的，我在这儿也不展示内部实现细节了，就展示一个加减的例子吧：</p>
+<pre><code class="java">Duration start = ... //obtain a start duration
+Duration added      = start.plusDays(3);
+Duration subtracted = start.minusDays(3);
+</code></pre>
+<ol>
+<li>第一行创建了一个Duration对象叫start，具体怎么创建可以参考前面的代码。</li>
+<li>第二三行样例创建了两个新的Duration，通过调用start的加减操作，使得added对象表示的时间比start多三天，而substracted则少三天。</li>
+</ol>
+<p>所有的计算方法都会返回一个新的Duration，以保证Duration的不可变属性。</p>
+<pre><code class="java">long days = duration.toDays();              // 这段时间的总天数
+long hours = duration.toHours();            // 这段时间的小时数
+long minutes = duration.toMinutes();        // 这段时间的分钟数
+long seconds = duration.getSeconds();       // 这段时间的秒数
+long milliSeconds = duration.toMillis();    // 这段时间的毫秒数
+long nanoSeconds = duration.toNanos();      // 这段时间的纳秒数
+</code></pre>
+<h3 id="其他操作"><a href="#其他操作" class="headerlink" title="其他操作"></a>其他操作</h3><p><strong>增加和减少日期</strong></p>
+<p>Java 8中的日期&#x2F;时间类都是不可变的，这是为了保证线程安全。当然，新的日期&#x2F;时间类也提供了方法用于创建对象的可变版本，比如增加一天或者减少一天：</p>
+<pre><code class="java">LocalDate date = LocalDate.of(2017, 1, 5);          // 2017-01-05
+
+LocalDate date1 = date.withYear(2016);              // 修改为 2016-01-05
+LocalDate date2 = date.withMonth(2);                // 修改为 2017-02-05
+LocalDate date3 = date.withDayOfMonth(1);           // 修改为 2017-01-01
+
+LocalDate date4 = date.plusYears(1);                // 增加一年 2018-01-05
+LocalDate date5 = date.minusMonths(2);              // 减少两个月 2016-11-05
+LocalDate date6 = date.plus(5, ChronoUnit.DAYS);    // 增加5天 2017-01-10
+</code></pre>
+<p>上面例子中对于日期的操作比较简单，但是有些时候我们要面临更复杂的时间操作，比如将时间调到下一个工作日， 或者是下个月的最后一天，这时候我们可以使用 <code>with()</code> 方法的另一个重载方法，它接收一个TemporalAdjuster参数， 可以使我们更加灵活的调整日期：</p>
+<pre><code class="java">LocalDate date7 = date.with(nextOrSame(DayOfWeek.SUNDAY));      // 返回下一个距离当前时间最近的星期日
+LocalDate date9 = date.with(lastInMonth(DayOfWeek.SATURDAY));   // 返回本月最后一个星期六
+</code></pre>
+<p>要使上面的代码正确编译，你需要使用静态导入 <code>TemporalAdjusters</code> 对象：</p>
+<pre><code class="java">import static java.time.temporal.TemporalAdjusters.*;
+</code></pre>
+<p><code>TemporalAdjusters</code> 类中包含了很多静态方法可以直接使用，下面的表格列出了一些方法：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>dayOfWeekInMonth</code></td>
+<td>返回同一个月中每周的第几天</td>
+</tr>
+<tr>
+<td><code>firstDayOfMonth</code></td>
+<td>返回当月的第一天</td>
+</tr>
+<tr>
+<td><code>firstDayOfNextMonth</code></td>
+<td>返回下月的第一天</td>
+</tr>
+<tr>
+<td><code>firstDayOfNextYear</code></td>
+<td>返回下一年的第一天</td>
+</tr>
+<tr>
+<td><code>firstDayOfYear</code></td>
+<td>返回本年的第一天</td>
+</tr>
+<tr>
+<td><code>firstInMonth</code></td>
+<td>返回同一个月中第一个星期几</td>
+</tr>
+<tr>
+<td><code>lastDayOfMonth</code></td>
+<td>返回当月的最后一天</td>
+</tr>
+<tr>
+<td><code>lastDayOfNextMonth</code></td>
+<td>返回下月的最后一天</td>
+</tr>
+<tr>
+<td><code>lastDayOfNextYear</code></td>
+<td>返回下一年的最后一天</td>
+</tr>
+<tr>
+<td><code>lastDayOfYear</code></td>
+<td>返回本年的最后一天</td>
+</tr>
+<tr>
+<td><code>lastInMonth</code></td>
+<td>返回同一个月中最后一个星期几</td>
+</tr>
+<tr>
+<td><code>next / previous</code></td>
+<td>返回后一个&#x2F;前一个给定的星期几</td>
+</tr>
+<tr>
+<td><code>nextOrSame / previousOrSame</code></td>
+<td>返回后一个&#x2F;前一个给定的星期几，如果这个值满足条件，直接返回</td>
+</tr>
+</tbody></table>
+<p>如果上面表格中列出的方法不能满足你的需求，你还可以创建自定义的 <code>TemporalAdjuster</code> 接口的实现，<code>TemporalAdjuster</code> 也是一个函数式接口，所以我们可以使用Lambda表达式：</p>
+<pre><code class="java">@FunctionalInterface
+public interface TemporalAdjuster &#123;
+    Temporal adjustInto(Temporal temporal);
+&#125;
+</code></pre>
+<p>比如给定一个日期，计算该日期的下一个工作日（不包括星期六和星期天）：</p>
+<pre><code class="java">LocalDate date = LocalDate.of(2017, 1, 5);
+date.with(temporal -&gt; &#123;
+    // 当前日期
+    DayOfWeek dayOfWeek = DayOfWeek.of(temporal.get(ChronoField.DAY_OF_WEEK));
+
+    // 正常情况下，每次增加一天
+    int dayToAdd = 1;
+
+    // 如果是星期五，增加三天
+    if (dayOfWeek == DayOfWeek.FRIDAY) &#123;
+        dayToAdd = 3;
+    &#125;
+    
+    // 如果是星期六，增加两天
+    if (dayOfWeek == DayOfWeek.SATURDAY) &#123;
+        dayToAdd = 2;
+    &#125;
+
+    return temporal.plus(dayToAdd, ChronoUnit.DAYS);
+&#125;);
+</code></pre>
+<h3 id="其他历法"><a href="#其他历法" class="headerlink" title="其他历法"></a>其他历法</h3><p>Java中使用的历法是ISO 8601日历系统，它是世界民用历法，也就是我们所说的公历。平年有365天，闰年是366天。闰年的定义是：非世纪年，能被4整除；世纪年能被400整除。为了计算的一致性，公元1年的前一年被当做公元0年，以此类推。</p>
+<p>此外Java 8还提供了4套其他历法（很奇怪为什么没有汉族人使用的农历），每套历法都包含一个日期类，分别是：</p>
+<ul>
+<li><code>ThaiBuddhistDate</code>：泰国佛教历</li>
+<li><code>MinguoDate</code>：中华民国历</li>
+<li><code>JapaneseDate</code>：日本历</li>
+<li><code>HijrahDate</code>：伊斯兰历</li>
+</ul>
+<p>每个日期类都继承 <code>ChronoLocalDate</code> 类，所以可以在不知道具体历法的情况下也可以操作。不过这些历法一般不常用，除非是有某些特殊需求情况下才会使用。</p>
+<p>这些不同的历法也可以用于向公历转换：</p>
+<pre><code class="java">LocalDate date = LocalDate.now();
+JapaneseDate jpDate = JapaneseDate.from(date);
+</code></pre>
+<p>由于它们都继承ChronoLocalDate类，所以在不知道具体历法情况下，可以通过ChronoLocalDate类操作日期：</p>
+<pre><code class="java">Chronology jpChronology = Chronology.ofLocale(Locale.JAPANESE);
+ChronoLocalDate jpChronoLocalDate = jpChronology.dateNow();
+</code></pre>
+<p>我们在开发过程中应该尽量避免使用 <code>ChronoLocalDate</code>，尽量用与历法无关的方式操作时间，因为不同的历法计算日期的方式不一样， 比如开发者会在程序中做一些假设，假设一年中有12个月，如果是中国农历中包含了闰月，一年有可能是13个月， 但开发者认为是12个月，多出来的一个月属于明年的。 再比如假设年份是累加的，过了一年就在原来的年份上加一，但日本天皇在换代之后需要重新纪年，所以过了一年年份可能会从1开始计算。</p>
+<p>在实际开发过程中建议使用 <code>LocalDate</code>，包括存储、操作、业务规则的解读；除非需要将程序的输入或者输出本地化， 这时可以使用 <code>ChronoLocalDate</code> 类。</p>
+<h2 id="Nashorn"><a href="#Nashorn" class="headerlink" title="Nashorn"></a>Nashorn</h2><p>个人感觉用的不是很多，不感兴趣的可以直接略过。</p>
+<p><a target="_blank" rel="noopener" href="https://winterbe.com/posts/2014/04/05/java8-nashorn-tutorial/">原文地址</a></p>
+<h3 id="使用-Nashron"><a href="#使用-Nashron" class="headerlink" title="使用 Nashron"></a>使用 Nashron</h3><p>Nashorn JavaScript引擎可以在Java代码中编程调用，也可以通过命令行工具<code>jjs</code>使用，它在<code>$JAVA_HOME/bin</code>中。如果打算使用<code>jjs</code>，你可能希望设置符号链接来简化访问：</p>
+<pre><code class="bash">$ cd /usr/bin
+$ ln -s $JAVA_HOME/bin/jjs jjs
+$ jjs
+jjs&gt; print(&#39;Hello World&#39;);
+</code></pre>
+<p>这个教程专注于在Java代码中调用Nashron，所以让我们先跳过<code>jjs</code>。Java代码中简单的<strong>HelloWorld</strong> 如下所示：</p>
+<pre><code class="java">ScriptEngine engine = new ScriptEngineManager().getEngineByName(&quot;nashorn&quot;);
+engine.eval(&quot;print(&#39;Hello World!&#39;);&quot;);
+</code></pre>
+<p>为了在Java中执行JavaScript，你首先要通过<code>javax.script</code>包创建脚本引擎。这个包已经在<a href="http://link.zhihu.com/?target=https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino">Rhino</a>（来源于Mozilla、Java中的遗留JS引擎）中使用了。</p>
+<p>JavaScript代码既可以通过传递JavaScript代码字符串，也可以传递指向你的JS脚本文件的<code>FileReader</code>来执行：</p>
+<pre><code class="java">ScriptEngine engine = new ScriptEngineManager().getEngineByName(&quot;nashorn&quot;);
+engine.eval(new FileReader(&quot;script.js&quot;));
+</code></pre>
+<p>Nashorn JavaScript基于<a href="http://link.zhihu.com/?target=http://es5.github.io/">ECMAScript 5.1</a>，但是它的后续版本会对ES6提供支持：</p>
+<blockquote>
+<p><em>Nashorn的当前策略遵循ECMAScript规范。当我们在JDK8中发布它时，它将基于ECMAScript 5.1。Nashorn未来的主要发布基于ECMAScript 6。</em></p>
+</blockquote>
+<p>Nashorn定义了大量对<strong>ECMAScript</strong>标准的语言和API扩展。但是首先让我们看一看Java和JavaScript代码如何交互。</p>
+<h3 id="在Java中调用JavaScript函数"><a href="#在Java中调用JavaScript函数" class="headerlink" title="在Java中调用JavaScript函数"></a>在Java中调用JavaScript函数</h3><p>Nashorn 支持从Java代码中直接调用定义在脚本文件中的JavaScript函数。你可以将Java对象传递为函数参数，并且从函数返回数据来调用Java方法。</p>
+<p>下面的JavaScript函数稍后会在Java端调用：</p>
+<pre><code class="js">var fun1 = function(name) &#123;
+    print(&#39;Hi there from Javascript, &#39; + name);
+    return &quot;greetings from javascript&quot;;
+&#125;;
+var fun2 = function (object) &#123;
+    print(&quot;JS Class Definition: &quot; + Object.prototype.toString.call(object));
+&#125;;
+</code></pre>
+<p>为了调用函数，你首先需要将脚本引擎转换为<code>Invocable</code>。<code>Invocable</code>接口由<code>NashornScriptEngine</code>实现，并且定义了<code>invokeFunction</code>方法来调用指定名称的JavaScript函数。</p>
+<pre><code class="java">ScriptEngine engine = new ScriptEngineManager().getEngineByName(&quot;nashorn&quot;);
+engine.eval(new FileReader(&quot;script.js&quot;));
+Invocable invocable = (Invocable) engine;
+Object result = invocable.invokeFunction(&quot;fun1&quot;, &quot;Peter Parker&quot;);
+System.out.println(result);
+System.out.println(result.getClass());
+// Hi there from Javascript, Peter Parker
+// greetings from javascript
+// class java.lang.String
+</code></pre>
+<p>执行这段代码会在控制台产生三行结果。调用函数<code>print</code>将结果输出到<code>System.out</code>，所以我们会首先看到JavaScript输出。</p>
+<p>现在让我们通过传入任意Java对象来调用第二个函数：</p>
+<pre><code class="java">invocable.invokeFunction(&quot;fun2&quot;, new Date());
+// [object java.util.Date]
+invocable.invokeFunction(&quot;fun2&quot;, LocalDateTime.now());
+// [object java.time.LocalDateTime]
+invocable.invokeFunction(&quot;fun2&quot;, new Person());
+// [object com.winterbe.java8.Person]
+</code></pre>
+<p>Java对象在传入时不会在JavaScript端损失任何类型信息。由于脚本在JVM上原生运行，我们可以在Nashron上使用Java API或外部库的全部功能。</p>
+<h3 id="在JavaScript中调用Java方法"><a href="#在JavaScript中调用Java方法" class="headerlink" title="在JavaScript中调用Java方法"></a>在JavaScript中调用Java方法</h3><p>在JavaScript中调用Java方法十分容易。我们首先需要定义一个Java静态方法。</p>
+<pre><code class="java">static String fun1(String name) &#123;
+    System.out.format(&quot;Hi there from Java, %s&quot;, name);
+    return &quot;greetings from java&quot;;
+&#125;
+</code></pre>
+<p>Java类可以通过<code>Java.type</code>API扩展在JavaScript中引用。它就和Java代码中的<code>import</code>类似。只要定义了Java类型，我们就可以自然地调用静态方法<code>fun1()</code>，然后像<code>sout</code>打印信息。由于方法是静态的，我们不需要首先创建实例。</p>
+<pre><code class="java">var MyJavaClass = Java.type(&#39;my.package.MyJavaClass&#39;);
+var result = MyJavaClass.fun1(&#39;John Doe&#39;);
+print(result);
+// Hi there from Java, John Doe
+// greetings from java
+</code></pre>
+<p>在使用JavaScript原生类型调用Java方法时，Nashorn 如何处理类型转换？让我们通过简单的例子来弄清楚。</p>
+<p>下面的Java方法简单打印了方法参数的实际类型：</p>
+<pre><code class="java">static void fun2(Object object) &#123;
+    System.out.println(object.getClass());
+&#125;
+</code></pre>
+<p>为了理解背后如何处理类型转换，我们使用不同的JavaScript类型来调用这个方法：</p>
+<pre><code class="java">MyJavaClass.fun2(123);
+// class java.lang.Integer
+MyJavaClass.fun2(49.99);
+// class java.lang.Double
+MyJavaClass.fun2(true);
+// class java.lang.Boolean
+MyJavaClass.fun2(&quot;hi there&quot;)
+// class java.lang.String
+MyJavaClass.fun2(new Number(23));
+// class jdk.nashorn.internal.objects.NativeNumber
+MyJavaClass.fun2(new Date());
+// class jdk.nashorn.internal.objects.NativeDate
+MyJavaClass.fun2(new RegExp());
+// class jdk.nashorn.internal.objects.NativeRegExp
+MyJavaClass.fun2(&#123;foo: &#39;bar&#39;&#125;);
+// class jdk.nashorn.internal.scripts.JO4
+</code></pre>
+<p>JavaScript原始类型转换为合适的Java包装类，而JavaScript原生对象会使用内部的适配器类来表示。要记住<code>jdk.nashorn.internal</code>中的类可能会有所变化，所以不应该在客户端面向这些类来编程。</p>
+<blockquote>
+<p><em>任何标记为“内部”的东西都可能会从你那里发生改变。</em></p>
+</blockquote>
+<h3 id="ScriptObjectMirror"><a href="#ScriptObjectMirror" class="headerlink" title="ScriptObjectMirror"></a>ScriptObjectMirror</h3><p>在向Java传递原生JavaScript对象时，你可以使用<code>ScriptObjectMirror</code>类，它实际上是底层JavaScript对象的Java表示。<code>ScriptObjectMirror</code>实现了<code>Map</code>接口，位于<code>jdk.nashorn.api</code>中。这个包中的类可以用于客户端代码。</p>
+<p>下面的例子将参数类型从<code>Object</code>改为<code>ScriptObjectMirror</code>，所以我们可以从传入的JavaScript对象中获得一些信息。</p>
+<pre><code class="java">static void fun3(ScriptObjectMirror mirror) &#123;
+    System.out.println(mirror.getClassName() + &quot;: &quot; +
+        Arrays.toString(mirror.getOwnKeys(true)));
+&#125;
+</code></pre>
+<p>当向这个方法传递对象（哈希表）时，在Java端可以访问其属性：</p>
+<pre><code class="java">MyJavaClass.fun3(&#123;
+    foo: &#39;bar&#39;,
+    bar: &#39;foo&#39;
+&#125;);
+// Object: [foo, bar]
+</code></pre>
+<p>我们也可以在Java中调用JavaScript的成员函数。让我们首先定义JavaScript <code>Person</code>类型，带有属性<code>firstName</code> 和 <code>lastName</code>，以及方法<code>getFullName</code>。</p>
+<pre><code class="js">function Person(firstName, lastName) &#123;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.getFullName = function() &#123;
+        return this.firstName + &quot; &quot; + this.lastName;
+    &#125;
+&#125;
+</code></pre>
+<p>JavaScript方法<code>getFullName</code>可以通过<code>callMember()</code>在<code>ScriptObjectMirror</code>上调用。</p>
+<pre><code class="java">static void fun4(ScriptObjectMirror person) &#123;
+    System.out.println(&quot;Full Name is: &quot; + person.callMember(&quot;getFullName&quot;));
+&#125;
+</code></pre>
+<p>当向Java方法传递新的<code>Person</code>时，我们会在控制台看到预期的结果：</p>
+<pre><code class="js">var person1 = new Person(&quot;Peter&quot;, &quot;Parker&quot;);
+MyJavaClass.fun4(person1);
+// Full Name is: Peter Parker
+</code></pre>
+<h3 id="语言扩展"><a href="#语言扩展" class="headerlink" title="语言扩展"></a>语言扩展</h3><p>Nashorn定义了多种对ECMAScript标准的语言和API扩展。让我们看一看最新的特性：</p>
+<h4 id="类型数组"><a href="#类型数组" class="headerlink" title="类型数组"></a>类型数组</h4><p>JavaScript的原生数组是无类型的。Nashron允许你在JavaScript中使用Java的类型数组：</p>
+<pre><code class="js">var IntArray = Java.type(&quot;int[]&quot;);
+var array = new IntArray(5);
+array[0] = 5;
+array[1] = 4;
+array[2] = 3;
+array[3] = 2;
+array[4] = 1;
+try &#123;
+    array[5] = 23;
+&#125; catch (e) &#123;
+    print(e.message);  // Array index out of range: 5
+&#125;
+array[0] = &quot;17&quot;;
+print(array[0]);  // 17
+array[0] = &quot;wrong type&quot;;
+print(array[0]);  // 0
+array[0] = &quot;17.3&quot;;
+print(array[0]);  // 17
+</code></pre>
+<p><code>int[]</code>数组就像真实的Java整数数组那样。但是此外，在我们试图向数组添加非整数时，Nashron在背后执行了一些隐式的转换。字符串会自动转换为整数，这十分便利。</p>
+<h4 id="集合和范围遍历"><a href="#集合和范围遍历" class="headerlink" title="集合和范围遍历"></a>集合和范围遍历</h4><p>我们可以使用任何Java集合，而避免使用数组瞎折腾。首先需要通过<code>Java.type</code>定义Java类型，之后创建新的实例。</p>
+<pre><code class="js">var ArrayList = Java.type(&#39;java.util.ArrayList&#39;);
+var list = new ArrayList();
+list.add(&#39;a&#39;);
+list.add(&#39;b&#39;);
+list.add(&#39;c&#39;);
+for each (var el in list) print(el);  // a, b, c
+</code></pre>
+<p>为了迭代集合和数组，Nashron引入了<code>for each</code>语句。它就像Java的范围遍历那样工作。</p>
+<p>下面是另一个集合的范围遍历示例，使用<code>HashMap</code>：</p>
+<pre><code class="js">var map = new java.util.HashMap();
+map.put(&#39;foo&#39;, &#39;val1&#39;);
+map.put(&#39;bar&#39;, &#39;val2&#39;);
+for each (var e in map.keySet()) print(e);  // foo, bar
+for each (var e in map.values()) print(e);  // val1, val2
+</code></pre>
+<h4 id="Lambda表达式和数据流"><a href="#Lambda表达式和数据流" class="headerlink" title="Lambda表达式和数据流"></a>Lambda表达式和数据流</h4><p>每个人都热爱lambda和数据流 — Nashron也一样！虽然ECMAScript 5.1没有Java8 lmbda表达式的简化箭头语法，我们可以在任何接受lambda表达式的地方使用函数字面值。</p>
+<pre><code class="js">var list2 = new java.util.ArrayList();
+list2.add(&quot;ddd2&quot;);
+list2.add(&quot;aaa2&quot;);
+list2.add(&quot;bbb1&quot;);
+list2.add(&quot;aaa1&quot;);
+list2.add(&quot;bbb3&quot;);
+list2.add(&quot;ccc&quot;);
+list2.add(&quot;bbb2&quot;);
+list2.add(&quot;ddd1&quot;);
+list2
+    .stream()
+    .filter(function(el) &#123;
+        return el.startsWith(&quot;aaa&quot;);
+    &#125;)
+    .sorted()
+    .forEach(function(el) &#123;
+        print(el);
+    &#125;);
+    // aaa1, aaa2
+</code></pre>
+<h4 id="类的继承"><a href="#类的继承" class="headerlink" title="类的继承"></a>类的继承</h4><p>Java类型可以由<code>Java.extend</code>轻易扩展。就像你在下面的例子中看到的那样，你甚至可以在你的脚本中创建多线程的代码：</p>
+<pre><code class="js">var Runnable = Java.type(&#39;java.lang.Runnable&#39;);
+var Printer = Java.extend(Runnable, &#123;
+    run: function() &#123;
+        print(&#39;printed from a separate thread&#39;);
+    &#125;
+&#125;);
+var Thread = Java.type(&#39;java.lang.Thread&#39;);
+new Thread(new Printer()).start();
+new Thread(function() &#123;
+    print(&#39;printed from another thread&#39;);
+&#125;).start();
+// printed from a separate thread
+// printed from another thread
+</code></pre>
+<h4 id="参数重载"><a href="#参数重载" class="headerlink" title="参数重载"></a>参数重载</h4><p>方法和函数可以通过点运算符或方括号运算符来调用：</p>
+<pre><code class="js">var System = Java.type(&#39;java.lang.System&#39;);
+System.out.println(10);              // 10
+System.out[&quot;println&quot;](11.0);         // 11.0
+System.out[&quot;println(double)&quot;](12);   // 12.0
+</code></pre>
+<p>当使用重载参数调用方法时，传递可选参数类型<code>println(double)</code>会指定所调用的具体方法。</p>
+<h4 id="Java-Beans"><a href="#Java-Beans" class="headerlink" title="Java Beans"></a>Java Beans</h4><p>你可以简单地使用属性名称来向Java Beans获取或设置值，不需要显式调用读写器：</p>
+<pre><code class="js">var Date = Java.type(&#39;java.util.Date&#39;);
+var date = new Date();
+date.year += 1900;
+print(date.year);  // 2014
+</code></pre>
+<h4 id="函数字面值"><a href="#函数字面值" class="headerlink" title="函数字面值"></a>函数字面值</h4><p>对于简单的单行函数，我们可以去掉花括号：</p>
+<pre><code class="js">function sqr(x) x * x;
+print(sqr(3));    // 9
+</code></pre>
+<h4 id="属性绑定"><a href="#属性绑定" class="headerlink" title="属性绑定"></a>属性绑定</h4><p>两个不同对象的属性可以绑定到一起：</p>
+<pre><code class="js">var o1 = &#123;&#125;;
+var o2 = &#123; foo: &#39;bar&#39;&#125;;
+Object.bindProperties(o1, o2);
+print(o1.foo);    // bar
+o1.foo = &#39;BAM&#39;;
+print(o2.foo);    // BAM
+</code></pre>
+<h4 id="字符串去空白"><a href="#字符串去空白" class="headerlink" title="字符串去空白"></a>字符串去空白</h4><p>我喜欢去掉空白的字符串：</p>
+<pre><code class="js">print(&quot;   hehe&quot;.trimLeft());            // hehe
+print(&quot;hehe    &quot;.trimRight() + &quot;he&quot;);   // hehehe
+</code></pre>
+<h4 id="位置"><a href="#位置" class="headerlink" title="位置"></a>位置</h4><p>以防你忘了自己在哪里：</p>
+<pre><code class="js">print(__FILE__, __LINE__, __DIR__);
+</code></pre>
+<h4 id="导入作用域"><a href="#导入作用域" class="headerlink" title="导入作用域"></a>导入作用域</h4><p>有时一次导入多个Java包会很方便。我们可以使用<code>JavaImporter</code>类，和<code>with</code>语句一起使用。所有被导入包的类文件都可以在<code>with</code>语句的局部域中访问到。</p>
+<pre><code class="js">var imports = new JavaImporter(java.io, java.lang);
+with (imports) &#123;
+    var file = new File(__FILE__);
+    System.out.println(file.getAbsolutePath());
+    // /path/to/my/script.js
+&#125;
+</code></pre>
+<h4 id="数组转换"><a href="#数组转换" class="headerlink" title="数组转换"></a>数组转换</h4><p>一些类似<code>java.util</code>的包可以不使用<code>java.type</code>或<code>JavaImporter</code>直接访问：</p>
+<pre><code class="js">var list = new java.util.ArrayList();
+list.add(&quot;s1&quot;);
+list.add(&quot;s2&quot;);
+list.add(&quot;s3&quot;);
+</code></pre>
+<p>下面的代码将Java列表转换为JavaScript原生数组：</p>
+<pre><code class="js">var jsArray = Java.from(list);
+print(jsArray);                                  // s1,s2,s3
+print(Object.prototype.toString.call(jsArray));  // [object Array]
+</code></pre>
+<p>下面的代码执行相反操作：</p>
+<pre><code class="js">var javaArray = Java.to([3, 5, 7, 11], &quot;int[]&quot;);
+</code></pre>
+<h4 id="访问超类"><a href="#访问超类" class="headerlink" title="访问超类"></a>访问超类</h4><p>在JavaScript中访问被覆盖的成员通常比较困难，因为Java的<code>super</code>关键字在ECMAScript中并不存在。幸运的是，Nashron有一套补救措施。</p>
+<p>首先我们需要在Java代码中定义超类：</p>
+<pre><code class="java">class SuperRunner implements Runnable &#123;
+    @Override
+    public void run() &#123;
+        System.out.println(&quot;super run&quot;);
+    &#125;
+&#125;
+</code></pre>
+<p>下面我在JavaScript中覆盖了<code>SuperRunner</code>。要注意创建新的<code>Runner</code>实例时的Nashron语法：覆盖成员的语法取自Java的匿名对象。</p>
+<pre><code class="js">var SuperRunner = Java.type(&#39;com.winterbe.java8.SuperRunner&#39;);
+var Runner = Java.extend(SuperRunner);
+var runner = new Runner() &#123;
+    run: function() &#123;
+        Java.super(runner).run();
+        print(&#39;on my run&#39;);
+    &#125;
+&#125;
+runner.run();
+// super run
+// on my run
+</code></pre>
+<p>我们通过<code>Java.super()</code>扩展调用了被覆盖的<code>SuperRunner.run()</code>方法。</p>
+<h3 id="加载脚本"><a href="#加载脚本" class="headerlink" title="加载脚本"></a>加载脚本</h3><p>在JavaScript中加载额外的脚本文件非常方便。我们可以使用<code>load</code>函数加载本地或远程脚本。</p>
+<p>我在我的Web前端中大量使用<a href="http://link.zhihu.com/?target=http://underscorejs.org/">Underscore.js</a>，所以让我们在Nashron中复用它：</p>
+<pre><code class="js">load(&#39;http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js&#39;);
+var odds = _.filter([1, 2, 3, 4, 5, 6], function (num) &#123;
+    return num % 2 == 1;
+&#125;);
+print(odds);  // 1, 3, 5
+</code></pre>
+<p>外部脚本会在相同JavaScript上下文中被执行，所以我们可以直接访问underscore 的对象。要记住当变量名称互相冲突时，脚本的加载可能会使你的代码崩溃。</p>
+<p>这一问题可以通过把脚本文件加载到新的全局上下文来绕过：</p>
+<pre><code class="js">loadWithNewGlobal(&#39;script.js&#39;);
+</code></pre>
+<h3 id="命令行脚本"><a href="#命令行脚本" class="headerlink" title="命令行脚本"></a>命令行脚本</h3><p>如果你对编写命令行（shell）脚本感兴趣，来试一试<a href="http://link.zhihu.com/?target=https://github.com/winterbe/nake">Nake</a>吧。Nake是一个Java 8 Nashron的简化构建工具。你只需要在项目特定的<code>Nakefile</code>中定义任务，之后通过在命令行键入<code>nake -- myTask</code>来执行这些任务。任务编写为JavaScript，并且在Nashron的脚本模式下运行，所以你可以使用你的终端、JDK8 API和任意Java库的全部功能。</p>
+<p>对Java开发者来说，编写命令行脚本是前所未有的简单…</p>
+<h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><h3 id="Optional-1"><a href="#Optional-1" class="headerlink" title="Optional"></a>Optional</h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>empty</code></td>
+<td>返回一个空的 Optional 实例</td>
+</tr>
+<tr>
+<td><code>filter</code></td>
+<td>如果值存在并且满足提供的断言， 就返回包含该值的 Optional 对象；否则返回一个空的 Optional 对象</td>
+</tr>
+<tr>
+<td><code>map</code></td>
+<td>如果值存在，就对该值执行提供的 mapping 函数调用</td>
+</tr>
+<tr>
+<td><code>flatMap</code></td>
+<td>如果值存在，就对该值执行提供的 mapping 函数调用，返回一个 Optional 类型的值，否则就返 回一个空的 Optional 对象</td>
+</tr>
+<tr>
+<td><code>get</code></td>
+<td>如果该值存在，将该值用 Optional 封装返回，否则抛出一个 NoSuchElementException 异常</td>
+</tr>
+<tr>
+<td><code>ifPresent</code></td>
+<td>如果值存在，就执行使用该值的方法调用，否则什么也不做</td>
+</tr>
+<tr>
+<td><code>isPresent</code></td>
+<td>如果值存在就返回 true，否则返回 false</td>
+</tr>
+<tr>
+<td><code>of</code></td>
+<td>将指定值用 Optional 封装之后返回，如果该值为 null，则抛出一个 NullPointerException 异常</td>
+</tr>
+<tr>
+<td><code>ofNullable</code></td>
+<td>将指定值用 Optional 封装之后返回，如果该值为 null，则返回一个空的 Optional 对象</td>
+</tr>
+<tr>
+<td><code>orElse</code></td>
+<td>如果有值则将其返回，否则返回一个默认值</td>
+</tr>
+<tr>
+<td><code>orElseGet</code></td>
+<td>如果有值则将其返回，否则返回一个由指定的 Supplier 接口生成的值</td>
+</tr>
+<tr>
+<td><code>orElseThrow</code></td>
+<td>如果有值则将其返回，否则抛出一个由指定的 Supplier 接口生成的异常</td>
+</tr>
+</tbody></table>
+<p>Optional 可以很优雅地避免了 <code>NullPointerException</code> ，这里我们简单举个例子，</p>
+<pre><code class="java">ptional&lt;String&gt; optional = Optional.of(&quot;bam&quot;);
+
+optional.isPresent();// true
+optional.get();                 // &quot;bam&quot;
+optional.orElse(&quot;fallback&quot;);    // &quot;bam&quot;
+
+optional.ifPresent((s) -&gt; System.out.println(s.charAt(0)));     // &quot;b&quot;
+</code></pre>
+<h3 id="Base64-1"><a href="#Base64-1" class="headerlink" title="Base64"></a>Base64</h3><pre><code class="java">// Encoding a string to base 64
+Base64.Encoder encoder = Base64.getEncoder();
+String normalString = &quot;username:password&quot;;
+String encodedString = encoder.encodeToString(
+        normalString.getBytes(StandardCharsets.UTF_8) );
+ 
+// Decoding a base 64 encoded string
+String encodedString = &quot;dXNlcm5hbWU6cGFzc3dvcmQ=&quot;;
+Base64.Decoder decoder = Base64.getDecoder();
+byte[] decodedByteArray = decoder.decode(encodedString);
+//Verify the decoded string
+System.out.println(new String(decodedByteArray));
+
+// Wrap to a base 64 encoded output stream
+Path originalPath = Paths.get(&quot;c:/temp&quot;, &quot;mail.txt&quot;);
+Path targetPath = Paths.get(&quot;c:/temp&quot;, &quot;encoded.txt&quot;);
+Base64.Encoder mimeEncoder = Base64.getMimeEncoder();
+try(OutputStream output = Files.newOutputStream(targetPath))&#123;
+    //Copy the encoded file content to target file
+    Files.copy(originalPath, mimeEncoder.wrap(output));
+    //Or simply use the encoded output stream
+    OutputStream encodedStrem = mimeEncoder.wrap(output);
+&#125;
+   
+</code></pre>
+<h3 id="Annotation"><a href="#Annotation" class="headerlink" title="Annotation"></a>Annotation</h3><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/1a46570920da">原文链接</a></p>
+<p>Java 8在两个方面对注解机制进行了改进，分别为:</p>
+<p>你现在可以定义重复注解</p>
+<p>你可以为任何目标添加注解</p>
+<p>Java中的注解是一种对程序元素进行配置，提供附加信息的机制。</p>
+<h4 id="重复注解"><a href="#重复注解" class="headerlink" title="重复注解"></a>重复注解</h4><p>之前版本的Java禁止对同样的注解类型声明多次。由于这个原因，下面的第二句代码是无效的。</p>
+<pre><code class="java">@interface Author &#123;
+ String name();
+&#125;
+
+@Author(name=&quot;Raoul&quot;) 
+@Author(name=&quot;Mario&quot;) @Author(name=&quot;Alan&quot;)
+ class Book&#123; &#125;
+</code></pre>
+<p>Java程序员经常通过一些惯用法绕过这一限制。例如可以声明一个新的注解，它包含了你希望重复的注解数组。这种方法的形式如下:</p>
+<pre><code class="java">@interface Author &#123;
+    String name(); 
+&#125;
+
+@interface Authors &#123;
+    Author[] value();
+&#125;
+
+@Authors(
+&#123;
+@Author(name=&quot;Raoul&quot;), 
+@Author(name=&quot;Mario&quot;) , 
+@Author(name=&quot;Alan&quot;)
+&#125;
+)
+class Book&#123;&#125;
+</code></pre>
+<p>Book类的嵌套注解相当难看。这就是Java 8想要从根本上移除这一限制的原因，去掉这一限制后，代码的可读性会好很多。</p>
+<p>现在，如果你的配置允许重复注解，你可以毫无顾虑地一次声明 多个同一种类型的注解。它目前还不是默认行为，你需要显式地要求进行重复注解。</p>
+<p>创建一个重复注解</p>
+<p>如果一个注解在设计之初就是可重复的，你可以直接使用它。但是，如果你提供的注解是为用户提供的，那么就需要做一些工作，说明该注解可以重复。下面是你需要执行的两个步骤:</p>
+<pre><code class="java">@Repeatable(Authors.class)
+@interface Author &#123; 
+    String name();
+&#125;
+
+@interface Authors &#123;
+    Author[] value();
+&#125;
+</code></pre>
+<p>完成了这样的定义之后，Book类可以通过多个@Author注解进行注释，如下所示:</p>
+<pre><code class="java">@Author(name=&quot;Raoul&quot;) 
+@Author(name=&quot;Mario&quot;) 
+@Author(name=&quot;Alan&quot;) class Book&#123; &#125;
+</code></pre>
+<p>编译时，Book会被认为使用了</p>
+<pre><code class="java">@Authors(&#123;@Author(name=&quot;Raoul&quot;), 
+@Author(name =”Mario”), 
+@Author(name=”Alan”)&#125;)
+</code></pre>
+<p>这样的形式进行了注解，所以，你可以把这种新的机 制看成是一种语法糖，它提供了Java程序员之前利用的惯用法类似的功能。为了确保与反射方法 在行为上的一致性，注解会被封装到一个容器中。Java API中的getAnnotation(Class<T> annotation-Class)方法会为注解元素返回类型为T的注解。如果实际情况有多个类型为T的注解，该方法的返回到底是哪一个呢?</p>
+<p>类Class提供了一个新的getAnnotationsByType 方法，它可以帮助我们更好地使用重复注解。比如，你可以像下面这样打印输出Book类的所有Author注解:</p>
+<pre><code class="java">public static void main(String[] args) &#123;
+Author[] authors = Book.class.getAnnotationsByType(Author.class); 
+//java8提供的循环及lambda表达式
+Arrays.asList(authors).forEach(a -&gt;
+ &#123; 
+    System.out.println(a.name());
+ &#125;
+ );
+&#125;
+</code></pre>
+<h4 id="类型注解"><a href="#类型注解" class="headerlink" title="类型注解"></a>类型注解</h4><p>从Java 8开始，注解已经能应用于任何目标。这其中包括new操作符、类型转换、instanceof检查、泛型类型参数，以及implements和throws子句。</p>
+<p>这里，我们举了一个例子，这个例子中 类型为String的变量name不能为空，所以我们使用了@NonNull对其进行注解:</p>
+<pre><code class="java">@NonNull String name = person.getName();
+</code></pre>
+<p>类似地，你可以对列表中的元素类型进行注解:</p>
+<pre><code class="java">List&lt;@NonNull Car&gt; cars = new ArrayList&lt;&gt;(); 
+</code></pre>
+<p>利用好对类型的注解非常有利于我们对程序进行分析。这两个例子中，通过这一工具我们可以确保getName不返回空，cars列表中的元素总是非空值。这会 极大地帮助你减少代码中不期而至的错误。</p>
+<p>Java 8并未提供官方的注解或者一种工具能以开箱即用的方式使用它们。它仅仅提供了一种功能，你使用它可以对不同的类型添加注解。</p>
+<h4 id="泛型类型推断"><a href="#泛型类型推断" class="headerlink" title="泛型类型推断"></a>泛型类型推断</h4><p>Java 8对泛型参数的推断进行了增强。相信你对Java 8之前版本中的类型推断已经比较熟了。</p>
+<p>比如，Java中的方法emptyList方法定义如下:</p>
+<pre><code class="java">static &lt;T&gt; List&lt;T&gt; emptyList();
+</code></pre>
+<p>emptyList方法使用了类型参数T进行参数化。你可以像下面这样为该类型参数提供一个显式的类型进行函数调用:</p>
+<pre><code class="java">List&lt;Car&gt; cars = Collections.&lt;Car&gt;emptyList();
+</code></pre>
+<p>不过Java也可以推断泛型参数的类型。上面的代码和下面这段代码是等价的:</p>
+<pre><code class="java">List&lt;Car&gt; cars = Collections.emptyList();
+</code></pre>
+<p>Java 8出现之前，这种推断机制依赖于程序的上下文(即目标类型)，具有一定的局限性。</p>
+<p>Java 8中，目标类型包括向方法传递的参数，因此你不再需要提供显式的泛型参数</p>
+<h3 id="Regex"><a href="#Regex" class="headerlink" title="Regex"></a>Regex</h3><h4 id="Convert-Regex-to-Predicate"><a href="#Convert-Regex-to-Predicate" class="headerlink" title="Convert Regex to Predicate"></a>Convert Regex to Predicate</h4><pre><code class="java">long count = Stream.of(&quot;bob@gmail.com&quot;, &quot;alice@hotmail.com&quot;)
+    .filter(Pattern.compile(&quot;.*@gmail\\.com&quot;).asPredicate())
+    .count();
+System.out.println(count);
+</code></pre>
+<h4 id="Using-Regex-using-Pattern-matcher"><a href="#Using-Regex-using-Pattern-matcher" class="headerlink" title="Using Regex using Pattern.matcher()"></a>Using Regex using Pattern.matcher()</h4><pre><code class="java">Pattern pattern = Pattern.compile(&quot;^(.+)@example.com$&quot;);
+
+        // Input list
+        List&lt;String&gt; emails = Arrays.asList(&quot;alex@example.com&quot;, &quot;bob@yahoo.com&quot;,
+                &quot;cat@google.com&quot;, &quot;david@example.com&quot;);
+
+        for(String email : emails)
+        &#123;
+            Matcher matcher = pattern.matcher(email);
+
+            if(matcher.matches())
+            &#123;
+                System.out.println(email);
+            &#125;
+        &#125;
+</code></pre>
+<h3 id="File"><a href="#File" class="headerlink" title="File"></a>File</h3><h4 id="Read"><a href="#Read" class="headerlink" title="Read"></a>Read</h4><h5 id="Read-file-line-by-line-–-Java-8-Stream"><a href="#Read-file-line-by-line-–-Java-8-Stream" class="headerlink" title="Read file line by line – Java 8 Stream"></a>Read file line by line – Java 8 Stream</h5><pre><code class="java"> Path path = Paths.get(&quot;c:/temp&quot;, &quot;data.txt&quot;);
+ 
+//The stream hence file will also be closed here
+try(Stream&lt;String&gt; lines = Files.lines(path))
+&#123;
+    Optional&lt;String&gt; hasPassword = lines.filter(s -&gt; s.contains(&quot;password&quot;)).findFirst();
+
+    if(hasPassword.isPresent())&#123;
+        System.out.println(hasPassword.get());
+    &#125;
+&#125;
+
+// or
+ Path path = Paths.get(&quot;c:/temp&quot;, &quot;data.txt&quot;);
+ 
+// When filteredLines is closed, it closes underlying stream as well as underlying file.
+try(Stream&lt;String&gt; filteredLines = Files.lines(path).filter(s -&gt; s.contains(&quot;password&quot;)))
+&#123;
+    Optional&lt;String&gt; hasPassword = filteredLines.findFirst();
+
+    if(hasPassword.isPresent())&#123;
+        System.out.println(hasPassword.get());
+    &#125;
+&#125;
+</code></pre>
+<h5 id="Read-file-line-by-line-–-FileReader"><a href="#Read-file-line-by-line-–-FileReader" class="headerlink" title="Read file line by line – FileReader"></a>Read file line by line – FileReader</h5><p>Till java 7, you could read a file using FileReader in various ways. There may be other effective and better variations of this code but that is not the man point of this post. I am giving just as reminder.</p>
+<pre><code class="java">File file = new File(&quot;c:/temp/data.txt&quot;);
+ 
+FileReader fr = new FileReader(file);
+BufferedReader br = new BufferedReader(fr);
+
+String line;
+while((line = br.readLine()) != null)
+&#123;
+    if(line.contains(&quot;password&quot;))&#123;
+        System.out.println(line);
+    &#125;
+&#125;
+br.close();
+fr.close();
+</code></pre>
+<h4 id="Write"><a href="#Write" class="headerlink" title="Write"></a>Write</h4><h5 id="Java-8-write-to-file-using-BufferedWriter"><a href="#Java-8-write-to-file-using-BufferedWriter" class="headerlink" title="Java 8 write to file using BufferedWriter"></a>Java 8 write to file using BufferedWriter</h5><p><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/api/java/io/BufferedWriter.html">BufferedWriter</a> is used to write text to a character or byte stream. Before printing the characters, it stores the characters in buffer and print in bunches. Without buffering, each invocation of a print() method would cause characters to be converted into bytes that would then be written immediately to the file, which can be very inefficient.</p>
+<p>Java program to <em>write content to file using Java 8</em> APIs is –</p>
+<pre><code class="java">//Get the file reference
+Path path = Paths.get(&quot;c:/output.txt&quot;);
+ 
+//Use try-with-resource to get auto-closeable writer instance
+try (BufferedWriter writer = Files.newBufferedWriter(path))
+&#123;
+    writer.write(&quot;Hello World !!&quot;);
+&#125;
+</code></pre>
+<h5 id="Write-to-file-using-Files-write"><a href="#Write-to-file-using-Files-write" class="headerlink" title="Write to file using Files.write()"></a>Write to file using Files.write()</h5><p>Using <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Files.html#write-java.nio.file.Path-byte:A-java.nio.file.OpenOption...-">Files.write()</a> method is also pretty much clean code.</p>
+<pre><code class="java">String content = &quot;Hello World !!&quot;;
+ 
+Files.write(Paths.get(&quot;c:/output.txt&quot;), content.getBytes());
+</code></pre>
+<h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><p><a target="_blank" rel="noopener" href="https://github.com/winterbe/java8-tutorial">java8-tutorial</a></p>
+<p><a target="_blank" rel="noopener" href="https://howtodoinjava.com/java8/">howtodoinjava java8</a> </p>
+<p><a target="_blank" rel="noopener" href="https://github.com/CarpenterLee/JavaLambdaInternals">JavaLambdaInternals</a></p>
+<p><a target="_blank" rel="noopener" href="https://martinfowler.com/articles/collection-pipeline/">collection-pipeline</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/biezhi/learn-java8">learn-java8</a></p>
+<p><a target="_blank" rel="noopener" href="https://zq99299.github.io/java-tutorial/">java8官网笔记教程</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/jianchengwang/todo-java/tree/master/java8">示例代码</a></p>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/JAVA/">JAVA</a><a class="link-muted mr-2" rel="tag" href="/tags/JVM/">JVM</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/09/10/Python2/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Python中的Pandas</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/09/10/2/"><span class="level-item">live2d-web</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>

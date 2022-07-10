@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>浅谈前端中的二进制数据类型 - 一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="目前在一个项目中，WebSocket部分由于后端使用了gzip压缩，前端处理起来废了一点时间，从而发现自己在二进制数据类型这个知识点还存在一定的盲区，因此这里进行总结。  本文主要简单介绍ArrayBuffer对象、TypedArray对象、DataView对象以及Blob原始数据类型，和它们之间的互相转换方法。部分代码参考这里而非本人原创，仅做个人学习使用。 这些类型化对象，一般会在以下场景中"><meta property="og:type" content="blog"><meta property="og:title" content="浅谈前端中的二进制数据类型"><meta property="og:url" content="http://example.com/2018/05/09/%E6%B5%85%E8%B0%88%E5%89%8D%E7%AB%AF%E4%B8%AD%E7%9A%84%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"><meta property="og:site_name" content="一枝清寒."><meta property="og:description" content="目前在一个项目中，WebSocket部分由于后端使用了gzip压缩，前端处理起来废了一点时间，从而发现自己在二进制数据类型这个知识点还存在一定的盲区，因此这里进行总结。  本文主要简单介绍ArrayBuffer对象、TypedArray对象、DataView对象以及Blob原始数据类型，和它们之间的互相转换方法。部分代码参考这里而非本人原创，仅做个人学习使用。 这些类型化对象，一般会在以下场景中"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:published_time" content="2018-05-09T02:28:42.000Z"><meta property="article:modified_time" content="2021-07-25T07:58:54.000Z"><meta property="article:author" content="ChenShang"><meta property="article:tag" content="javascript"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2018/05/09/%E6%B5%85%E8%B0%88%E5%89%8D%E7%AB%AF%E4%B8%AD%E7%9A%84%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"},"headline":"浅谈前端中的二进制数据类型","image":["http://example.com/img/og_image.png"],"datePublished":"2018-05-09T02:28:42.000Z","dateModified":"2021-07-25T07:58:54.000Z","author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":"目前在一个项目中，WebSocket部分由于后端使用了gzip压缩，前端处理起来废了一点时间，从而发现自己在二进制数据类型这个知识点还存在一定的盲区，因此这里进行总结。  本文主要简单介绍ArrayBuffer对象、TypedArray对象、DataView对象以及Blob原始数据类型，和它们之间的互相转换方法。部分代码参考这里而非本人原创，仅做个人学习使用。 这些类型化对象，一般会在以下场景中"}</script><link rel="canonical" href="http://example.com/2018/05/09/%E6%B5%85%E8%B0%88%E5%89%8D%E7%AB%AF%E4%B8%AD%E7%9A%84%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-05-09T02:28:42.000Z" title="2018/5/9 10:28:42">2018-05-09</time>发表</span><span class="level-item"><time dateTime="2021-07-25T07:58:54.000Z" title="2021/7/25 15:58:54">2021-07-25</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile">浅谈前端中的二进制数据类型</h1><div class="content"><blockquote>
+<p>目前在一个项目中，WebSocket部分由于后端使用了gzip压缩，前端处理起来废了一点时间，从而发现自己在二进制数据类型这个知识点还存在一定的盲区，因此这里进行总结。</p>
+</blockquote>
+<p>本文主要简单介绍ArrayBuffer对象、TypedArray对象、DataView对象以及Blob原始数据类型，和它们之间的互相转换方法。部分代码参考<a target="_blank" rel="noopener" href="http://javascript.ruanyifeng.com/stdlib/arraybuffer.html#toc4">这里</a>而非本人原创，仅做个人学习使用。</p>
+<p>这些类型化对象，一般会在以下场景中使用：</p>
+<ul>
+<li>WebGL 中，浏览器和显卡之间需要使用二进制数据进行通信。</li>
+<li>在一些 Rest 接口或者 WebSocket 中，采用压缩过的数据进行通信，这个压缩和解压缩的过程可能需要借助二进制对象。</li>
+<li>在 Canvas 中，我们可能需要通过生成 Blob 的方式保存当前内容。</li>
+<li>在 Img 等资源文件中，URL 可以为 Blob 原始数据类型。</li>
+<li>在读取用户上传文件时，可能需要用到二进制数据类型进行中间转换。</li>
+</ul>
+<p>下文分两部分，前一部分概述各个二进制数据类型，后一部分将它们之间的互相转换。</p>
+<h3 id="二进制数据类型概述"><a href="#二进制数据类型概述" class="headerlink" title="二进制数据类型概述"></a>二进制数据类型概述</h3><h4 id="ArrayBuffer"><a href="#ArrayBuffer" class="headerlink" title="ArrayBuffer"></a>ArrayBuffer</h4><p>ArrayBuffer对象代表储存二进制数据的一段内存，它不能直接读写，只能通过视图（TypedArray视图和DataView视图)来读写，视图的作用是以指定格式解读二进制数据。</p>
+<p>ArrayBuffer也是一个构造函数，可以分配一段可以存放数据的连续内存区域。</p>
+<pre><code>var buf = new ArrayBuffer(32);
+</code></pre>
+<p>上面代码生成了一段32字节的内存区域，每个字节的值默认都是0。可以看到，ArrayBuffer构造函数的参数是所需要的内存大小（单位字节）。</p>
+<p>为了读写这段内容，需要为它指定视图。DataView视图的创建，需要提供ArrayBuffer对象实例作为参数。</p>
+<pre><code>var buf = new ArrayBuffer(32);
+var dataView = new DataView(buf);
+dataView.getUint8(0) // 0
+</code></pre>
+<p>上面代码对一段32字节的内存，建立DataView视图，然后以不带符号的8位整数格式，读取第一个元素，结果得到0，因为原始内存的ArrayBuffer对象，默认所有位都是0。</p>
+<p>另外，我们可以将ArrayBuffer生成的结果，传入TypedArray中：</p>
+<pre><code>var buffer = new ArrayBuffer(12);
+
+var x1 = new Int32Array(buffer);
+x1[0] = 1;
+var x2 = new Uint8Array(buffer);
+x2[0]  = 2;
+
+x1[0] // 2
+</code></pre>
+<p>ArrayBuffer实例的byteLength属性，返回所分配的内存区域的字节长度。</p>
+<pre><code>var buffer = new ArrayBuffer(32);
+buffer.byteLength
+// 32
+</code></pre>
+<p>如果要分配的内存区域很大，有可能分配失败（因为没有那么多的连续空余内存），所以有必要检查是否分配成功。</p>
+<pre><code>if (buffer.byteLength === n) &#123;
+  // 成功
+&#125; else &#123;
+  // 失败
+&#125;
+</code></pre>
+<p>ArrayBuffer实例有一个slice方法，允许将内存区域的一部分，拷贝生成一个新的ArrayBuffer对象。</p>
+<pre><code>var buffer = new ArrayBuffer(8);
+var newBuffer = buffer.slice(0, 3);
+</code></pre>
+<p>上面代码拷贝buffer对象的前3个字节（从0开始，到第3个字节前面结束），生成一个新的ArrayBuffer对象。slice方法其实包含两步，第一步是先分配一段新内存，第二步是将原来那个ArrayBuffer对象拷贝过去。</p>
+<p>slice方法接受两个参数，第一个参数表示拷贝开始的字节序号（含该字节），第二个参数表示拷贝截止的字节序号（不含该字节）。如果省略第二个参数，则默认到原ArrayBuffer对象的结尾。</p>
+<p>除了slice方法，ArrayBuffer对象不提供任何直接读写内存的方法，只允许在其上方建立视图，然后通过视图读写。</p>
+<p>ArrayBuffer有一个静态方法isView，返回一个布尔值，表示参数是否为ArrayBuffer的视图实例。这个方法大致相当于判断参数，是否为TypedArray实例或DataView实例。</p>
+<pre><code>var buffer = new ArrayBuffer(8);
+ArrayBuffer.isView(buffer) // false
+
+var v = new Int32Array(buffer);
+ArrayBuffer.isView(v) // true
+</code></pre>
+<h4 id="TypedArray"><a href="#TypedArray" class="headerlink" title="TypedArray"></a>TypedArray</h4><p>目前，TypedArray对象一共提供9种类型的视图，每一种视图都是一种构造函数。</p>
+<ul>
+<li>Int8Array：8位有符号整数，长度1个字节。</li>
+<li>Uint8Array：8位无符号整数，长度1个字节。</li>
+<li>Uint8ClampedArray：8位无符号整数，长度1个字节，溢出处理不同。</li>
+<li>Int16Array：16位有符号整数，长度2个字节。</li>
+<li>Uint16Array：16位无符号整数，长度2个字节。</li>
+<li>Int32Array：32位有符号整数，长度4个字节。</li>
+<li>Uint32Array：32位无符号整数，长度4个字节。</li>
+<li>Float32Array：32位浮点数，长度4个字节。</li>
+<li>Float64Array：64位浮点数，长度8个字节。</li>
+</ul>
+<p>这9个构造函数生成的对象，统称为TypedArray对象。它们很像正常数组，都有length属性，都能用方括号运算符（[]）获取单个元素，所有数组的方法，在类型化数组上面都能使用。两者的差异主要在以下方面。</p>
+<ul>
+<li>TypedArray数组的所有成员，都是同一种类型和格式。</li>
+<li>TypedArray数组的成员是连续的，不会有空位。</li>
+<li>Typed化数组成员的默认值为0。比如，new Array(10)返回一个正常数组，里面没有任何成员，只是10个空位；new Uint8Array(10)返回一个类型化数组，里面10个成员都是0。</li>
+<li>TypedArray数组只是一层视图，本身不储存数据，它的数据都储存在底层的ArrayBuffer对象之中，要获取底层对象必须使用buffer属性。</li>
+</ul>
+<h5 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h5><p>TypedArray数组提供9种构造函数，用来生成相应类型的数组实例。</p>
+<p>构造函数有多种用法。</p>
+<ul>
+<li>TypedArray(buffer, byteOffset&#x3D;0, length?)</li>
+</ul>
+<p>同一个ArrayBuffer对象之上，可以根据不同的数据类型，建立多个视图。</p>
+<pre><code>// 创建一个8字节的ArrayBuffer
+var b = new ArrayBuffer(8);
+
+// 创建一个指向b的Int32视图，开始于字节0，直到缓冲区的末尾
+var v1 = new Int32Array(b);
+
+// 创建一个指向b的Uint8视图，开始于字节2，直到缓冲区的末尾
+var v2 = new Uint8Array(b, 2);
+
+// 创建一个指向b的Int16视图，开始于字节2，长度为2
+var v3 = new Int16Array(b, 2, 2);
+</code></pre>
+<p>对于以上代码，v1、v2和v3是重叠的：v1[0]是一个32位整数，指向字节0～字节3；v2[0]是一个8位无符号整数，指向字节2；v3[0]是一个16位整数，指向字节2～字节3。只要任何一个视图对内存有所修改，就会在另外两个视图上反应出来。</p>
+<p>注意，byteOffset必须与所要建立的数据类型一致，否则会报错。</p>
+<pre><code>var buffer = new ArrayBuffer(8);
+var i16 = new Int16Array(buffer, 1);
+// Uncaught RangeError: start offset of Int16Array should be a multiple of 2
+</code></pre>
+<p>上面代码中，新生成一个8个字节的ArrayBuffer对象，然后在这个对象的第一个字节，建立带符号的16位整数视图，结果报错。因为，带符号的16位整数需要两个字节，所以byteOffset参数必须能够被2整除。</p>
+<p>如果想从任意字节开始解读ArrayBuffer对象，必须使用DataView视图，因为TypedArray视图只提供9种固定的解读格式。</p>
+<ul>
+<li>TypedArray(length)</li>
+</ul>
+<p>视图还可以不通过ArrayBuffer对象，直接分配内存而生成。</p>
+<pre><code>var f64a = new Float64Array(8);
+f64a[0] = 10;
+f64a[1] = 20;
+f64a[2] = f64a[0] + f64a[1];
+</code></pre>
+<ul>
+<li>TypedArray(typedArray)</li>
+</ul>
+<p>类型化数组的构造函数，可以接受另一个视图实例作为参数。</p>
+<pre><code>var typedArray = new Int8Array(new Uint8Array(4));
+</code></pre>
+<p>上面代码中，Int8Array构造函数接受一个Uint8Array实例作为参数。</p>
+<p>注意，此时生成的新数组，只是复制了参数数组的值，对应的底层内存是不一样的。新数组会开辟一段新的内存储存数据，不会在原数组的内存之上建立视图。</p>
+<pre><code>var x = new Int8Array([1, 1]);
+var y = new Int8Array(x);
+x[0] // 1
+y[0] // 1
+
+x[0] = 2;
+y[0] // 1
+</code></pre>
+<p>上面代码中，数组y是以数组x为模板而生成的，当x变动的时候，y并没有变动。</p>
+<p>如果想基于同一段内存，构造不同的视图，可以采用下面的写法。</p>
+<pre><code>var x = new Int8Array([1, 1]);
+var y = new Int8Array(x.buffer);
+x[0] // 1
+y[0] // 1
+
+x[0] = 2;
+y[0] // 2
+</code></pre>
+<ul>
+<li>TypedArray(arrayLikeObject)</li>
+</ul>
+<p>构造函数的参数也可以是一个普通数组，然后直接生成TypedArray实例。</p>
+<pre><code>var typedArray = new Uint8Array([1, 2, 3, 4]);
+</code></pre>
+<p>注意，这时TypedArray视图会重新开辟内存，不会在原数组的内存上建立视图。</p>
+<p>上面代码从一个普通的数组，生成一个8位无符号整数的TypedArray实例。</p>
+<p>TypedArray数组也可以转换回普通数组。</p>
+<pre><code>var normalArray = Array.prototype.slice.call(typedArray);
+</code></pre>
+<h5 id="BYTES-PER-ELEMENT属性"><a href="#BYTES-PER-ELEMENT属性" class="headerlink" title="BYTES_PER_ELEMENT属性"></a>BYTES_PER_ELEMENT属性</h5><p>每一种视图的构造函数，都有一个BYTES_PER_ELEMENT属性，表示这种数据类型占据的字节数。</p>
+<pre><code>Int8Array.BYTES_PER_ELEMENT // 1
+Uint8Array.BYTES_PER_ELEMENT // 1
+Int16Array.BYTES_PER_ELEMENT // 2
+Uint16Array.BYTES_PER_ELEMENT // 2
+Int32Array.BYTES_PER_ELEMENT // 4
+Uint32Array.BYTES_PER_ELEMENT // 4
+Float32Array.BYTES_PER_ELEMENT // 4
+Float64Array.BYTES_PER_ELEMENT // 8
+</code></pre>
+<h5 id="ArrayBuffer与字符串的互相转换"><a href="#ArrayBuffer与字符串的互相转换" class="headerlink" title="ArrayBuffer与字符串的互相转换"></a>ArrayBuffer与字符串的互相转换</h5><p>ArrayBuffer转为字符串，或者字符串转为ArrayBuffer，有一个前提，即字符串的编码方法是确定的。假定字符串采用UTF-16编码（JavaScript的内部编码方式），可以自己编写转换函数。</p>
+<pre><code>// ArrayBuffer转为字符串，参数为ArrayBuffer对象
+function ab2str(buf) &#123;
+  return String.fromCharCode.apply(null, new Uint16Array(buf));
+&#125;
+
+// 字符串转为ArrayBuffer对象，参数为字符串
+function str2ab(str) &#123;
+  var buf = new ArrayBuffer(str.length * 2); // 每个字符占用2个字节
+  var bufView = new Uint16Array(buf);
+  for (var i = 0, strLen = str.length; i &lt; strLen; i++) &#123;
+    bufView[i] = str.charCodeAt(i);
+  &#125;
+  return buf;
+&#125;
+</code></pre>
+<h5 id="TypedArray-prototype-set"><a href="#TypedArray-prototype-set" class="headerlink" title="TypedArray.prototype.set()"></a>TypedArray.prototype.set()</h5><p>TypedArray数组的set方法用于复制数组（正常数组或TypedArray数组），也就是将一段内容完全复制到另一段内存。</p>
+<pre><code>var a = new Uint8Array(8);
+var b = new Uint8Array(8);
+
+b.set(a);
+</code></pre>
+<p>上面代码复制a数组的内容到b数组，它是整段内存的复制，比一个个拷贝成员的那种复制快得多。set方法还可以接受第二个参数，表示从b对象哪一个成员开始复制a对象。</p>
+<pre><code>var a = new Uint16Array(8);
+var b = new Uint16Array(10);
+
+b.set(a, 2)
+</code></pre>
+<p>上面代码的b数组比a数组多两个成员，所以从b[2]开始复制。</p>
+<h5 id="TypedArray-prototype-subarray"><a href="#TypedArray-prototype-subarray" class="headerlink" title="TypedArray.prototype.subarray()"></a>TypedArray.prototype.subarray()</h5><p>subarray方法是对于TypedArray数组的一部分，再建立一个新的视图。</p>
+<pre><code>var a = new Uint16Array(8);
+var b = a.subarray(2,3);
+
+a.byteLength // 16
+b.byteLength // 2
+</code></pre>
+<p>subarray方法的第一个参数是起始的成员序号，第二个参数是结束的成员序号（不含该成员），如果省略则包含剩余的全部成员。所以，上面代码的a.subarray(2,3)，意味着b只包含a[2]一个成员，字节长度为2。</p>
+<h5 id="TypedArray-prototype-slice"><a href="#TypedArray-prototype-slice" class="headerlink" title="TypedArray.prototype.slice()"></a>TypedArray.prototype.slice()</h5><p>TypeArray实例的slice方法，可以返回一个指定位置的新的TypedArray实例。</p>
+<pre><code>let ui8 = Uint8Array.of(0, 1, 2);
+ui8.slice(-1)
+// Uint8Array [ 2 ]
+</code></pre>
+<p>上面代码中，ui8是8位无符号整数数组视图的一个实例。它的slice方法可以从当前视图之中，返回一个新的视图实例。</p>
+<p>slice方法的参数，表示原数组的具体位置，开始生成新数组。负值表示逆向的位置，即-1为倒数第一个位置，-2表示倒数第二个位置，以此类推。</p>
+<h5 id="TypedArray-of"><a href="#TypedArray-of" class="headerlink" title="TypedArray.of()"></a>TypedArray.of()</h5><p>TypedArray数组的所有构造函数，都有一个静态方法of，用于将参数转为一个TypedArray实例。</p>
+<pre><code>Float32Array.of(0.151, -8, 3.7)
+// Float32Array [ 0.151, -8, 3.7 ]
+</code></pre>
+<h5 id="TypedArray-from"><a href="#TypedArray-from" class="headerlink" title="TypedArray.from()"></a>TypedArray.from()</h5><p>静态方法from接受一个<strong>可遍历的数据结构（比如数组）</strong>作为参数，返回一个基于这个结构的TypedArray实例。</p>
+<pre><code>Uint16Array.from([0, 1, 2])
+// Uint16Array [ 0, 1, 2 ]
+</code></pre>
+<p>这个方法还可以将一种TypedArray实例，转为另一种。</p>
+<pre><code>var ui16 = Uint16Array.from(Uint8Array.of(0, 1, 2));
+ui16 instanceof Uint16Array // true
+</code></pre>
+<p>from方法还可以接受一个函数，作为第二个参数，用来对每个元素进行遍历，功能类似map方法。</p>
+<pre><code>Int8Array.of(127, 126, 125).map(x =&gt; 2 * x)
+// Int8Array [ -2, -4, -6 ]
+
+Int16Array.from(Int8Array.of(127, 126, 125), x =&gt; 2 * x)
+// Int16Array [ 254, 252, 250 ]
+</code></pre>
+<p>上面的例子中，from方法没有发生溢出，这说明遍历是针对新生成的16位整数数组，而不是针对原来的8位整数数组。也就是说，from会将第一个参数指定的TypedArray数组，拷贝到另一段内存之中（占用内存从3字节变为6字节），然后再进行处理。</p>
+<h4 id="DataView"><a href="#DataView" class="headerlink" title="DataView"></a>DataView</h4><p>如果一段数据包括多种类型（比如服务器传来的HTTP数据），这时除了建立ArrayBuffer对象的复合视图以外，还可以通过DataView视图进行操作。</p>
+<p>DataView视图提供更多操作选项，而且支持设定字节序。本来，在设计目的上，ArrayBuffer对象的各种TypedArray视图，是用来向网卡、声卡之类的本机设备传送数据，所以使用本机的字节序就可以了；而DataView视图的设计目的，是用来处理网络设备传来的数据，所以大端字节序或小端字节序是可以自行设定的。</p>
+<p>DataView视图本身也是构造函数，接受一个ArrayBuffer对象作为参数，生成视图。</p>
+<pre><code>DataView(ArrayBuffer buffer [, 字节起始位置 [, 长度]]);
+</code></pre>
+<p>下面是一个例子。</p>
+<pre><code>var buffer = new ArrayBuffer(24);
+var dv = new DataView(buffer);
+</code></pre>
+<p>DataView实例有以下属性，含义与TypedArray实例的同名方法相同。</p>
+<ul>
+<li>DataView.prototype.buffer：返回对应的ArrayBuffer对象</li>
+<li>DataView.prototype.byteLength：返回占据的内存字节长度</li>
+<li>DataView.prototype.byteOffset：返回当前视图从对应的ArrayBuffer对象的哪个字节开始</li>
+</ul>
+<p>DataView实例提供8个方法读取内存。</p>
+<ul>
+<li>getInt8：读取1个字节，返回一个8位整数。</li>
+<li>getUint8：读取1个字节，返回一个无符号的8位整数。</li>
+<li>getInt16：读取2个字节，返回一个16位整数。</li>
+<li>getUint16：读取2个字节，返回一个无符号的16位整数。</li>
+<li>getInt32：读取4个字节，返回一个32位整数。</li>
+<li>getUint32：读取4个字节，返回一个无符号的32位整数。</li>
+<li>getFloat32：读取4个字节，返回一个32位浮点数。</li>
+<li>getFloat64：读取8个字节，返回一个64位浮点数。</li>
+</ul>
+<p>这一系列get方法的参数都是一个字节序号（不能是负数，否则会报错），表示从哪个字节开始读取。</p>
+<pre><code>var buffer = new ArrayBuffer(24);
+var dv = new DataView(buffer);
+
+// 从第1个字节读取一个8位无符号整数
+var v1 = dv.getUint8(0);
+
+// 从第2个字节读取一个16位无符号整数
+var v2 = dv.getUint16(1);
+
+// 从第4个字节读取一个16位无符号整数
+var v3 = dv.getUint16(3);
+</code></pre>
+<p>上面代码读取了ArrayBuffer对象的前5个字节，其中有一个8位整数和两个十六位整数。</p>
+<p>如果一次读取两个或两个以上字节，就必须明确数据的存储方式，到底是小端字节序还是大端字节序。默认情况下，DataView的get方法使用大端字节序解读数据，如果需要使用小端字节序解读，必须在get方法的第二个参数指定true。</p>
+<pre><code>// 小端字节序
+var v1 = dv.getUint16(1, true);
+
+// 大端字节序
+var v2 = dv.getUint16(3, false);
+
+// 大端字节序
+var v3 = dv.getUint16(3);
+</code></pre>
+<p>DataView视图提供8个方法写入内存。</p>
+<ul>
+<li>setInt8：写入1个字节的8位整数。</li>
+<li>setUint8：写入1个字节的8位无符号整数。</li>
+<li>setInt16：写入2个字节的16位整数。</li>
+<li>setUint16：写入2个字节的16位无符号整数。</li>
+<li>setInt32：写入4个字节的32位整数。</li>
+<li>setUint32：写入4个字节的32位无符号整数。</li>
+<li>setFloat32：写入4个字节的32位浮点数。</li>
+<li>setFloat64：写入8个字节的64位浮点数。</li>
+</ul>
+<p>这一系列set方法，接受两个参数，第一个参数是字节序号，表示从哪个字节开始写入，第二个参数为写入的数据。对于那些写入两个或两个以上字节的方法，需要指定第三个参数，false或者undefined表示使用大端字节序写入，true表示使用小端字节序写入。</p>
+<pre><code>// 在第1个字节，以大端字节序写入值为25的32位整数
+dv.setInt32(0, 25, false);
+
+// 在第5个字节，以大端字节序写入值为25的32位整数
+dv.setInt32(4, 25);
+
+// 在第9个字节，以小端字节序写入值为2.5的32位浮点数
+dv.setFloat32(8, 2.5, true);
+</code></pre>
+<p>如果不确定正在使用的计算机的字节序，可以采用下面的判断方式。</p>
+<pre><code>var littleEndian = (function() &#123;
+  var buffer = new ArrayBuffer(2);
+  new DataView(buffer).setInt16(0, 256, true);
+  return new Int16Array(buffer)[0] === 256;
+&#125;)();
+</code></pre>
+<h4 id="Blob"><a href="#Blob" class="headerlink" title="Blob"></a>Blob</h4><p>Blob 对象表示一个不可变、原始数据的类文件对象。Blob 表示的不一定是JavaScript原生格式的数据。File 接口基于Blob，继承了 blob 的功能并将其扩展使其支持用户系统上的文件。</p>
+<p>要从其他非blob对象和数据构造一个Blob，请使用 Blob() 构造函数。要创建包含另一个blob数据的子集blob，请使用 slice()方法。要获取用户文件系统上的文件对应的Blob对象，请参阅 File文档。</p>
+<p>从Blob中读取内容的唯一方法是使用 FileReader。以下代码将 Blob 的内容作为类型数组读取：</p>
+<pre><code>var reader = new FileReader();
+reader.addEventListener(&quot;loadend&quot;, function() &#123;
+   // reader.result 包含转化为类型数组的blob
+&#125;);
+reader.readAsArrayBuffer(blob);
+</code></pre>
+<p>更多关于Blob的内容，请直接查看<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Blob">这里</a></p>
+<h3 id="数据格式转换"><a href="#数据格式转换" class="headerlink" title="数据格式转换"></a>数据格式转换</h3><h4 id="String转Blob"><a href="#String转Blob" class="headerlink" title="String转Blob"></a>String转Blob</h4><pre><code>//将字符串 转换成 Blob 对象
+var blob = new Blob([&quot;Hello World!&quot;], &#123;
+    type: &#39;text/plain&#39;
+&#125;);
+console.info(blob);
+console.info(blob.slice(1, 3, &#39;text/plain&#39;));
+</code></pre>
+<h4 id="TypeArray转Blob"><a href="#TypeArray转Blob" class="headerlink" title="TypeArray转Blob"></a>TypeArray转Blob</h4><pre><code>//将 TypeArray  转换成 Blob 对象
+var array = new Uint16Array([97, 32, 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33]);
+//测试成功
+//var blob = new Blob([array], &#123; type: &quot;application/octet-binary&quot; &#125;);
+//测试成功， 注意必须[]的包裹
+var blob = new Blob([array]);
+//将 Blob对象 读成字符串
+var reader = new FileReader();
+reader.readAsText(blob, &#39;utf-8&#39;);
+reader.onload = function (e) &#123;
+    console.info(reader.result); //a Hello world!
+&#125;
+</code></pre>
+<h4 id="ArrayBuffer转Blob"><a href="#ArrayBuffer转Blob" class="headerlink" title="ArrayBuffer转Blob"></a>ArrayBuffer转Blob</h4><pre><code>var buffer = new ArrayBuffer(32);
+var blob = new Blob([buffer]);       // 注意必须包裹[]
+</code></pre>
+<h4 id="Blob转String"><a href="#Blob转String" class="headerlink" title="Blob转String"></a>Blob转String</h4><p>这里需要注意的是readAsText方法的使用。</p>
+<pre><code>//将字符串转换成 Blob对象
+var blob = new Blob([&#39;中文字符串&#39;], &#123;
+    type: &#39;text/plain&#39;
+&#125;);
+//将Blob 对象转换成字符串
+var reader = new FileReader();
+reader.readAsText(blob, &#39;utf-8&#39;);
+reader.onload = function (e) &#123;
+    console.info(reader.result);
+&#125;
+</code></pre>
+<h4 id="Blob转ArrayBuffer"><a href="#Blob转ArrayBuffer" class="headerlink" title="Blob转ArrayBuffer"></a>Blob转ArrayBuffer</h4><p>这里需要注意的是readAsArrayBuffer方法的使用。</p>
+<pre><code>//将字符串转换成 Blob对象
+var blob = new Blob([&#39;中文字符串&#39;], &#123;
+    type: &#39;text/plain&#39;
+&#125;);
+//将Blob 对象转换成 ArrayBuffer
+var reader = new FileReader();
+reader.readAsArrayBuffer(blob);
+reader.onload = function (e) &#123;
+    console.info(reader.result); //ArrayBuffer &#123;&#125;
+    //经常会遇到的异常 Uncaught RangeError: byte length of Int16Array should be a multiple of 2
+    //var buf = new int16array(reader.result);
+    //console.info(buf);
+
+    //将 ArrayBufferView  转换成Blob
+    var buf = new Uint8Array(reader.result);
+    console.info(buf); //[228, 184, 173, 230, 150, 135, 229, 173, 151, 231, 172, 166, 228, 184, 178]
+    reader.readAsText(new Blob([buf]), &#39;utf-8&#39;);
+    reader.onload = function () &#123;
+        console.info(reader.result); //中文字符串
+    &#125;;
+
+    //将 ArrayBufferView  转换成Blob
+    var buf = new DataView(reader.result);
+    console.info(buf); //DataView &#123;&#125;
+    reader.readAsText(new Blob([buf]), &#39;utf-8&#39;);
+    reader.onload = function () &#123;
+        console.info(reader.result); //中文字符串
+    &#125;;
+&#125;
+</code></pre>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/javascript/">javascript</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2018/05/29/%E5%8D%81%E6%9D%A1%E7%BC%96%E5%86%99%E4%BC%98%E5%8C%96%E7%9A%84JavaScript%E4%BB%A3%E7%A0%81%E7%9A%84%E5%BB%BA%E8%AE%AE/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">十条编写优化的 JavaScript 代码的建议</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2018/04/11/Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE%E7%94%A8%E6%88%B7%E5%92%8Cssh%E5%85%AC%E7%A7%81%E9%92%A5%E7%99%BB%E9%99%86/"><span class="level-item">Linux服务器初始化</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>

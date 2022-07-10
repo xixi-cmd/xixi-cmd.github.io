@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>docker - 一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Docker是一个开源的容器引擎，它可以帮助我们更快地交付应用。Docker可将应用程序和基础设施层隔离，并且能将基础设施当作程序一样进行管理。使用Docker，可更快地打包、测试以及部署应用程序，并可减少从编写到部署运行代码的周期。"><meta property="og:type" content="blog"><meta property="og:title" content="docker"><meta property="og:url" content="http://example.com/2021/09/10/docker/"><meta property="og:site_name" content="一枝清寒."><meta property="og:description" content="Docker是一个开源的容器引擎，它可以帮助我们更快地交付应用。Docker可将应用程序和基础设施层隔离，并且能将基础设施当作程序一样进行管理。使用Docker，可更快地打包、测试以及部署应用程序，并可减少从编写到部署运行代码的周期。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:published_time" content="2021-09-10T15:51:31.000Z"><meta property="article:modified_time" content="2021-09-10T15:51:32.582Z"><meta property="article:author" content="ChenShang"><meta property="article:tag" content="linux"><meta property="article:tag" content="docker"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2021/09/10/docker/"},"headline":"docker","image":["http://example.com/img/og_image.png"],"datePublished":"2021-09-10T15:51:31.000Z","dateModified":"2021-09-10T15:51:32.582Z","author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":"Docker是一个开源的容器引擎，它可以帮助我们更快地交付应用。Docker可将应用程序和基础设施层隔离，并且能将基础设施当作程序一样进行管理。使用Docker，可更快地打包、测试以及部署应用程序，并可减少从编写到部署运行代码的周期。"}</script><link rel="canonical" href="http://example.com/2021/09/10/docker/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-09-10T15:51:31.000Z" title="2021/9/10 23:51:31">2021-09-10</time>发表</span><span class="level-item"><time dateTime="2021-09-10T15:51:32.582Z" title="2021/9/10 23:51:32">2021-09-10</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile">docker</h1><div class="content"><p>Docker是一个开源的<strong>容器引擎</strong>，它可以帮助我们更快地交付应用。Docker可将应用程序和基础设施层隔离，并且能将基础设施当作程序一样进行管理。使用Docker，可更快地打包、测试以及部署应用程序，并可<strong>减少从编写到部署运行代码的周期</strong>。</p>
+<span id="more"></span>
+
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>官网有详细的安装教程，然后配置下加速器即可，我这边使用<a target="_blank" rel="noopener" href="https://cr.console.aliyun.com/cn-qingdao/instances/mirrors">阿里云的<code>docker</code>镜像加速器</a>。</p>
+<h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><h4 id="镜像命令"><a href="#镜像命令" class="headerlink" title="镜像命令"></a>镜像命令</h4><pre><code class="shell"># 查询镜像
+docker search nginx
+
+# 下载镜像
+docker pull nginx
+
+# 列出镜像
+docker images
+docker images java
+docker images java:8
+docker images --digests
+docker images --filter &quot;dangling=true&quot;   # 展示虚悬镜像
+
+# 删除本地镜像
+docker rmi hello-world
+docker rmi -f $(docker images)
+
+# 保存镜像
+docker save busybox &gt; busybox.tar
+docker save --output busybox.tar busybox
+
+# 加载镜像
+docker load &lt; busybox.tar.gz
+docker load --input fedora.tar
+
+# 构建镜像
+docker build [OPTIONS] PATH | URL | -
+
+</code></pre>
+<h4 id="容器命令"><a href="#容器命令" class="headerlink" title="容器命令"></a>容器命令</h4><h5 id="新建并启动容器-重要"><a href="#新建并启动容器-重要" class="headerlink" title="新建并启动容器[重要]"></a>新建并启动容器[重要]</h5><p>使用以下<code>docker run</code> 命令即可新建并启动一个容器。该命令是我们最常用的命令了，它有很多选项，下面笔者列举一些常用的选项。</p>
+<p>① -d选项：表示后台运行</p>
+<p>② -P选项：随机端口映射</p>
+<p>③ -p选项：指定端口映射，有以下四种格式。</p>
+<p><code>ip:hostPort:containerPort</code></p>
+<p><code>ip::containerPort</code></p>
+<p><code>hostPort:containerPort</code></p>
+<p><code>containerPort</code></p>
+<p>④ –network选项：指定网络模式，该选项有以下可选参数：</p>
+<p><code>–network=bridge</code>： 默认选项，表示连接到默认的网桥。</p>
+<p><code>–network=host</code>：容器使用宿主机的网络。</p>
+<p><code>–network=container:NAME_or_ID</code>：告诉Docker让新建的容器使用已有容器的网络配置。</p>
+<p><code>–network=none</code>：不配置该容器的网络，用户可自定义网络配置。</p>
+<p>示例1：</p>
+<pre><code class="shell">docker run java /bin/echo &#39;Hello World&#39;
+</code></pre>
+<p>这样终端会打印<code>Hello World</code>的字样，跟在本地直接执行<code>/bin/echo &#39;Hello World&#39;</code> 一样。</p>
+<p>示例2：</p>
+<pre><code class="shell">docker run -d -p 91:80 nginx
+</code></pre>
+<p>这样就能启动一个<code>Nginx</code>容器。在本例中，我们为<code>docker run</code>添加了两个参数，含义如下：</p>
+<pre><code class="shell">-d                           # 后台运行-p 宿主机端口:容器端口         # 开放容器端口到宿主机端口
+</code></pre>
+<p>访问<a target="_blank" rel="noopener" href="http://docker宿主机ip:91/">http://Docker宿主机IP:91/</a> </p>
+<p><strong>TIPS</strong></p>
+<p>需要注意的是，使用docker run命令创建容器时，会先检查本地是否存在指定镜像。如果本地不存在该名称的镜像，Docker就会自动从Docker Hub下载镜像并启动一个Docker容器。</p>
+<h5 id="列出容器-重要"><a href="#列出容器-重要" class="headerlink" title="列出容器[重要]"></a>列出容器[重要]</h5><p>使用<code>docker ps</code> 命令即可列出运行中的容器。执行该命令后，可看到类似于如下的表格。</p>
+<pre><code>CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                         NAMES784fd3b294d7        nginx               &quot;nginx -g &#39;daemon off&quot;   20 minutes ago      Up 2 seconds        443/tcp, 0.0.0.0:91-&gt;80/tcp   backstabbing_archimedes
+</code></pre>
+<p>如需列出所有容器（包括已停止的容器），可使用-a参数。</p>
+<p>该表格包含了七列，含义如下：</p>
+<p>① CONTAINER_ID：表示容器ID。</p>
+<p>② IMAGE：表示镜像名称。</p>
+<p>③ COMMAND：表示启动容器时运行的命令。</p>
+<p>④ CREATED：表示容器的创建时间。</p>
+<p>⑤ STATUS：表示容器运行的状态。Up表示运行中，Exited表示已停止。</p>
+<p>⑥ PORTS：表示容器对外的端口号。</p>
+<p>⑦ NAMES：表示容器名称。该名称默认由Docker自动生成，也可使用docker run命令的–name选项自行指定。</p>
+<p>命令格式：</p>
+<pre><code class="shell">docker ps [OPTIONS]
+</code></pre>
+<p>参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name, shorthand</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>--all, -a</code></td>
+<td align="left"><code>false</code></td>
+<td align="left">列出所有容器，包括未运行的容器，默认只展示运行的容器</td>
+</tr>
+<tr>
+<td align="left"><code>--filter, -f</code></td>
+<td align="left"></td>
+<td align="left">根据条件过滤显示内容</td>
+</tr>
+<tr>
+<td align="left"><code>--format</code></td>
+<td align="left"></td>
+<td align="left">通过Go语言模板文件展示镜像</td>
+</tr>
+<tr>
+<td align="left"><code>--last, -n</code></td>
+<td align="left"><code>-1</code></td>
+<td align="left">显示最近创建n个容器（包含所有状态）</td>
+</tr>
+<tr>
+<td align="left"><code>--latest, -l</code></td>
+<td align="left"><code>false</code></td>
+<td align="left">显示最近创建的容器（包含所有状态）</td>
+</tr>
+<tr>
+<td align="left"><code>--no-trunc</code></td>
+<td align="left"><code>false</code></td>
+<td align="left">不截断输出</td>
+</tr>
+<tr>
+<td align="left"><code>--quiet, -q</code></td>
+<td align="left"><code>false</code></td>
+<td align="left">静默模式，只展示容器的编号</td>
+</tr>
+<tr>
+<td align="left"><code>--size, -s</code></td>
+<td align="left"><code>false</code></td>
+<td align="left">显示总文件大小</td>
+</tr>
+</tbody></table>
+<p>示例：</p>
+<pre><code>docker ps -n 5docker ps -a -q
+</code></pre>
+<h5 id="停止容器-重要"><a href="#停止容器-重要" class="headerlink" title="停止容器[重要]"></a>停止容器[重要]</h5><p>使用<code>docker stop</code> 命令，即可停止容器。</p>
+<p>命令格式：</p>
+<pre><code>docker stop [OPTIONS] CONTAINER [CONTAINER...]
+</code></pre>
+<p>参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name, shorthand</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>--time, -t</code></td>
+<td align="left"><code>10</code></td>
+<td align="left">强制杀死容器前等待的时间，单位是秒</td>
+</tr>
+</tbody></table>
+<p>示例：</p>
+<pre><code>docker stop 784fd3b294d7
+</code></pre>
+<p>其中<code>784fd3b294d7</code> 是容器ID，当然也可使用<code>docker stop 容器名称</code> 来停止指定容器。</p>
+<h5 id="强制停止容器-重要"><a href="#强制停止容器-重要" class="headerlink" title="强制停止容器[重要]"></a>强制停止容器[重要]</h5><p>可使用<code>docker kill</code> 命令停止一个或更多运行着的容器。</p>
+<p>命令格式：</p>
+<pre><code>docker kill [OPTIONS] CONTAINER [CONTAINER...]
+</code></pre>
+<p>参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name, shorthand</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>--signal, -s</code></td>
+<td align="left"><code>KILL</code></td>
+<td align="left">向容器发送一个信号</td>
+</tr>
+</tbody></table>
+<p>例如：</p>
+<pre><code>docker kill 784fd3b294d7
+</code></pre>
+<h5 id="启动已停止的容器-重要"><a href="#启动已停止的容器-重要" class="headerlink" title="启动已停止的容器[重要]"></a>启动已停止的容器[重要]</h5><p>使用<code>docker run</code> 命令，即可新建并启动一个容器。对于已停止的容器，可使用<code>docker start</code> 命令来启动。</p>
+<p>命令格式：</p>
+<pre><code>docker start [OPTIONS] CONTAINER [CONTAINER...]
+</code></pre>
+<p>参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name, shorthand</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>--attach, -a</code></td>
+<td align="left"><code>false</code></td>
+<td align="left">连接<code>STDOUT/STDERR</code>并转发信号</td>
+</tr>
+<tr>
+<td align="left"><code>--checkpoint</code></td>
+<td align="left"></td>
+<td align="left">从该检查点还原</td>
+</tr>
+<tr>
+<td align="left"><code>--checkpoint-dir</code></td>
+<td align="left"></td>
+<td align="left">使用自定义的检查点存储目录</td>
+</tr>
+<tr>
+<td align="left"><code>--detach-keys</code></td>
+<td align="left"></td>
+<td align="left">覆盖断开容器的关键顺序</td>
+</tr>
+<tr>
+<td align="left"><code>--interactive, -i</code></td>
+<td align="left"><code>false</code></td>
+<td align="left">连接容器的<code>STDIN</code></td>
+</tr>
+</tbody></table>
+<p>例如：</p>
+<pre><code>docker start 784fd3b294d7
+</code></pre>
+<h5 id="重启容器-重要"><a href="#重启容器-重要" class="headerlink" title="重启容器[重要]"></a>重启容器[重要]</h5><p>可使用<code>docker restart</code> 命令来重启容器。该命令实际上是先执行了<code>docker stop</code> 命令，然后执行了<code>docker start</code> 命令。</p>
+<p>命令格式：</p>
+<pre><code>docker restart [OPTIONS] CONTAINER [CONTAINER...]
+</code></pre>
+<p>参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name, shorthand</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>--time, -t</code></td>
+<td align="left"><code>10</code></td>
+<td align="left">关闭容器前等待的时间，单位是秒</td>
+</tr>
+</tbody></table>
+<h5 id="进入容器-重要"><a href="#进入容器-重要" class="headerlink" title="进入容器[重要]"></a>进入容器[重要]</h5><p>某场景下，我们可能需要进入运行中的容器。</p>
+<p>① 使用<code>docker attach</code> 命令进入容器。</p>
+<p>例如：</p>
+<pre><code>docker attach 784fd3b294d7
+</code></pre>
+<p>很多场景下，使用<code>docker attach</code> 命令并不方便。当多个窗口同时attach到同一个容器时，所有窗口都会同步显示。同理，如果某个窗口发生阻塞，其他窗口也无法执行操作。</p>
+<p>② 使用<code>nsenter</code> 进入容器</p>
+<p><code>nsenter</code>工具包含在<code>util-linux 2.23</code>或更高版本中。为了连接到容器，我们需要找到容器第一个进程的<code>PID</code>，可通过以下命令获取：</p>
+<pre><code>docker inspect --format &quot;&#123;&#123;.State.Pid&#125;&#125;&quot; $CONTAINER_ID
+</code></pre>
+<p>获得<code>PID</code>后，就可使用<code>nsenter</code>命令进入容器了：</p>
+<pre><code>nsenter --target &quot;$PID&quot; --mount --uts --ipc --net --pid
+</code></pre>
+<p>下面给出一个完整的例子：</p>
+<pre><code>[root@localhost ~]# docker psCONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                         NAMES784fd3b294d7        nginx               &quot;nginx -g &#39;daemon off&quot;   55 minutes ago      Up 3 minutes        443/tcp, 0.0.0.0:91-&gt;80/tcp   backstabbing_archimedes[root@localhost ~]# docker inspect --format &quot;&#123;&#123;.State.Pid&#125;&#125;&quot; 784fd3b294d795492[root@localhost ~]# nsenter --target 95492 --mount --uts --ipc --net --pidroot@784fd3b294d7:/#
+</code></pre>
+<p>读者也可将以上两条命令封装成一个Shell，从而简化进入容器的过程。</p>
+<p>③ docker exec</p>
+<pre><code>docker exec -it 容器id /bin/bash
+</code></pre>
+<h5 id="删除容器-重要"><a href="#删除容器-重要" class="headerlink" title="删除容器[重要]"></a>删除容器[重要]</h5><p>使用<code>docker rm</code> 命令即可删除指定容器。</p>
+<p>命令格式</p>
+<pre><code>docker rm [OPTIONS] CONTAINER [CONTAINER...]
+</code></pre>
+<p>参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name, shorthand</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>--force, -f</code></td>
+<td align="left"><code>false</code></td>
+<td align="left">通过<code>SIGKILL</code>信号强制删除正在运行中的容器</td>
+</tr>
+<tr>
+<td align="left"><code>--link, -l</code></td>
+<td align="left"><code>false</code></td>
+<td align="left">删除容器间的网络连接</td>
+</tr>
+<tr>
+<td align="left"><code>--volumes, -v</code></td>
+<td align="left"><code>false</code></td>
+<td align="left">删除与容器关联的卷</td>
+</tr>
+</tbody></table>
+<p>例1：删除指定容器。</p>
+<pre><code>docker rm 784fd3b294d7
+</code></pre>
+<p>该命令只能删除已停止的容器，如需删除正在运行的容器，可使用-f参数。</p>
+<p>例2：删除所有的容器。</p>
+<pre><code>docker rm -f $(docker ps -a -q)
+</code></pre>
+<h5 id="导出容器"><a href="#导出容器" class="headerlink" title="导出容器"></a>导出容器</h5><p>将容器导出成一个压缩包文件。</p>
+<p>命令格式：</p>
+<pre><code>docker export [OPTIONS] CONTAINER
+</code></pre>
+<p>参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name, shorthand</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>--output, -o</code></td>
+<td align="left"></td>
+<td align="left">将内容写到文件而非<code>STDOUT</code></td>
+</tr>
+</tbody></table>
+<p>示例：</p>
+<pre><code>docker export red_panda &gt; latest.tardocker export --output=&quot;latest.tar&quot; red_panda
+</code></pre>
+<h5 id="导入容器"><a href="#导入容器" class="headerlink" title="导入容器"></a>导入容器</h5><p>使用<code>docker import</code> 命令即可从归档文件导入内容并创建镜像。</p>
+<p>命令格式：</p>
+<pre><code>docker import [OPTIONS] file|URL|- [REPOSITORY[:TAG]]
+</code></pre>
+<p>参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name, shorthand</th>
+<th align="left">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>--change, -c</code></td>
+<td align="left"></td>
+<td align="left">将<code>Dockerfile</code>指令应用到创建的镜像</td>
+</tr>
+<tr>
+<td align="left"><code>--message, -m</code></td>
+<td align="left"></td>
+<td align="left">为导入的镜像设置提交信息</td>
+</tr>
+</tbody></table>
+<p>示例：</p>
+<pre><code>docker import nginx2.tar nginx
+</code></pre>
+<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><h4 id="基本指令"><a href="#基本指令" class="headerlink" title="基本指令"></a>基本指令</h4><h5 id="ADD-复制文件"><a href="#ADD-复制文件" class="headerlink" title="ADD 复制文件"></a>ADD 复制文件</h5><p>ADD复制文件</p>
+<p>格式为：</p>
+<ul>
+<li><code>ADD &lt;src&gt;... &lt;dest&gt;</code></li>
+<li><code>ADD [&quot;&lt;src&gt;&quot;,... &quot;&lt;dest&gt;&quot;]</code></li>
+</ul>
+<p>从<code>src</code>目录复制文件到容器的<code>dest</code>。其中<code>src</code>可以是<code>Dockerfile</code>所在目录的相对路径，也可以是一个URL，还可以是一个压缩包。</p>
+<p>除了要复制解压文件，一般不建议使用，使用<code>RUN</code>跟<code>COPY</code>命令就可以很好替代。</p>
+<pre><code class="dockerfile">ADD microservice-discovery-eureka-0.0.1-SNAPSHOT.jar app.jar
+</code></pre>
+<h5 id="ARG-设置构建参数"><a href="#ARG-设置构建参数" class="headerlink" title="ARG 设置构建参数"></a>ARG 设置构建参数</h5><p>设置构建参数，类似于<code>ENV</code>。和<code>ENV</code>不同的是，<code>ARG</code>设置的是构建时的环境变量，在容器运行时是不会存在这些变量的。</p>
+<p>格式为：</p>
+<ul>
+<li><code>ARG &lt;name&gt;[=&lt;default value&gt;]</code></li>
+</ul>
+<pre><code class="dockerfile">ARG user1=someuser
+</code></pre>
+<h5 id="CMD-容器启动命令"><a href="#CMD-容器启动命令" class="headerlink" title="CMD 容器启动命令"></a>CMD 容器启动命令</h5><p>用于为执行容器提供默认值。每个<code>Dockerfile</code>只有一个<code>CMD</code>命令，如果指定了多个<code>CMD</code>命令，那么只有最后一条会被执行，如果启动容器的时候指定了运行的命令，则会覆盖掉<code>CMD</code>指定的命令。</p>
+<p>支持三种格式：</p>
+<p><code>CMD [&quot;executable&quot;,&quot;param1&quot;,&quot;param2&quot;]</code> (推荐使用，会解析成json数组，所以要记得要用<strong>双引号</strong>)</p>
+<p><code>CMD [&quot;param1&quot;,&quot;param2&quot;]</code> (为<code>ENTRYPOINT</code>指令提供预设参数)</p>
+<p><code>CMD command param1 param2</code> (在shell中执行)</p>
+<p>示例：</p>
+<pre><code class="dockerfile">CMD echo &quot;This is a test.&quot; | wc -
+</code></pre>
+<h5 id="COPY-复制文件"><a href="#COPY-复制文件" class="headerlink" title="COPY 复制文件"></a>COPY 复制文件</h5><p>复制文件，格式为：</p>
+<ul>
+<li><code>COPY &lt;src&gt;... &lt;dest&gt;</code></li>
+<li><code>COPY [&quot;&lt;src&gt;&quot;,... &quot;&lt;dest&gt;&quot;]</code></li>
+</ul>
+<p>复制本地端的<code>src</code>到容器的<code>dest</code>。<code>COPY</code>指令和<code>ADD</code>指令类似，<code>COPY</code>不支持URL和压缩包。</p>
+<h5 id="ENTRYPOINT-入口点"><a href="#ENTRYPOINT-入口点" class="headerlink" title="ENTRYPOINT 入口点"></a>ENTRYPOINT 入口点</h5><p>格式为：</p>
+<ul>
+<li><code>ENTRYPOINT [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code></li>
+<li><code>ENTRYPOINT command param1 param2</code></li>
+</ul>
+<p><code>ENTRYPOINT</code>和<code>CMD</code>指令的目的一样，都是指定<code>Docker</code>容器启动时执行的命令，可多次设置，但只有最后一个有效。<code>ENTRYPOINT</code>不可被重写覆盖。</p>
+<p><code>ENTRYPOINT</code>、<code>CMD</code>区别：<a target="_blank" rel="noopener" href="http://blog.csdn.net/newjueqi/article/details/51355510">http://blog.csdn.net/newjueqi/article/details/51355510</a></p>
+<h5 id="ENV-设置环境变量"><a href="#ENV-设置环境变量" class="headerlink" title="ENV 设置环境变量"></a>ENV 设置环境变量</h5><p>用于设置环境变量，格式为：</p>
+<ul>
+<li><code>ENV &lt;key&gt; &lt;value&gt;</code></li>
+<li><code>ENV &lt;key&gt;=&lt;value&gt; ...</code></li>
+</ul>
+<p>示例：</p>
+<pre><code class="dockerfile">ENV JAVA_HOME /path/to/java
+</code></pre>
+<h5 id="EXPOSE-声明暴露的端口"><a href="#EXPOSE-声明暴露的端口" class="headerlink" title="EXPOSE 声明暴露的端口"></a>EXPOSE 声明暴露的端口</h5><p>用于声明在运行时容器提供服务的端口，格式为：</p>
+<ul>
+<li><code>EXPOSE &lt;port&gt; [&lt;port&gt;...]</code></li>
+</ul>
+<p>需要注意的是，这只是一个声明，运行时并不会因为该声明就打开相应端口。该指令的作用主要是帮助镜像使用者理解该镜像服务的守护端口；其次是当运行时使用随机映射时，会自动映射<code>EXPOSE</code>的端口。示例：</p>
+<pre><code class="dockerfile"># 声明暴露一个端口示例
+EXPOSE port1
+# 相应的运行容器使用的命令
+docker run -p port1 image
+# 也可使用-P选项启动
+docker run -P image
+# 声明暴露多个端口示例
+EXPOSE port1 port2 port3
+# 相应的运行容器使用的命令
+docker run -p port1 -p port2 -p port3 image
+# 也可指定需要映射到宿主机器上的端口号  
+docker run -p host_port1:port1 -p host_port2:port2 -p host_port3:port3 image
+</code></pre>
+<h5 id="FROM-指定基础镜像"><a href="#FROM-指定基础镜像" class="headerlink" title="FROM 指定基础镜像"></a>FROM 指定基础镜像</h5><p>指定基础镜像，<code>FROM</code>指令有点像<code>Java</code>里面的<code>extend</code>关键字。需要注意的是，<code>FROM</code>指令必须指定且需要写在其他指令之前。<code>FROM</code>指令后的所有指令都依赖于该指令所指定的镜像。</p>
+<p>支持三种格式：</p>
+<ul>
+<li><code>FROM &lt;image&gt;</code></li>
+<li><code>FROM &lt;image&gt;:&lt;tag&gt;</code></li>
+<li><code>FROM &lt;image&gt;@&lt;digest&gt;</code></li>
+</ul>
+<h5 id="LABEL-为镜像添加元数据"><a href="#LABEL-为镜像添加元数据" class="headerlink" title="LABEL 为镜像添加元数据"></a>LABEL 为镜像添加元数据</h5><p>为镜像添加元数据。</p>
+<p>格式为：</p>
+<ul>
+<li><code>LABEL &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt; ...</code></li>
+</ul>
+<p>示例：</p>
+<pre><code class="dockerfile">LABEL &quot;com.example.vendor&quot;=&quot;ACME Incorporated&quot;
+LABEL com.example.label-with-value=&quot;foo&quot;
+LABEL version=&quot;1.0&quot;
+LABEL description=&quot;This text illustrates \that label-values can span multiple lines.&quot;
+</code></pre>
+<h5 id="MAINTAINER-指定维护者的信息（已过时）"><a href="#MAINTAINER-指定维护者的信息（已过时）" class="headerlink" title="MAINTAINER 指定维护者的信息（已过时）"></a>MAINTAINER 指定维护者的信息（已过时）</h5><p>MAINTAINER指令用于指定维护者的信息，用于为<code>Dockerfile</code>署名。</p>
+<p>格式为：</p>
+<ul>
+<li><code>MAINTAINER &lt;name&gt;</code></li>
+</ul>
+<p>示例：</p>
+<pre><code class="dockerfile">MAINTAINER 周立&lt;eacdy0000@126.com&gt;
+</code></pre>
+<p>注：该指令已过时，建议使用如下形式：</p>
+<pre><code class="dockerfile">LABEL maintainer=&quot;SvenDowideit@home.org.au&quot;
+</code></pre>
+<h5 id="RUN-执行命令"><a href="#RUN-执行命令" class="headerlink" title="RUN 执行命令"></a>RUN 执行命令</h5><p>该指令支持两种格式：</p>
+<ul>
+<li><code>RUN &lt;command&gt;</code></li>
+<li><code>RUN [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code></li>
+</ul>
+<p><code>RUN &lt;command&gt;</code> 在<code>shell</code>终端中运行，在<code>Linux</code>中默认是<code>/bin/sh -c</code> ，在<code>Windows</code>中是 <code>cmd /s /c</code>，使用这种格式，就像直接在命令行中输入命令一样。<br><code>RUN [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</code> 使用exec执行，这种方式类似于函数调用。指定其他终端可以通过该方式操作，例如：<code>RUN [&quot;/bin/bash&quot;, &quot;-c&quot;, &quot;echo hello&quot;]</code> ，该方式必须使用双引号[“]而不能使用单引号[‘]，因为该方式会被转换成一个<code>JSON</code> 数组。</p>
+<h5 id="USER-设置用户"><a href="#USER-设置用户" class="headerlink" title="USER 设置用户"></a>USER 设置用户</h5><p>该指令用于设置启动镜像时的用户或者<code>UID</code>，写在该指令后的<code>RUN</code>、<code>CMD</code>以及<code>ENTRYPOINT</code>指令都将使用该用户执行命令。</p>
+<p>格式为：</p>
+<ul>
+<li><code>USER 用户名</code></li>
+</ul>
+<p>示例：</p>
+<pre><code>USER daemon
+</code></pre>
+<h5 id="VOLUME-指定挂载点"><a href="#VOLUME-指定挂载点" class="headerlink" title="VOLUME 指定挂载点"></a>VOLUME 指定挂载点</h5><p>该指令使容器中的一个目录具有持久化存储的功能，该目录可被容器本身使用，也可共享给其他容器。当容器中的应用有持久化数据的需求时可以在<code>Dockerfile</code>中使用该指令。格式为：</p>
+<ul>
+<li><code>VOLUME [&quot;/data&quot;]</code></li>
+</ul>
+<p>示例：</p>
+<pre><code>VOLUME /data
+</code></pre>
+<p>使用示例：</p>
+<pre><code>FROM nginxVOLUME /tmp
+</code></pre>
+<p>当该<code>Dockerfile</code>被构建成镜像后，<code>/tmp</code>目录中的数据即使容器关闭也依然存在。如果另一个容器也有持久化的需求，并且想使用以上容器<code>/tmp</code>目录中的内容，则可使用如下命令启动容器：</p>
+<pre><code>docker run -volume-from 容器ID 镜像名称  # 容器ID是di一个容器的ID，镜像是第二个容器所使用的镜像。
+</code></pre>
+<h5 id="WORKDIR-指定工作目录"><a href="#WORKDIR-指定工作目录" class="headerlink" title="WORKDIR 指定工作目录"></a>WORKDIR 指定工作目录</h5><p>格式为：</p>
+<ul>
+<li><code>WORKDIR /path/to/workdir</code></li>
+</ul>
+<p>切换目录指令，类似于<code>cd</code>命令，写在该指令后的<code>RUN</code>，<code>CMD</code>以及<code>ENTRYPOINT</code>指令都将该目录作为当前目录，并执行相应的命令。</p>
+<h5 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h5><p><code>Dockerfile</code>还有一些其他的指令，例如<code>STOPSINGAL</code>、<code>HEALTHCHECK</code>、<code>SHELL</code>等。由于并不是很常用，本书不作赘述。有兴趣的读者可前往<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/builder/">https://docs.docker.com/engine/reference/builder/</a> 扩展阅读。</p>
+<p><strong>CMD&#x2F;ENTRYPOINT&#x2F;RUN区别</strong></p>
+<p>参考：<a target="_blank" rel="noopener" href="https://segmentfault.com/q/1010000000417103">https://segmentfault.com/q/1010000000417103</a></p>
+<h4 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h4><h3 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h3><p><a target="_blank" rel="noopener" href="https://www.docker.com/">Docker官方网站</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/docker/docker">Docker GitHub</a></p>
+<p><a target="_blank" rel="noopener" href="https://yeasy.gitbook.io/docker_practice">Docker 入门到实践</a></p>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/linux/">linux</a><a class="link-muted mr-2" rel="tag" href="/tags/docker/">docker</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/09/10/eventually-chooses-ikbc-f87/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">机械键盘ikbc</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/09/10/acid/"><span class="level-item">物种起源（全英文）</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>

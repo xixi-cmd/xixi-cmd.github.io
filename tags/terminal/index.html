@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="robots" content="noindex"><meta><title>标签: terminal - 一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="一枝清寒."><meta property="og:url" content="http://example.com/"><meta property="og:site_name" content="一枝清寒."><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:author" content="ChenShang"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com"},"headline":"一枝清寒.","image":["http://example.com/img/og_image.png"],"author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">标签</a></li><li class="is-active"><a href="#" aria-current="page">terminal</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-02-09T14:35:45.000Z" title="2021/2/9 22:35:45">2021-02-09</time>发表</span><span class="level-item"><time dateTime="2021-08-20T11:05:19.002Z" title="2021/8/20 19:05:19">2021-08-20</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/linux/">linux</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2021/02/09/%E6%95%99%E4%BC%9A%E4%BD%A0%E5%86%9990-%E7%9A%84shell%E8%84%9A%E6%9C%AC%EF%BC%81/">教会你写百分之九十的shell脚本！</a></h1><div class="content"><blockquote>
+<p>本文章主要内容来自菜鸟教程 , 也添加了一些知识点</p>
+</blockquote>
+<h1 id="shell脚本？"><a href="#shell脚本？" class="headerlink" title="shell脚本？"></a>shell脚本？</h1><p>在说什么是shell脚本之前，先说说什么是shell。<br>shell是外壳的意思，就是操作系统的外壳。我们可以通过shell命令来操作和控制操作系统，比如Linux中的Shell命令就包括ls、cd、pwd等等。总结来说，Shell是一个命令解释器，它通过接受用户输入的Shell命令来启动、暂停、停止程序的运行或对计算机进行控制。<br>shell 是一个应用程序，它连接了用户和 Linux 内核，让用户能够更加高效、安全、低成本地使用 Linux 内核，这就是 Shell 的本质。<br>shell 本身并不是内核的一部分，它只是站在内核的基础上编写的一个应用程序。<br>那么什么是shell脚本呢？<br>shell脚本就是由Shell命令组成的执行文件，将一些命令整合到一个文件中，进行处理业务逻辑，脚本不用编译即可运行。它通过解释器解释运行，所以速度相对来说比较慢。<br>shell脚本中最重要的就是对shell命令的使用与组合，再使用shell脚本支持的一些语言特性，完成想要的功能。</p>
+<h1 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h1><p>“# ”开头的就是注释，被编译器忽略</p>
+<ul>
+<li>单行注释： #</li>
+<li>多行注释： :&lt;&lt;EOF … EOF 或者 :&lt;&lt;! … ! （:&lt;&lt; 标识多行注释开始，并指定一个标识符作为开始结束的标志）</li>
+</ul>
+<hr></hr>
+
+<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><h2 id="变量类型"><a href="#变量类型" class="headerlink" title="变量类型"></a>变量类型</h2><p>运行shell时，会同时存在三种变量：</p>
+<ol>
+<li>局部变量：局部变量在脚本或命令中定义，仅在当前shell实例中有效，其他shell启动的程序不能访问局部变量。</li>
+<li>环境变量：所有的程序，包括shell启动的程序，都能访问环境变量，有些程序需要环境变量来保证其正常运行。必要的时候shell脚本也可以定义环境变量。</li>
+<li>shell变量：shell变量是由shell程序设置的特殊变量。shell变量中有一部分是环境变量，有一部分是局部变量，这些变量保证了shell的正常运行</li>
+</ol>
+<h2 id="变量操作"><a href="#变量操作" class="headerlink" title="变量操作"></a>变量操作</h2><pre><code class="text">创建普通变量： name=“test” （=两边不可有空格）
+创建只可函数体中使用的局部变量： local name=“test” （使用local修饰的变量在函数体外无法访问，并且local只能在函数体内使用）
+使用变量： echo $name 或者 echo $&#123;name&#125; （推荐使用大括号版）
+变量重新赋值： name=“new_test” （将原值覆盖）
+只读变量： name=“only_read” -&gt; readonly name （使用readonly标识后的变量，不可被修改）
+删除变量： unset name; （删除之后不可访问，删除不掉只读变量）
+</code></pre>
+<h2 id="字符串变量"><a href="#字符串变量" class="headerlink" title="字符串变量"></a>字符串变量</h2><h3 id="单引号"><a href="#单引号" class="headerlink" title="单引号"></a>单引号</h3><ul>
+<li>单引号变量var&#x3D;’test’ ，只能原样输出，变量无效</li>
+<li>单引号中不能出现一个单独的单引号，转义也不可以</li>
+</ul>
+<h3 id="双引号"><a href="#双引号" class="headerlink" title="双引号"></a>双引号</h3><ul>
+<li>双引号变量var&#x3D;”my name is ${name}”，变量有效</li>
+<li>可出现转义符</li>
+</ul>
+<h3 id="拼接字符串"><a href="#拼接字符串" class="headerlink" title="拼接字符串"></a>拼接字符串</h3><ul>
+<li>中间无任何+，之类的字符</li>
+<li>name&#x3D;“this is”” my name”; name&#x3D;“this is my name”; name&#x3D;“this” is “my name” 等效</li>
+<li>name&#x3D;‘this is’’ my nam’; name&#x3D;‘this is my name’; name&#x3D;‘this’ is ‘my name’ 等效</li>
+</ul>
+<h3 id="获取字符串长度"><a href="#获取字符串长度" class="headerlink" title="获取字符串长度"></a>获取字符串长度</h3><p>&#96;&#96;&#96; shell</p>
+<h1 id="在-中使用“-”获取长度"><a href="#在-中使用“-”获取长度" class="headerlink" title="在${}中使用“#”获取长度"></a>在${}中使用“#”获取长度</h1><h1 id="name-x3D-“test”"><a href="#name-x3D-“test”" class="headerlink" title="name&#x3D;“test”;"></a>name&#x3D;“test”;</h1><p>echo $</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-01-01T14:16:05.000Z" title="2021/1/1 22:16:05">2021-01-01</time>发表</span><span class="level-item"><time dateTime="2021-08-20T11:10:00.128Z" title="2021/8/20 19:10:00">2021-08-20</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span> / </span><a class="link-muted" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/">软件</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2021/01/01/wintm/">Windows terminal 的安装和美化</a></h1><div class="content"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这段时间呢，我一直是用cmder或者windows ISE的，但是这两货的优点很多，缺点也不少，比如说：启动慢（ISE一个启动都要2s，我打命令都打完了他还没启动完），颜值低（ISE不支持更改外观，cmder可以更改的地方很少。）于是，我到一些群里面去问：“有没有大佬，求一个windows下的Shell客户端”，回答的答案很多：“cmder,Xshell,WSL(Windows子Linux),Windows terminal”，当我看到windows terminal的时候，我脑中浮现出一个奇怪的问题：“可以魔改吗？”，于是我发出了这个问题，得到的结果是：“可以”，我那颗折腾的心变得Exciting了起来!</p>
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><h3 id="怎么下载呢？"><a href="#怎么下载呢？" class="headerlink" title="怎么下载呢？"></a>怎么下载呢？</h3><p>你可以在这个<a target="_blank" rel="noopener" href="https://github.com/microsoft/terminal">链接</a>下载,或者直接到Windows Store里面搜索”windows terminal”下载<br><img src="https://docs.microsoft.com/zh-cn/windows/terminal/images/overview.png" alt="terminal"></p>
+<h4 id="阐述"><a href="#阐述" class="headerlink" title="阐述"></a>阐述</h4><p>Windows 终端是一个面向命令行工具和 shell（如命令提示符、PowerShell 和适用于 Linux 的 Windows 子系统 (WSL)）用户的新式终端应用程序。 它的主要功能包括多个选项卡、窗格、Unicode 和 UTF-8 字符支持、GPU 加速文本呈现引擎，你还可用它来创建你自己的主题并自定义文本、颜色、背景和快捷方式。</p>
+<h5 id="支持多种命令行应用程序的多个配置文件"><a href="#支持多种命令行应用程序的多个配置文件" class="headerlink" title="支持多种命令行应用程序的多个配置文件"></a>支持多种命令行应用程序的多个配置文件</h5><p>任何具有命令行接口的应用程序都可以在 Windows 终端中运行。 这包括从 PowerShell 和命令提示符到 Azure Cloud Shell 和任何 WSL 分发（如 Ubuntu 或 Oh-My-Zsh）的所有应用程序。</p>
+<h5 id="自定义方案和配置"><a href="#自定义方案和配置" class="headerlink" title="自定义方案和配置"></a>自定义方案和配置</h5><p>可以将 Windows 终端配置为具有多种配色方案和设置。 若要了解如何创建自己的配色方案，请访问配色方案页面。 还可以在自定义终端库中查找自定义终端配置。</p>
+<h5 id="自定义操作"><a href="#自定义操作" class="headerlink" title="自定义操作"></a>自定义操作</h5><p>可在 Windows 终端中使用多种自定义命令，获得更加自然的体验。 如果不喜欢特定的键盘快捷方式，可以将其更改为你喜欢的方式。<br>例如，若要复制命令行中的文本，默认的快捷方式为 <code>ctrl+shift+c</code>。 你可以将其更改为 <code>ctrl+1</code> 或你喜欢的其他方式。 要打开新的选项卡，默认快捷方式是 <code>ctrl+t</code>，但你可能想要将其更改为 <code>ctrl+2</code>。 用于在打开的选项卡之间进行切换的默认快捷方式是 <code>ctrl+tab</code>，可以将这个快捷方式更改为 <code>ctrl+- </code>并改为用于创建新选项卡。<br>可在操作页面上了解如何自定义快捷方式。</p>
+<h5 id="Unicode-和-UTF-8-字符支持"><a href="#Unicode-和-UTF-8-字符支持" class="headerlink" title="Unicode 和 UTF-8 字符支持"></a>Unicode 和 UTF-8 字符支持</h5><p>Windows 终端可以显示 Unicode 和 UTF-8 字符，如各种语言的表情符号和字符。</p>
+<h5 id="GPU-加速文本呈现"><a href="#GPU-加速文本呈现" class="headerlink" title="GPU 加速文本呈现"></a>GPU 加速文本呈现</h5><p>Windows 终端使用 GPU 来呈现其文本，从而提供比默认 Windows 命令行体验更好的性能。</p>
+<h5 id="背景图像支持"><a href="#背景图像支持" class="headerlink" title="背景图像支持"></a>背景图像支持</h5><p>可以在 Windows 终端窗口中显示背景图像和 gif。 有关如何向配置文件添加背景图像的信息，请参阅配置文件设置页。</p>
+<h5 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h5><p>可以使用命令行参数将 Windows 终端设置为在特定配置中启动。 可以指定要在新选项卡中打开哪个配置文件、应选择哪个文件夹目录，指定使用拆分窗口窗格打开终端，并指定选择应专注于哪个选项卡。<br>例如，若要使用三个窗格从 PowerShell 打开 Windows 终端（左窗格运行命令提示符配置文件，右窗格拆分为两个，一个用于 PowerShell，另一个用于运行 WSL 的默认配置文件），请输入：</p>
+<pre><code class="shell">wt -p &quot;Command Prompt&quot; `; split-pane -p &quot;Windows PowerShell&quot; `; split-pane -H wsl.exe
+</code></pre>
+<h5 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h5><p><img src="https://pic1.zhimg.com/80/v2-07c470e08b138bbd6ba21efeac9acc54_720w.jpg" alt="terminal"><br>微软宣布从 2020 年 7 月开始，Windows Terminal 每月都会获得一次更新。<br>这是一个开源项目，微软欢迎全球开发者社区参与。如要参与，请访问：GitHub | Windows Terminal<br>此外，微软宣布正式启动预览项目 Windows Terminal Preview，开发者还可以从微软官方文档页面获取相关支持：Windows Terminal | Microsoft Docs</p>
+<h2 id="美化"><a href="#美化" class="headerlink" title="美化"></a>美化</h2><h3 id="powershell美化"><a href="#powershell美化" class="headerlink" title="powershell美化"></a>powershell美化</h3><p>在美化windows terminal之前，我们先来美化powershell这个傻大蓝。</p>
+<p>在命令行依次输入</p>
+<pre><code class="shell"># 安装 PSReadline 包，让命令行更好用
+Install-Module -Nane PSReadLine -AllowPrerelease -Force
+# 安装 posh-git 包,优化Git(bash)
+Install-Module posh-git -Scope CurrentUser
+# 划重点！安装 oh-my-posh 包，美化傻大蓝(poweshell)
+Install-Module oh-my-posh -Scope CurrentUser
+# 允许脚本本地运行 &amp; 安装 Scope 包管理器
+set-executionpolicy remotesigned -scope currentuser
+iex (new-object net.webclient).downloadstring(&#39;https://get.scoop.sh&#39;)
+</code></pre>
+<p>没网络的时候~</p>
+<pre><code class="shell">⚡ ChenShang ~ ❯❯❯ if (!(Test-Path -Path $PROFILE )) &#123; New-Item -Type File -Path $PROFILE -Force &#125; # 检验是否有 $PROFILE，没有就创建一个
+⚡ ChenShang ~ ❯❯❯ notepad $PROFILE # 记事本打开 $PROFILE
+⚡ ChenShang ~ ❯❯❯ code $PROFILE # 记事本打开 $PROFILE
+⚡ ChenShang ~ ❯❯❯ code $PROFILE # 记事本打开 $PROFILE
+⚡ ChenShang ~ ❯❯❯ code $PROFILE # 记事本打开 $PROFILE
+⚡ ChenShang ~ ❯❯❯ # 安装 PSReadline 包，让命令行更好用
+⚡ ChenShang ~ ❯❯❯ Install-Module -Nane PSReadLine -AllowPrerelease -Force
+Install-Module : 找不到与参数名称“Nane”匹配的参数。
+所在位置 行:1 字符: 16
++ Install-Module -Nane PSReadLine -AllowPrerelease -Force
++                ~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Install-Module]，ParameterBindingException
+    + FullyQualifiedErrorId : NamedParameterNotFound,Install-Module
+
+⨯ ⚡ ChenShang ~ ❯❯❯ # 安装 posh-git 包,优化Git(bash)
+⚡ ChenShang ~ ❯❯❯ Install-Module posh-git -Scope CurrentUser
+警告: Unable to resolve package source &#39;https://www.powershellgallery.com/api/v2&#39;.
+PackageManagement\Install-Package : 找不到与指定的搜索条件和程序包名称“posh-git”匹配的项目。请尝试使用 Get-PSRepository 查看所有可用的注册程序包源。
+所在位置 C:\Program Files\WindowsPowerShell\Modules\PowerShellGet\1.0.0.1\PSModule.psm1:1809 字符: 21
++ ...          $null = PackageManagement\Install-Package @PSBoundParameters
++                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Microsoft.Power....InstallPackage:InstallPackage) [Install-Package], Exception
+    + FullyQualifiedErrorId : NoMatchFoundForCriteria,Microsoft.PowerShell.PackageManagement.Cmdlets.InstallPackage
+
+⨯ ⚡ ChenShang ~ ❯❯❯ # 划重点！安装 oh-my-posh 包，美化傻大蓝(poweshell)
+⚡ ChenShang ~ ❯❯❯ Install-Module oh-my-posh -Scope CurrentUser
+警告: Unable to resolve package source &#39;https://www.powershellgallery.com/api/v2&#39;.
+PackageManagement\Install-Package : 找不到与指定的搜索条件和程序包名称“oh-my-posh”匹配的项目。请尝试使用 Get-PSRepository 查看所有可用的注册程序包源。
+所在位置 C:\Program Files\WindowsPowerShell\Modules\PowerShellGet\1.0.0.1\PSModule.psm1:1809 字符: 21
++ ...          $null = PackageManagement\Install-Package @PSBoundParameters
++                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Microsoft.Power....InstallPackage:InstallPackage) [Install-Package], Exception
+    + FullyQualifiedErrorId : NoMatchFoundForCriteria,Microsoft.PowerShell.PackageManagement.Cmdlets.InstallPackage
+
+⨯ ⚡ ChenShang ~ ❯❯❯ # 允许脚本本地运行 &amp; 安装 Scope 包管理器
+⚡ ChenShang ~ ❯❯❯ set-executionpolicy remotesigned -scope currentuser
+⚡ ChenShang ~ ❯❯❯ iex (new-object net.webclient).downloadstring(&#39;https://get.scoop.sh&#39;)^C
+⚡ ChenShang ~ ❯❯❯
+</code></pre>
+<h4 id="安装完oh-my-posh后"><a href="#安装完oh-my-posh后" class="headerlink" title="安装完oh-my-posh后"></a>安装完oh-my-posh后</h4><pre><code class="shell">if (!(Test-Path -Path $PROFILE )) &#123; New-Item -Type File -Path $PROFILE -Force &#125; # 检验是否有 $PROFILE，没有就创建一个
+notepad $PROFILE # 记事本打开 $PROFILE
+</code></pre>
+<p>在记事本里面输入以下：</p>
+<pre><code class="PS">Import-Module posh-git # 导入posh-git的模块
+Import-Module oh-my-posh # 导入oh-my-posh的模块
+Set-Theme Sorin # 将样式设定为Sorin
+</code></pre>
+<h3 id="美化Windows-terminal"><a href="#美化Windows-terminal" class="headerlink" title="美化Windows terminal"></a>美化Windows terminal</h3><p>所要用到的代码如下</p>
+<pre><code class="js">&quot;backgroundImage&quot;: &quot;https://upimage.alexhchu.com/2021/01/01/378b347c10053.jpg&quot;, // bg url
+&quot;backgroundImageOpacity&quot;: 0.5,
+&quot;closeOnExit&quot;: true,
+&quot;color&quot;: &quot;#FFFFFF&quot;,
+&quot;cursorShape&quot;: &quot;bar&quot;,
+&quot;icon&quot;: &quot;E://shell//PS.png&quot;,
+&quot;padding&quot;: &quot;0, 0, 0, 0&quot;,
+&quot;snapOnInput&quot;: true,
+&quot;startingDirectory&quot;: &quot;%USERPROFILE%&quot;,
+&quot;tabTitle&quot;: &quot;Windows-10-Shell&quot;,
+&quot;useAcrylic&quot;: true,
+</code></pre>
+<ul>
+<li>加在什么地方？<br>加在这里</li>
+</ul>
+<pre><code class="js">    &quot;profiles&quot;:
+    &#123;
+        &quot;defaults&quot;:
+        &#123;
+            &quot;fontFace&quot; : &quot;JetBrains Mono&quot;,
+            &quot;cursorColor&quot;: &quot;#9e9e9e&quot;,
+            &quot;fontSize&quot; : 13  // 字体大小,
+            // Put settings here that you want to apply to all profiles.
+        &#125;,
+</code></pre>
+<div class='tip error faa-spin animated'><p>加在这里的话只需要写一次代码，然后所有的全部都一个样（除了标题）<p></div>
+
+<p>或者放这：</p>
+<pre><code class="js">&quot;list&quot;:
+        [
+            &#123;
+                // Make changes here to the powershell.exe profile.
+                // powershell 
+                &quot;guid&quot;: &quot;&#123;61c54bbd-c2c6-5271-96e7-009a87ff44bf&#125;&quot;,
+                &quot;name&quot;: &quot;Windows PowerShell&quot;,
+                &quot;commandline&quot;: &quot;powershell.exe&quot;,
+                &quot;backgroundImage&quot;: &quot;https://upimage.alexhchu.com/2021/01/01/378b347c10053.jpg&quot;, // bg url
+                &quot;backgroundImageOpacity&quot;: 0.5,
+                &quot;closeOnExit&quot;: true,
+                &quot;color&quot;: &quot;#FFFFFF&quot;,
+                &quot;cursorShape&quot;: &quot;bar&quot;,
+                &quot;icon&quot;: &quot;E://shell//PS.png&quot;,
+                &quot;padding&quot;: &quot;0, 0, 0, 0&quot;,
+                &quot;snapOnInput&quot;: true,
+                &quot;startingDirectory&quot;: &quot;%USERPROFILE%&quot;,
+                &quot;tabTitle&quot;: &quot;Windows-10-Shell&quot;,
+                &quot;useAcrylic&quot;: true, 
+                &quot;hidden&quot;: false
+            &#125;,
+</code></pre>
+<blockquote>
+<p>但是放在这里的话就要每一个list都写一次刚才的代码了。很麻烦….但是很有效</p>
+</blockquote>
+<h3 id="我的个人主题配置文件"><a href="#我的个人主题配置文件" class="headerlink" title="我的个人主题配置文件"></a>我的个人主题配置文件</h3><pre><code class="js">// This file was initially generated by Windows Terminal 1.4.3243.0
+// It should still be usable in newer versions, but newer versions might have additional
+// settings, help text, or changes that you will not see unless you clear this file
+// and let us generate a new one for you.
+
+// To view the default settings, hold &quot;alt&quot; while clicking on the &quot;Settings&quot; button.
+// For documentation on these settings, see: https://aka.ms/terminal-documentation
+&#123;
+    &quot;$schema&quot;: &quot;https://aka.ms/terminal-profiles-schema&quot;,
+
+    &quot;defaultProfile&quot;: &quot;&#123;61c54bbd-c2c6-5271-96e7-009a87ff44bf&#125;&quot;,
+
+    // You can add more global application settings here.
+    // To learn more about global settings, visit https://aka.ms/terminal-global-settings
+
+    // If enabled, selections are automatically copied to your clipboard.
+    &quot;copyOnSelect&quot;: false,
+
+    // If enabled, formatted data is also copied to your clipboard
+    &quot;copyFormatting&quot;: false,
+
+    // A profile specifies a command to execute paired with information about how it should look and feel.
+    // Each one of them will appear in the &#39;New Tab&#39; dropdown,
+    //   and can be invoked from the commandline with `wt.exe -p xxx`
+    // To learn more about profiles, visit https://aka.ms/terminal-profile-settings
+    &quot;profiles&quot;:
+    &#123;
+        &quot;defaults&quot;:
+        &#123;
+            &quot;fontFace&quot; : &quot;JetBrains Mono&quot;,
+            &quot;cursorColor&quot;: &quot;#9e9e9e&quot;,
+            &quot;fontSize&quot; : 13  // 字体大小,
+            // Put settings here that you want to apply to all profiles.
+        &#125;,
+        &quot;list&quot;:
+        [
+            &#123;
+                // Make changes here to the powershell.exe profile.
+                // powershell 
+                &quot;guid&quot;: &quot;&#123;61c54bbd-c2c6-5271-96e7-009a87ff44bf&#125;&quot;,
+                &quot;name&quot;: &quot;Windows PowerShell&quot;,
+                &quot;commandline&quot;: &quot;powershell.exe&quot;,
+                &quot;backgroundImage&quot;: &quot;https://upimage.alexhchu.com/2021/01/01/378b347c10053.jpg&quot;, // bg url
+                &quot;backgroundImageOpacity&quot;: 0.5,
+                &quot;closeOnExit&quot;: true,
+                &quot;color&quot;: &quot;#FFFFFF&quot;,
+                &quot;cursorShape&quot;: &quot;bar&quot;,
+                &quot;icon&quot;: &quot;E://shell//PS.png&quot;,
+                &quot;padding&quot;: &quot;0, 0, 0, 0&quot;,
+                &quot;snapOnInput&quot;: true,
+                &quot;startingDirectory&quot;: &quot;%USERPROFILE%&quot;,
+                &quot;tabTitle&quot;: &quot;Windows-10-Shell&quot;,
+                &quot;useAcrylic&quot;: true, 
+                &quot;hidden&quot;: false
+            &#125;,
+            &#123;
+                // Make changes here to the powershell.exe profile.
+                // powershell 
+                &quot;guid&quot;: &quot;&#123;1c4de342-38b7-51cf-b940-2309a097f584&#125;&quot;,
+                &quot;name&quot;: &quot;Git-Bash&quot;,
+                &quot;commandline&quot;: &quot;E:\\Git\\bin\\bash.exe&quot;,
+                &quot;backgroundImage&quot;: &quot;https://www.cxyxiaowu.com/wp-content/uploads/2020/06/1591422723-a39d058bfb6e1cf.png&quot;, // bg url
+                &quot;backgroundImageOpacity&quot;: 0.9,
+                &quot;closeOnExit&quot;: true,
+                &quot;color&quot;: &quot;#FFFFFF&quot;,
+                &quot;cursorShape&quot;: &quot;bar&quot;,
+                &quot;icon&quot;: &quot;E://shell//git.png&quot;,
+                &quot;padding&quot;: &quot;10, 10, 10, 10&quot;,
+                &quot;snapOnInput&quot;: true,
+                &quot;startingDirectory&quot;: &quot;%USERPROFILE%&quot;,
+                &quot;tabTitle&quot;: &quot;Git-Bash&quot;,
+                &quot;useAcrylic&quot;: true,
+                &quot;hidden&quot;: false
+            &#125;,
+            &#123;
+                // Make changes here to the cmd.exe profile.
+                // cmd
+                &quot;guid&quot;: &quot;&#123;0caa0dad-35be-5f56-a8ff-afceeeaa6101&#125;&quot;,
+                &quot;name&quot;: &quot;Command Prompt&quot;,
+                &quot;acrylicOpacity&quot; : 0.75,
+                &quot;backgroundImage&quot; : &quot;https://upimage.alexhchu.com/2021/01/01/f9ced42a624e7.jpg&quot;, // 图片地址
+                &quot;backgroundImageOpacity&quot; : 0.9,
+                &quot;closeOnExit&quot; : true,
+                &quot;cursorColor&quot; : &quot;#FFFFFF&quot;,
+                &quot;cursorShape&quot; : &quot;bar&quot;,
+                &quot;icon&quot; : &quot;E://shell//cmd.png&quot;,
+                &quot;padding&quot; : &quot;0, 0, 0, 0&quot;,
+                &quot;snapOnInput&quot; : true,
+                &quot;startingDirectory&quot; : &quot;%USERPROFILE%&quot;,
+                &quot;tabTitle&quot; : &quot;default&quot;,
+                &quot;useAcrylic&quot; : true,  //毛玻璃 关掉
+                &quot;hidden&quot;: false
+            &#125;,
+            &#123;
+                // -user cloud
+                &quot;guid&quot;: &quot;&#123;b453ae62-4e3d-5e58-b989-0a998ec441b8&#125;&quot;,
+                &quot;hidden&quot;: false,
+                &quot;name&quot;: &quot;Azure Cloud Shell&quot;,
+                &quot;source&quot;: &quot;Windows.Terminal.Azure&quot;
+            &#125;
+        ]
+    &#125;,
+
+    // Add custom color schemes to this array.
+    // To learn more about color schemes, visit https://aka.ms/terminal-color-schemes
+    &quot;schemes&quot;: [],
+
+    // Add custom actions and keybindings to this array.
+    // To unbind a key combination from your defaults.json, set the command to &quot;unbound&quot;.
+    // To learn more about actions and keybindings, visit https://aka.ms/terminal-keybindings
+    &quot;actions&quot;:
+    [
+        // Copy and paste are bound to Ctrl+Shift+C and Ctrl+Shift+V in your defaults.json.
+        // These two lines additionally bind them to Ctrl+C and Ctrl+V.
+        // To learn more about selection, visit https://aka.ms/terminal-selection
+        &#123; &quot;command&quot;: &#123;&quot;action&quot;: &quot;copy&quot;, &quot;singleLine&quot;: false &#125;, &quot;keys&quot;: &quot;ctrl+c&quot; &#125;,
+        &#123; &quot;command&quot;: &quot;paste&quot;, &quot;keys&quot;: &quot;ctrl+v&quot; &#125;,
+
+        // Press Ctrl+Shift+F to open the search box
+        &#123; &quot;command&quot;: &quot;find&quot;, &quot;keys&quot;: &quot;ctrl+shift+f&quot; &#125;,
+
+        // Press Alt+Shift+D to open a new pane.
+        // - &quot;split&quot;: &quot;auto&quot; makes this pane open in the direction that provides the most surface area.
+        // - &quot;splitMode&quot;: &quot;duplicate&quot; makes the new pane use the focused pane&#39;s profile.
+        // To learn more about panes, visit https://aka.ms/terminal-panes
+        &#123; &quot;command&quot;: &#123; &quot;action&quot;: &quot;splitPane&quot;, &quot;split&quot;: &quot;auto&quot;, &quot;splitMode&quot;: &quot;duplicate&quot; &#125;, &quot;keys&quot;: &quot;alt+shift+d&quot; &#125;
+    ]
+&#125;
+</code></pre>
+<blockquote>
+<p>建议在我的基础上加以修正，不要直接拿我的。</p>
+</blockquote>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>那个什么，这篇文章写的不怎么好，我没有什么文笔，写技术博客的时候很难下手，写这篇文章的原因是因为有人接的我的Windows terminal好…看…（怎么这么生疏）来简单讲讲流程和原理：</p>
+<ol>
+<li><p>先下载，那<a target="_blank" rel="noopener" href="http://localhost:4000/posts/b9a9514u.html#%E6%80%8E%E4%B9%88%E4%B8%8B%E8%BD%BD%E5%91%A2%EF%BC%9F">怎么下载呢？</a></p>
+</li>
+<li><p>安装需要的模块</p>
+</li>
+</ol>
+<pre><code class="shell"># 安装 PSReadline 包，让命令行更好用
+Install-Module -Nane PSReadLine -AllowPrerelease -Force
+# 安装 posh-git 包,优化Git(bash)
+Install-Module posh-git -Scope CurrentUser
+# 划重点！安装 oh-my-posh 包，美化傻大蓝(poweshell)
+Install-Module oh-my-posh -Scope CurrentUser
+# 允许脚本本地运行 &amp; 安装 Scope 包管理器
+set-executionpolicy remotesigned -scope currentuser
+iex (new-object net.webclient).downloadstring(&#39;https://get.scoop.sh&#39;)
+</code></pre>
+<p>建议在有网络的环境下下载</p>
+<ol start="3">
+<li>配置ho-my-posh到Poweshell<br>检验PS(powershell)的配置文件有没有呆在它应该呆在的地方，如果没有，那就给它造个兄弟，在他的兄弟的身体里面写下如下</li>
+</ol>
+<pre><code class="PS">Import-Module posh-git # 导入posh-git的模块
+Import-Module oh-my-posh # 导入oh-my-posh的模块
+Set-Theme Sorin # 将样式设定为Sorin
+</code></pre>
+<ol start="4">
+<li>配Json，在标签旁边的“+”的设置，或者直接<code>Ctrl+,</code><br>我的setting.json:</li>
+</ol>
+<pre><code class="js">// This file was initially generated by Windows Terminal 1.4.3243.0
+// It should still be usable in newer versions, but newer versions might have additional
+// settings, help text, or changes that you will not see unless you clear this file
+// and let us generate a new one for you.
+
+// To view the default settings, hold &quot;alt&quot; while clicking on the &quot;Settings&quot; button.
+// For documentation on these settings, see: https://aka.ms/terminal-documentation
+&#123;
+    &quot;$schema&quot;: &quot;https://aka.ms/terminal-profiles-schema&quot;,
+
+    &quot;defaultProfile&quot;: &quot;&#123;61c54bbd-c2c6-5271-96e7-009a87ff44bf&#125;&quot;,
+
+    // You can add more global application settings here.
+    // To learn more about global settings, visit https://aka.ms/terminal-global-settings
+
+    // If enabled, selections are automatically copied to your clipboard.
+    &quot;copyOnSelect&quot;: false,
+
+    // If enabled, formatted data is also copied to your clipboard
+    &quot;copyFormatting&quot;: false,
+
+    // A profile specifies a command to execute paired with information about how it should look and feel.
+    // Each one of them will appear in the &#39;New Tab&#39; dropdown,
+    //   and can be invoked from the commandline with `wt.exe -p xxx`
+    // To learn more about profiles, visit https://aka.ms/terminal-profile-settings
+    &quot;profiles&quot;:
+    &#123;
+        &quot;defaults&quot;:
+        &#123;
+            &quot;fontFace&quot; : &quot;JetBrains Mono&quot;,
+            &quot;cursorColor&quot;: &quot;#9e9e9e&quot;,
+            &quot;fontSize&quot; : 13  // 字体大小,
+            // Put settings here that you want to apply to all profiles.
+        &#125;,
+        &quot;list&quot;:
+        [
+            &#123;
+                // Make changes here to the powershell.exe profile.
+                // powershell 
+                &quot;guid&quot;: &quot;&#123;61c54bbd-c2c6-5271-96e7-009a87ff44bf&#125;&quot;,
+                &quot;name&quot;: &quot;Windows PowerShell&quot;,
+                &quot;commandline&quot;: &quot;powershell.exe&quot;,
+                &quot;backgroundImage&quot;: &quot;https://upimage.alexhchu.com/2021/01/01/378b347c10053.jpg&quot;, // bg url
+                &quot;backgroundImageOpacity&quot;: 0.5,
+                &quot;closeOnExit&quot;: true,
+                &quot;color&quot;: &quot;#FFFFFF&quot;,
+                &quot;cursorShape&quot;: &quot;bar&quot;,
+                &quot;icon&quot;: &quot;E://shell//PS.png&quot;,
+                &quot;padding&quot;: &quot;0, 0, 0, 0&quot;,
+                &quot;snapOnInput&quot;: true,
+                &quot;startingDirectory&quot;: &quot;%USERPROFILE%&quot;,
+                &quot;tabTitle&quot;: &quot;Windows-10-Shell&quot;,
+                &quot;useAcrylic&quot;: true, 
+                &quot;hidden&quot;: false
+            &#125;,
+            &#123;
+                // Make changes here to the powershell.exe profile.
+                // powershell 
+                &quot;guid&quot;: &quot;&#123;1c4de342-38b7-51cf-b940-2309a097f584&#125;&quot;,
+                &quot;name&quot;: &quot;Git-Bash&quot;,
+                &quot;commandline&quot;: &quot;E:\\Git\\bin\\bash.exe&quot;,
+                &quot;backgroundImage&quot;: &quot;https://www.cxyxiaowu.com/wp-content/uploads/2020/06/1591422723-a39d058bfb6e1cf.png&quot;, // bg url
+                &quot;backgroundImageOpacity&quot;: 0.9,
+                &quot;closeOnExit&quot;: true,
+                &quot;color&quot;: &quot;#FFFFFF&quot;,
+                &quot;cursorShape&quot;: &quot;bar&quot;,
+                &quot;icon&quot;: &quot;E://shell//git.png&quot;,
+                &quot;padding&quot;: &quot;10, 10, 10, 10&quot;,
+                &quot;snapOnInput&quot;: true,
+                &quot;startingDirectory&quot;: &quot;%USERPROFILE%&quot;,
+                &quot;tabTitle&quot;: &quot;Git-Bash&quot;,
+                &quot;useAcrylic&quot;: true,
+                &quot;hidden&quot;: false
+            &#125;,
+            &#123;
+                // Make changes here to the cmd.exe profile.
+                // cmd
+                &quot;guid&quot;: &quot;&#123;0caa0dad-35be-5f56-a8ff-afceeeaa6101&#125;&quot;,
+                &quot;name&quot;: &quot;Command Prompt&quot;,
+                &quot;acrylicOpacity&quot; : 0.75,
+                &quot;backgroundImage&quot; : &quot;https://upimage.alexhchu.com/2021/01/01/f9ced42a624e7.jpg&quot;, // 图片地址
+                &quot;backgroundImageOpacity&quot; : 0.9,
+                &quot;closeOnExit&quot; : true,
+                &quot;cursorColor&quot; : &quot;#FFFFFF&quot;,
+                &quot;cursorShape&quot; : &quot;bar&quot;,
+                &quot;icon&quot; : &quot;E://shell//cmd.png&quot;,
+                &quot;padding&quot; : &quot;0, 0, 0, 0&quot;,
+                &quot;snapOnInput&quot; : true,
+                &quot;startingDirectory&quot; : &quot;%USERPROFILE%&quot;,
+                &quot;tabTitle&quot; : &quot;default&quot;,
+                &quot;useAcrylic&quot; : true,  //毛玻璃 关掉
+                &quot;hidden&quot;: false
+            &#125;,
+            &#123;
+                // -user cloud
+                &quot;guid&quot;: &quot;&#123;b453ae62-4e3d-5e58-b989-0a998ec441b8&#125;&quot;,
+                &quot;hidden&quot;: false,
+                &quot;name&quot;: &quot;Azure Cloud Shell&quot;,
+                &quot;source&quot;: &quot;Windows.Terminal.Azure&quot;
+            &#125;
+        ]
+    &#125;,
+
+    // Add custom color schemes to this array.
+    // To learn more about color schemes, visit https://aka.ms/terminal-color-schemes
+    &quot;schemes&quot;: [],
+
+    // Add custom actions and keybindings to this array.
+    // To unbind a key combination from your defaults.json, set the command to &quot;unbound&quot;.
+    // To learn more about actions and keybindings, visit https://aka.ms/terminal-keybindings
+    &quot;actions&quot;:
+    [
+        // Copy and paste are bound to Ctrl+Shift+C and Ctrl+Shift+V in your defaults.json.
+        // These two lines additionally bind them to Ctrl+C and Ctrl+V.
+        // To learn more about selection, visit https://aka.ms/terminal-selection
+        &#123; &quot;command&quot;: &#123;&quot;action&quot;: &quot;copy&quot;, &quot;singleLine&quot;: false &#125;, &quot;keys&quot;: &quot;ctrl+c&quot; &#125;,
+        &#123; &quot;command&quot;: &quot;paste&quot;, &quot;keys&quot;: &quot;ctrl+v&quot; &#125;,
+
+        // Press Ctrl+Shift+F to open the search box
+        &#123; &quot;command&quot;: &quot;find&quot;, &quot;keys&quot;: &quot;ctrl+shift+f&quot; &#125;,
+
+        // Press Alt+Shift+D to open a new pane.
+        // - &quot;split&quot;: &quot;auto&quot; makes this pane open in the direction that provides the most surface area.
+        // - &quot;splitMode&quot;: &quot;duplicate&quot; makes the new pane use the focused pane&#39;s profile.
+        // To learn more about panes, visit https://aka.ms/terminal-panes
+        &#123; &quot;command&quot;: &#123; &quot;action&quot;: &quot;splitPane&quot;, &quot;split&quot;: &quot;auto&quot;, &quot;splitMode&quot;: &quot;duplicate&quot; &#125;, &quot;keys&quot;: &quot;alt+shift+d&quot; &#125;
+    ]
+&#125;
+</code></pre>
+<p>本人用的是Sorin的主题，不知道各位喜欢什么，在<a target="_blank" rel="noopener" href="https://baidu.com/">百度</a>上面都有的。</p>
+<p>也可以用</p>
+<pre><code class="shell">Set-Theme Theme-Name # 预览主题
+</code></pre>
+<h3 id="后记-2"><a href="#后记-2" class="headerlink" title="后记-2"></a>后记-2</h3><h4 id="平台"><a href="#平台" class="headerlink" title="平台"></a>平台</h4><p>这个Windows Terminal是不跨平台的，只在Windows下才有。如果是MAC的，我推荐一个命令行，你或许认得它，它的名字是——Item2。</p>
+<h4 id="WSL"><a href="#WSL" class="headerlink" title="WSL"></a>WSL</h4><p>WSL是指Windows Linux。Windows下的Linux子系统，Windows terminal也是可以兼容的。至于怎么配置，我下一篇再写…</p>
+<h2 id="完成时间"><a href="#完成时间" class="headerlink" title="完成时间"></a>完成时间</h2><blockquote>
+<p>2021&#x2F;1&#x2F;2&#x2F;0：04：44</p>
+</blockquote>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>

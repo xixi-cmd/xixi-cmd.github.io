@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="robots" content="noindex"><meta><title>分类: JS逆向 - 一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="一枝清寒."><meta property="og:url" content="http://example.com/"><meta property="og:site_name" content="一枝清寒."><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:author" content="ChenShang"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com"},"headline":"一枝清寒.","image":["http://example.com/img/og_image.png"],"author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/categories">分类</a></li><li><a href="/categories/web/">web</a></li><li><a href="/categories/web/JS/">JS</a></li><li class="is-active"><a href="#" aria-current="page">JS逆向</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-02-14T13:45:19.000Z" title="2021/2/14 21:45:19">2021-02-14</time>发表</span><span class="level-item"><time dateTime="2021-08-20T11:08:14.707Z" title="2021/8/20 19:08:14">2021-08-20</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/web/">web</a><span> / </span><a class="link-muted" href="/categories/web/JS/">JS</a><span> / </span><a class="link-muted" href="/categories/web/JS/JS%E9%80%86%E5%90%91/">JS逆向</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2021/02/14/JSnxfx/">JS逆向的简单分析</a></h1><div class="content"><p>基于requests\hashlib模块实现md5加密方式的有道翻译接口破解<br>第一步打开控制台查询任意一个单词进行抓包,获取请求方式和查看所需的查询参数(salt,ts,sign)<br>第二部,根据所需查询参数在控制台中搜索参数所在的 js文件的位置,打断点调试,查看各个参数在js文件中对应函数的实现过程；经调试发现ts是一个时间戳，salt是0-9和时间戳拼接成的一个字符串，sign是所查询单词和salt以及两个固定字符串的一个拼接.<br>第三步，用python实现Form Data中查询参数的动态生成.<br>第四步，发请求，传入第三步实现的参数，获取相应结果</p>
+<p>源码如下 ： 看不懂的同学，b站搜 一只会唱歌的程序狗，里面有一期讲述了整个分析过程，每一步打印非常详细。</p>
+<p>import requests<br>import time<br>import random<br>from hashlib import md5</p>
+<p>class YdSpider():<br>def init(self):<br>self.url &#x3D; “<a target="_blank" rel="noopener" href="http://fanyi.youdao.com/translate?smartresult=dict&amp;smartresult=rule%E2%80%9D">http://fanyi.youdao.com/translate?smartresult=dict&amp;smartresult=rule”</a><br>self.headers &#x3D; {<br>“Accept”: “application&#x2F;json, text&#x2F;javascript, &#x2F;; q&#x3D;0.01”,<br>“Accept-Encoding”: “gzip, deflate”,<br>“Accept-Language”: “zh-CN,zh;q&#x3D;0.9,en;q&#x3D;0.8”,<br>“Cache-Control”: “no-cache”,<br>“Connection”: “keep-alive”,<br>“Content-Length”: “239”,<br>“Content-Type”: “application&#x2F;x-www-form-urlencoded; charset&#x3D;UTF-8”,<br>“Cookie”: “OUTFOX_SEARCH_USER_ID&#x3D;<a href="mailto:&#x31;&#51;&#x32;&#52;&#x32;&#57;&#54;&#56;&#49;&#x39;&#x40;&#x31;&#50;&#x33;&#46;&#49;&#x36;&#48;&#x2e;&#50;&#50;&#53;&#x2e;&#x31;&#x38;&#49;">&#x31;&#51;&#x32;&#52;&#x32;&#57;&#54;&#56;&#49;&#x39;&#x40;&#x31;&#50;&#x33;&#46;&#49;&#x36;&#48;&#x2e;&#50;&#50;&#53;&#x2e;&#x31;&#x38;&#49;</a>; OUTFOX_SEARCH_USER_ID_NCOO&#x3D;146889837.6278171; _ga&#x3D;GA1.2.828762415.1557487039; P_INFO&#x3D;18203678715|1557487117|1|youdaonote|00&amp;99|null&amp;null&amp;null#hen&amp;410100#10#0|&amp;0||18203678715; _ntes_nnid&#x3D;66628fdd0933b91b9f3b3f4e77e6ace3,1557741619397; UM_distinctid&#x3D;16c2c70da34500-02a227a759081c-15231708-1fa400-16c2c70da35658; JSESSIONID&#x3D;aaaXbo2PVTqwr6xtLBiYw; ___rl__test__cookies&#x3D;1565689925539”,<br>“Host”: “fanyi.youdao.com”,<br>“Origin”: “<a target="_blank" rel="noopener" href="http://fanyi.youdao.com”/">http://fanyi.youdao.com”</a>,<br>“Pragma”: “no-cache”,<br>“Referer”: “<a target="_blank" rel="noopener" href="http://fanyi.youdao.com/%E2%80%9D">http://fanyi.youdao.com/”</a>,<br>“User-Agent”: “Mozilla&#x2F;5.0 (X11; Linux x86_64) AppleWebKit&#x2F;537.36 (KHTML, like Gecko) Chrome&#x2F;73.0.3683.75 Safari&#x2F;537.36”,<br>“X-Requested-With”: “XMLHttpRequest”<br>}</p>
+<pre><code class="js">def get_salt_sign_ts(self,word):
+    # ts
+    ts = str(int(time.time() * 1000))
+    # salt
+    salt = ts + str(random.randint(0, 9))
+    # sign
+    string = &quot;fanyideskweb&quot; + word + salt + &quot;n%A-rKaT5fb[Gy?;N5@Tj&quot;
+    s = md5()
+    s.update(string.encode())
+    sign = s.hexdigest()
+    return salt, sign, ts
+
+
+def attack_yd(self,word):
+    #1.先拿到salt,sign,ts
+    salt, sign, ts = self.get_salt_sign_ts(word)
+    #2.定义form表单数据为字典:data=&#123;&#125;
+    data = &#123;
+        &#39;i&#39;: word,
+        &#39;from&#39;: &#39;AUTO&#39;,
+        &#39;to&#39;: &#39;AUTO&#39;,
+        &#39;smartresult&#39;: &#39;dict&#39;,
+        &#39;client&#39;: &#39;fanyideskweb&#39;,
+        &#39;salt&#39;: salt,
+        &#39;sign&#39;: sign,
+        &#39;ts&#39;: ts,
+        &#39;bv&#39;: &#39;cf156b581152bd0b259b90070b1120e6&#39;,
+        &#39;doctype&#39;: &#39;json&#39;,
+        &#39;version&#39;: &#39;2.1&#39;,
+        &#39;keyfrom&#39;: &#39;fanyi.web&#39;,
+        &#39;action&#39;: &#39;FY_BY_REALTlME&#39;
+    &#125;
+    #3.直接发送请求:request.post(url,data=data,headers=headers)
+    res = requests.post(url=self.url,data=data,headers=self.headers)
+    html = res.json()
+    result = html[&quot;translateResult&quot;][0][0][&quot;tgt&quot;]
+    #4.获取相应内容
+    print(result)
+
+def main(self):
+    #输入翻译单词
+    word = input(&quot;input your word:&quot;)
+    self.attack_yd(word)
+</code></pre>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-01-26T01:38:53.000Z" title="2021/1/26 09:38:53">2021-01-26</time>发表</span><span class="level-item"><time dateTime="2021-08-20T11:08:07.730Z" title="2021/8/20 19:08:07">2021-08-20</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/web/">web</a><span> / </span><a class="link-muted" href="/categories/web/JS/">JS</a><span> / </span><a class="link-muted" href="/categories/web/JS/JS%E9%80%86%E5%90%91/">JS逆向</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2021/01/26/JS%E5%8F%8D%E8%B0%83%E8%AF%95/">JS逆向反调试和反反调试</a></h1><div class="content"><h1 id="写在最前面"><a href="#写在最前面" class="headerlink" title="写在最前面"></a>写在最前面</h1><p>本文转载于CSDN大佬: <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44504978">@花爷</a><br>已获得其本人允许<br> 根据《中华人民共和国著作权法》规定</p>
+<p>1、已在报刊上刊登或者网络上传播的作品，除著作权人声明或者上载该作品的网络服务提供者受著作权人的委托声明不得转载、摘编的以外，网站予以转载、摘编，并按有关规定支付报酬、注明出处的，不构成侵权。</p>
+<p>2、为个人学习、研究或者欣赏，使用他人已经发表的作品而转载的不属于侵权，可以不经著作权人许可，不向其支付报酬，但应当指明作者姓名、作品名称，并且不得侵犯著作权人依照本法享有的其他权利。</p>
+<h1 id="切入JS逆向反调试"><a href="#切入JS逆向反调试" class="headerlink" title="切入JS逆向反调试"></a>切入JS逆向反调试</h1><p><span style = "font-size: 20px;">现在调试JS各种反调，既然有反调，那我们就肯定有过这个反调试的方法。这里给大家推荐一个JS逆向练习平台。<span></p>
+<p><a target="_blank" rel="noopener" href="http://spider.wangluozhe.com/">JS逆向练习平台</a></p>
+<p>1.我们这里讲的是第5题，它这里的反调试是不让你打开开发者人员工具。打开开发者人员工具，就自动返回主页面。<br><img src="https://img-blog.csdnimg.cn/2021012414190817.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDUwNDk3OA==,size_16,color_FFFFFF,t_70#pic_center"></p>
+<p>2.思路：a：它不让我打开开发者人员工具，肯定是在打开开发者人员工具之后它检测了什么玩意<br><img src="https://img-blog.csdnimg.cn/20210124142517995.png#pic_center"></p>
+<pre><code class="text">b：.那他就是调用了浏览器内置的东西，我这个就解决方法是下页面事件监听断点，如图：
+</code></pre>
+<p><img src="https://img-blog.csdnimg.cn/20210124144325107.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDUwNDk3OA==,size_16,color_FFFFFF,t_70#pic_center"></p>
+<p>这里的意思：<br>事件侦听器断点 event listener breakpoints<br>事件突变 Dom mutation<br>下面还有一些我就不翻译了，有兴趣可以去看看，翻译一下，小弟英语不好。<br>下这个断点之后，跳转完页面，加载ok之后他就会断下来，如图，我们就可以得到这道题的答案了。<br><img src="https://img-blog.csdnimg.cn/20210124145214853.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDUwNDk3OA==,size_16,color_FFFFFF,t_70#pic_center"></p>
+<p>答案大佬打了一下马赛克，这边大佬不公布答案，大家可以尝试一下。</p>
+<h1 id="切入JS反反调试"><a href="#切入JS反反调试" class="headerlink" title="切入JS反反调试"></a>切入JS反反调试</h1><div class='tip'><p>你千万别跟任何人谈任何事情。你只要一谈起，就会想念起每一个人来，我只知道我很想念我所谈到的每一个人。——Ｊ·Ｄ·塞林格《麦田里的守望者》<p></div>
+
+<h2 id="JS逆向-过无限debugger调试"><a href="#JS逆向-过无限debugger调试" class="headerlink" title="[JS逆向]过无限debugger调试"></a>[JS逆向]过无限debugger调试</h2><p><span style="font-size: 20px;">在JS逆向过程当中，获取用发F12抓取XHR的时候，常常会发现网页不让我们打开F12开发人员工具。如果这个时候我们开启工具中禁止断点之后，虽然我们可以抓取xhr，但是这样我们无法调试代码部分了，开启了禁止断点之后，我们自己也无法在代码当中下断点了</span></p>
+<h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><p>在采集某些网站时，目标网站为了防止别人分析调试前端代码，采取了反调试措施。其中一种做法是当你按F12进入浏览器控制台后，浏览器会自动命中debugger断点，并且无限循环，导致无法调试。以食品药品监督管理总局数据查询网站为例。如下图:<br><img src="https://img-blog.csdnimg.cn/20190810135056101.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI2NzEyOTc3,size_16,color_FFFFFF,t_70"></p>
+<p>按F12进入控制台</p>
+<p><img src="https://img-blog.csdnimg.cn/20190810135323385.gif"></p>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><h4 id="禁用浏览器断点"><a href="#禁用浏览器断点" class="headerlink" title="禁用浏览器断点"></a>禁用浏览器断点</h4><p><img src="https://img-blog.csdnimg.cn/20190810135629767.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI2NzEyOTc3,size_16,color_FFFFFF,t_70"><br>点击图中按钮，之后将不会再命中任何断点。这种方法虽然可以防止无限循环命中debugger断点，但是也存在很大的缺陷，因为对于其他代码，我们还是需要断点调试功能的。所以这个方法仅限于静态分析。</p>
+<h4 id="利用中间人修改响应代码"><a href="#利用中间人修改响应代码" class="headerlink" title="利用中间人修改响应代码"></a>利用中间人修改响应代码</h4><p>用Fiddler删除响应代码中的debugger即可达到目的<br>实现的核心代码很简单:如下</p>
+<pre><code class="Python">FiddlerApplication.BeforeRequest += delegate(Fiddler,Session oS)
+&#123;
+     oS.bBufferResponse = true;
+&#125;
+
+FiddlerApplication.BeforeResponse += (oS) =&gt;
+&#123;
+     oS.utilDecodeResponse();
+     oS.utilReplaceLnResponse(&quot;debugger&quot;, String.Empty);
+     /*
+     *
+     Code 实在是找不到FiddlerCode的代码格式，只能用Python代替一下
+     *
+     */
+&#125;
+</code></pre>
+<p>实际使用中发现,位于响应html页的debugger被删除了，但是仍然会弹出断点。分析页面得到，debugger断点位置一共有2处 第一处位于”<a target="_blank" rel="noopener" href="http://qy1.sfda.gov.cn/datasearch/face3/dir.html&quot;debugger%E4%BB%A5%E6%98%8E%E6%96%87%E5%BD%A2%E5%BC%8F%E5%AD%98%E5%9C%A8,Fiddler%E5%88%A0%E9%99%A4%E7%9A%84%E5%B0%B1%E6%98%AF%E8%BF%99%E9%83%A8%E5%88%86%E3%80%82%E9%80%9A%E8%BF%87%E5%88%86%E6%9E%90%E5%8F%A6%E4%B8%80%E5%A4%84debugger%E4%BD%8D%E7%BD%AE%EF%BC%8C%E5%8F%91%E7%8E%B0debugger%E6%98%AF%E9%80%9A%E8%BF%87eval%E5%8E%BB%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%8C%E5%93%8D%E5%BA%94%E4%B8%AD%E5%B9%B6%E6%B2%A1%E6%9C%89%E7%9B%B4%E6%8E%A5%E5%87%BA%E7%8E%B0debugger%E5%AD%97%E6%AE%B5%EF%BC%8C%E6%89%80%E4%BB%A5%E6%B2%A1%E6%9C%89%E8%A2%AB%E6%9B%BF%E6%8D%A2%E6%8E%89%E3%80%82">http://qy1.sfda.gov.cn/datasearch/face3/dir.html&quot;debugger以明文形式存在,Fiddler删除的就是这部分。通过分析另一处debugger位置，发现debugger是通过eval去实现的，响应中并没有直接出现debugger字段，所以没有被替换掉。</a></p>
+<p>在Console输入</p>
+<pre><code class="JS">&gt; _$uj()
+&lt;· &quot;eval&quot;
+&gt; _$dQ()
+&lt;· &quot;(function() &#123;var a = new Date(); debugger; return new Date() - a &gt; 100;&#125;())&quot;
+&gt; _
+</code></pre>
+<p>代码经过强混淆，读者看到的函数名称是和我不一样的。</p>
+<h4 id="利用浏览器插件修改响应代码"><a href="#利用浏览器插件修改响应代码" class="headerlink" title="利用浏览器插件修改响应代码"></a>利用浏览器插件修改响应代码</h4><p>具体原理和使用Fiddler是相同的，通过浏览器插件将请求重定向以达到修改代码的目的。也存在相同的问题</p>
+<h4 id="手动替换代码"><a href="#手动替换代码" class="headerlink" title="手动替换代码"></a>手动替换代码</h4><p>既然修改响应结果无法满足需求，那只能从代码中寻找突破了。<br>以本文的网站为例，查看debugger断点处的调用栈堆，找到调用位置。其实在上文中间人方式结尾处已经发现了。是通过eval去实现断点的。我们先构造一个空方法</p>
+<p><img src="https://img-blog.csdnimg.cn/20190810153307160.png"><br>将目标网站的方法偷梁换柱<br><img src="https://img-blog.csdnimg.cn/20190810153643439.png"><br>由于网站代码强混淆，所以函数名称会不一样。下面放个GIF图<br><img src="https://img-blog.csdnimg.cn/20190810154011549.gif"><br>完美解决 但是注意不要刷新，页面刷新后需要重新替换。</p>
+<h4 id="傻瓜式技巧"><a href="#傻瓜式技巧" class="headerlink" title="傻瓜式技巧"></a>傻瓜式技巧</h4><p>上文的几种方法，要么是存在缺陷，要么是步骤较为繁琐，我这边还有个压箱底的神技，不需要写任何代码，鼠标点点点就能够满足需求，为了避免伸手党，所以不放了。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><!-- tab -->
+<p>1-DebugPort<br>2-KdDisableDebugger<br>3-IsDebuggerPresent和CheckRemoteDebuggerPresent<br>4-hook</p>
+<p><a target="_blank" rel="noopener" href="http://www.moguizuofang.com/bbs/thread-3235-1-1.html">http://www.moguizuofang.com/bbs/thread-3235-1-1.html</a></p>
+<p><a target="_blank" rel="noopener" href="http://bbs.pediy.com/showthread.php?t=126802">http://bbs.pediy.com/showthread.php?t=126802</a></p>
+<p><a target="_blank" rel="noopener" href="http://bbs.pediy.com/showthread.php?t=129810">http://bbs.pediy.com/showthread.php?t=129810</a></p>
+<p>DebugPort是进程EPROCESS结构里的一个成员，指向了一个用于进程调试的对象，如果一个进程不在被调试的时候那么就是NULL，否则他是一个指针。该对象负责在调试器与被调进程之间进行调试事件传递，因此被称为调试端口。被调试程序的事件由这个端口发送到调试器进程的。</p>
+<p>HOOK系统中一些与调试相关的函数，也可以防止被各种调试器调试。比如某款程序在内核中就HOOK了下面这些函数：<br>NtOpenThread（）：防止调试器在程序内部创建线程<br>NtOpenProcess（）：防止OD（OllyDbg）等调试工具在进程列表中看到<br>KiAttachProcess（）：防止被附加上<br>NtReadVirtualMemory（）：防止被读内存<br>NtWriteVirtualMemory（）：防止内存被写<br>KdReceivePacket（）：KDCOME.dll 中Com串口接收数据函数<br>KdSendPacket（）：KDCOME.dll 中Com串口发送数据函数，可以HOOK这2个函数用来防止双机调试。</p>
+<p>反反调试的思路也就出来了。针对清零DebugPort来防止调试的方法，可以通过对DebugPort内存地址下内存断点：<br>ba w4 debugport_addr<br>这样一旦有程序代码在修改DebugPort，就会被断下，从而找到对应的清零DebugPort的反调试代码，然后对这部分代码进行patch（用机器码0×90(nop)或者0xC3(ret)取代），从而让它失去作用，当然有的程序会对代码进行校验，一旦发现代码被篡改，就会采取保护措施，比如抛出异常或者退出程序。<br>针对调用系统函数如KdDisableDebugger（）来检测调试器存在从而禁止被调试的方法，可以在对应的这些函数的地址下断点，然后对相关的代码进行patch，然后使该函数判断失效。比如：<br>bp KdDisableDebugger、eb xxx<br>针对通过HOOK系统函数来防止进程被调试的方法，可以直接将这些系统函数的钩子直接恢复，可以通过内核驱动程序或者借助一些ARK工具（比如Pchunter）就可以直接检测和恢复这些函数钩子。</p>
+<!-- endtab -->
+
+<h1 id="总结-2"><a href="#总结-2" class="headerlink" title="总结 -2"></a>总结 -2</h1><!-- tab -->
+<p>在调试一些病毒程序的时候，可能会碰到一些反调试技术，也就是说，被调试的程序可以检测到自己是否被调试器附加了，如果探知自己正在被调试，肯定是有人试图反汇编啦之类的方法破解自己。为了了解如何破解反调试技术，首先我们来看看反调试技术。</p>
+<p>一、Windows API方法</p>
+<p>Win32提供了两个API, IsDebuggerPresent和CheckRemoteDebuggerPresent可以用来检测当前进程是否正在被调试，以IsDebuggerPresent函数为例，例子如下：</p>
+<pre><code class="shell">BOOL ret = IsDebuggerPresent();
+printf(&quot;ret = %d\n&quot;, ret);
+</code></pre>
+<p>破解方法很简单，就是在系统里将这两个函数hook掉，让这两个函数一直返回false就可以了，网上有很多做hook API工作的工具，也有很多工具源代码是开放的，所以这里就不细谈了。</p>
+<p>二、查询进程PEB的BeingDebugged标志位</p>
+<p>当进程被调试器所附加的时候，操作系统会自动设置这个标志位，因此在程序里定期查询这个标志位就可以了，例子如下：</p>
+<pre><code class="c++">bool PebIsDebuggedApproach()
+&#123;
+       char result = 0;
+       __asm
+       &#123;
+// 进程的PEB地址放在fs这个寄存器位置上
+              mov eax, fs:[30h]
+// 查询BeingDebugged标志位
+              mov al, BYTE PTR [eax + 2]
+              mov result, al
+       &#125;
+
+       return result != 0;
+&#125;
+</code></pre>
+<p>三、查询进程PEB的NtGlobal标志位</p>
+<p>跟第二个方法一样，当进程被调试的时候，操作系统除了修改BeingDebugged这个标志位以外，还会修改其他几个地方，其中NtDll中一些控制堆（Heap）操作的函数的标志位就会被修改，因此也可以查询这个标志位，例子如下：</p>
+<pre><code class="c++">bool PebNtGlobalFlagsApproach()
+&#123;
+       int result = 0;
+
+       __asm
+       &#123;
+  // 进程的PEB
+              mov eax, fs:[30h]
+  // 控制堆操作函数的工作方式的标志位
+              mov eax, [eax + 68h]
+  // 操作系统会加上这些标志位FLG_HEAP_ENABLE_TAIL_CHECK,
+  // FLG_HEAP_ENABLE_FREE_CHECK and FLG_HEAP_VALIDATE_PARAMETERS，
+  // 它们的并集就是x70
+  //
+  // 下面的代码相当于C/C++的
+  //     eax = eax &amp; 0x70
+              and eax, 0x70
+              mov result, eax
+       &#125;
+
+       return result != 0;
+&#125;
+</code></pre>
+<p>四、查询进程堆的一些标志位</p>
+<p>这个方法是第三个方法的变种，只要进程被调试，进程在堆上分配的内存，在分配的堆的头信息里，ForceFlags这个标志位会被修改，因此可以通过判断这个标志位的方式来反调试。因为进程可以有很多的堆，因此只要检查任意一个堆的头信息就可以了，所以这个方法貌似很强大，例子如下：</p>
+<pre><code class="c++">bool HeapFlagsApproach()
+&#123;
+       int result = 0;
+
+       __asm
+       &#123;
+      // 进程的PEB
+              mov eax, fs:[30h]
+      // 进程的堆，我们随便访问了一个堆，下面是默认的堆
+              mov eax, [eax + 18h]
+  // 检查ForceFlag标志位，在没有被调试的情况下应该是
+              mov eax, [eax + 10h]
+              mov result, eax
+       &#125;
+
+       return result != 0;
+&#125;
+</code></pre>
+<p>五、使用NtQueryInformationProcess函数</p>
+<p>NtQueryInformationProcess函数是一个未公开的API，它的第二个参数可以用来查询进程的调试端口。如果进程被调试，那么返回的端口值会是-1，否则就是其他的值。由于这个函数是一个未公开的函数，因此需要使用LoadLibrary和GetProceAddress的方法获取调用地址，示例代码如下：</p>
+<pre><code class="C++">// 声明一个函数指针。
+typedef NTSTATUS (WINAPI *NtQueryInformationProcessPtr)(
+       HANDLE processHandle,
+       PROCESSINFOCLASS processInformationClass,
+       PVOID processInformation,
+       ULONG processInformationLength,
+       PULONG returnLength);
+
+bool NtQueryInformationProcessApproach()
+&#123;
+       int debugPort = 0;
+       HMODULE hModule = LoadLibrary(TEXT(&quot;Ntdll.dll &quot;));
+       NtQueryInformationProcessPtr NtQueryInformationProcess = (NtQueryInformationProcessPtr)GetProcAddress(hModule, &quot;NtQueryInformationProcess&quot;);
+       if ( NtQueryInformationProcess(GetCurrentProcess(), (PROCESSINFOCLASS)7, &amp;debugPort, sizeof(debugPort), NULL) )
+              printf(&quot;[ERROR NtQueryInformationProcessApproach] NtQueryInformationProcess failed\n&quot;);
+       else
+              return debugPort == -1;
+
+       return false;
+&#125;
+</code></pre>
+<p>六、NtSetInformationThread方法</p>
+<p>这个也是使用Windows的一个未公开函数的方法，你可以在当前线程里调用NtSetInformationThread，调用这个函数时，如果在第二个参数里指定0x11这个值（意思是ThreadHideFromDebugger），等于告诉操作系统，将所有附加的调试器统统取消掉。示例代码:</p>
+<pre><code class="C++">// 声明一个函数指针。
+typedef NTSTATUS (*NtSetInformationThreadPtr)(HANDLE threadHandle,
+       THREADINFOCLASS threadInformationClass,
+       PVOID threadInformation,
+       ULONG threadInformationLength);
+
+void NtSetInformationThreadApproach()
+&#123;
+      HMODULE hModule = LoadLibrary(TEXT(&quot;ntdll.dll&quot;));
+      NtSetInformationThreadPtr NtSetInformationThread = (NtSetInformationThreadPtr)GetProcAddress(hModule, &quot;NtSetInformationThread&quot;);
+
+      NtSetInformationThread(GetCurrentThread(), (THREADINFOCLASS)0x11, 0, 0);
+&#125;
+</code></pre>
+<p>七、触发异常的方法</p>
+<p>这个技术的原理是，首先，进程使用SetUnhandledExceptionFilter函数注册一个未处理异常处理函数A，如果进程没有被调试的话，那么触发一个未处理异常，会导致操作系统将控制权交给先前注册的函数A；而如果进程被调试的话，那么这个未处理异常会被调试器捕捉，这样我们的函数A就没有机会运行了。</p>
+<p>这里有一个技巧，就是触发未处理异常的时候，如果跳转回原来代码继续执行，而不是让操作系统关闭进程。方案是在函数A里修改eip的值，因为在函数A的参数_EXCEPTION_POINTERS里，会保存当时触发异常的指令地址，所以在函数A里根据这个指令地址修改寄存器eip的值就可以了，示例代码如下：</p>
+<pre><code class="c++">// 进程要注册的未处理异常处理程序A
+LONG WINAPI MyUnhandledExceptionFilter(struct _EXCEPTION_POINTERS *pei)
+&#123;
+       SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)
+              pei-&gt;ContextRecord-&gt;Eax);
+       // 修改寄存器eip的值
+       pei-&gt;ContextRecord-&gt;Eip += 2;
+       // 告诉操作系统，继续执行进程剩余的指令（指令保存在eip里），而不是关闭进程
+       return EXCEPTION_CONTINUE_EXECUTION;
+&#125;
+
+bool UnhandledExceptionFilterApproach()
+&#123;
+       SetUnhandledExceptionFilter(MyUnhandledExceptionFilter);
+       __asm
+       &#123;
+              // 将eax清零
+              xor eax, eax
+              // 触发一个除零异常
+              div eax
+       &#125;
+
+       return false;
+&#125;
+</code></pre>
+<p>八、调用DeleteFiber函数</p>
+<p>如果给DeleteFiber函数传递一个无效的参数的话，DeleteFiber函数除了会抛出一个异常以外，还是将进程的LastError值设置为具体出错原因的代号。然而，如果进程正在被调试的话，这个LastError值会被修改，因此如果调试器绕过了第七步里讲的反调试技术的话，我们还可以通过验证LastError值是不是被修改过来检测调试器的存在，示例代码：</p>
+<pre><code class="c++">bool DeleteFiberApproach()
+&#123;
+       char fib[1024] = &#123;0&#125;;
+       // 会抛出一个异常并被调试器捕获
+       DeleteFiber(fib);
+
+       // 0x57的意思是ERROR_INVALID_PARAMETER
+       return (GetLastError() != 0x57);
+&#125;
+</code></pre>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>

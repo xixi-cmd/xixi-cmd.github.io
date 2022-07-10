@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="一枝清寒."><meta property="og:url" content="http://example.com/"><meta property="og:site_name" content="一枝清寒."><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:author" content="ChenShang"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com"},"headline":"一枝清寒.","image":["http://example.com/img/og_image.png"],"author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2017-12-15T04:52:34.000Z" title="2017/12/15 12:52:34">2017-12-15</time>发表</span><span class="level-item"><time dateTime="2021-07-25T07:58:54.000Z" title="2021/7/25 15:58:54">2021-07-25</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2017/12/15/CentOS%E5%AE%89%E8%A3%85node8-x%E7%89%88%E6%9C%AC/">CentOS安装node8.x版本</a></h1><div class="content"><h3 id="CentOS-安装-node-8-x-版本"><a href="#CentOS-安装-node-8-x-版本" class="headerlink" title="CentOS 安装 node 8.x 版本"></a>CentOS 安装 node 8.x 版本</h3><p>由于一些原因需要给CentOS服务器安装8.0以上版本的node, 本来直接通过yum管理安装管理，但是没找到好办法，在此记录一下自己最后使用的简单过程：</p>
+<p>安装之前删除原来的node和npm (我原来是用yum安装的，如果是第一次安装可以省略这一步):</p>
+<pre><code>yum remove nodejs npm -y
+</code></pre>
+<p>首先我们随便进入服务器的一个目录，然后从淘宝的源拉取内容:</p>
+<pre><code>wget https://npm.taobao.org/mirrors/node/v8.0.0/node-v8.0.0-linux-x64.tar.xz 
+</code></pre>
+<p>解压缩:</p>
+<pre><code>sudo tar -xvf node-v8.0.0-linux-x64.tar.xz 
+</code></pre>
+<p>进入解压目录下的 bin 目录，执行 ls 命令</p>
+<pre><code>cd node-v8.0.0-linux-x64/bin &amp;&amp; ls 
+</code></pre>
+<p>我们发现有node 和 npm</p>
+<p>这个时候我们测试:</p>
+<pre><code>./node -v
+</code></pre>
+<p>这个时候我们发现实际上已经安装好了，接下来就是要建立链接文件。</p>
+<p>这里还是，如果我们之前已经安装过了，那么我们要先删除之前建立的链接文件：</p>
+<pre><code>sudo rm -rf /usr/bin/node
+sudo rm -rf /usr/bin/npm
+</code></pre>
+<p>然后建立链接文件:</p>
+<pre><code>sudo ln -s /usr/share/node-v8.0.0-linux-x64/bin/node /usr/bin/node
+sudo ln -s /usr/share/node-v8.0.0-linux-x64/bin/npm /usr/bin/npm
+</code></pre>
+<p>注意这里的第一个路径不要直接复制粘贴，要写当前文件的真正的路径，这个可以通过pwd获取。</p>
+<p>然后我们可以通过<code>node -v</code>等测试已经安装成功。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2017-08-31T11:04:03.000Z" title="2017/8/31 19:04:03">2017-08-31</time>发表</span><span class="level-item"><time dateTime="2021-07-25T07:58:54.000Z" title="2021/7/25 15:58:54">2021-07-25</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2017/08/31/%E6%B7%B1%E5%85%A5%E6%B5%8F%E8%A7%88%E5%99%A8web%E6%B8%B2%E6%9F%93%E4%B8%8E%E4%BC%98%E5%8C%96-%E7%BB%AD/">深入浏览器web渲染与优化-续</a></h1><div class="content"><blockquote>
+<p>本篇文章接上一篇继续分析浏览器web渲染相关内容，但是更侧重优化工作。当然，主要还是基于X5来分析</p>
+</blockquote>
+<p>上一篇文章我们主要是从浏览器内核的线程角度来分析相关工作的，对整体流程没有宏观清晰的分析，这次我们从宏观到微观，从整体到局部，来进行分析和探究可以优化的地方。</p>
+<p>首先，一个网页的加载，需要什么工作呢？</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender2/P1.png"></p>
+<p>这个工作可以分为三部分：云(云端)、管(传输链路)、端(客户端)，从云经过管传到端，然后经过加载解析排版渲染，从而完成网页从请求到呈现的工作(当然，我们这里没有涉及协议的分析，实际上根据协议不同，这个传输可能是多次传输)。</p>
+<p>数据到端之后，又经过以下过程，才最终显示出来：</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender2/P2.png"></p>
+<p>在这个过程中，我们怎么衡量性能呢？</p>
+<p>固然，我们有诸多浏览器提供的API，这些API能让我们获取到较多信息并且记录上报：</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender2/P3.png"></p>
+<p>但是这些具体数值表达的含义有限，并且他们实际上也不等于用户体验。</p>
+<p>所以，找到一个科学并且可以检测的标准，并且这个标准可以和用户体验有正相关关系，这个是至关重要的。</p>
+<p>目前这个标准是<strong>首屏时间</strong>(就之前自己的了解，具体的还区分首屏展示时间和首屏可交互时间，但是这里讲师不做区分，就下文提供的测算方法而言，显然这里指的是首屏展示时间，<em>另外，展示后到用户的第一次操作都会有一个至少1s的延时，毕竟用户手指按下的动作是会比较慢的，这个时间js的交互都能完成了，所以首屏展示时间更加重要–from dorsywang</em>)</p>
+<p>那么<strong>首屏时间</strong>怎么测量呢？</p>
+<p><strong>拿摄像机快速拍照测量的</strong>。这个答案可能有些吃惊，但是目前X5内核业务的相关开发人员的确就是采用这种方式测算的，通过高速相机不断拍照，然后辅助图像识别，判断首屏是否已经加载完成，最终再通过人工回归校对。<br>因为如果采用程序检测的话，基本上都会对过程本身造成一定的影响，所以没有采用这种方式。<br>当然，通过摄像+图像识别的这种方式也是有一定的弊端，比如说，假设首屏有一个图片，而图片的加载通常比较慢并且不影响css、js的加载，这个时候直接通过图片识别的话就可能会有一定的误判。</p>
+<p>知道了怎么测算，那么接下来分析影响这个指标的一些原因：</p>
+<ul>
+<li>资源阻塞内核线程</li>
+</ul>
+<p>我们知道，一般情况下，css和JS是阻塞页面的，当然也会对首屏时间造成影响。</p>
+<p>对这个问题，X5内核有关键子资源(阻塞资源)缓存，这里的关键资源，指的是内核经过统计判断得出的业务常用的关键子资源。</p>
+<p>当然，这个统计也可能缺乏一定的准确性，所以相关团队也正在推进这方面的内容规范化(比如写入Web App Manifest)</p>
+<ul>
+<li>中文Layout的时间过长</li>
+</ul>
+<p>这个问题我之前没有听说过，但是的确是这样子，实际上，浏览器在绘制文字的时候经历的过程非常的多，其中有一个环节是找到文字的宽度和高度(因为在英文状态下，每一个字符的宽度是不同的，所以每一个字符都要查找，但是英文总共只有26个字符)，而中文由于字符比较多，常用得就有6000多个，完整的更是有2万个以上，所以这个过程需要花费更多的时间。</p>
+<p>为了解决这个问题，X5内核考虑到中文文字几乎都是等宽等高的，所以这个过程对一个文字串来说只需要查询一次即可，实际上是节约了这个环节。</p>
+<ul>
+<li>首次渲染太慢</li>
+</ul>
+<p>为了解决这个问题，可以采用先绘制首屏的方式，这个也就是基于第一篇文章中讲到的浏览器的分块渲染机制</p>
+<ul>
+<li>一次解析内容过多</li>
+</ul>
+<p>采用首屏探测机制，优先解析首屏内容。</p>
+<p>另外，这里可以前端配合去做首屏优化：</p>
+<p>在首屏的位置插入首屏标签，内核解析到标签后立即终止解析并且排版上屏</p>
+<pre><code>&lt;meta name=‘x5-pagetype’ content=‘optpage&#39;&gt;
+</code></pre>
+<p>然后在首屏分界的地方：</p>
+<pre><code>&lt;first-screen/&gt;
+</code></pre>
+<p>有了这，可以专门去优化首屏标签之前的内容(这个标签前尽量展现耗时少和不需要阻塞解析的资源)。</p>
+<p>另外，X5内核也提供了主资源预拉取的接口，并且考虑到预拉取的cookie问题，还提供了preconnect预链接。<br><em>TIP:主资源中关联的子资源预拉取不用主动调用</em></p>
+<ul>
+<li>预先操作</li>
+</ul>
+<p>另外为了提供更加极致的优化，X5内核(QQ浏览器、手Q Webview)还提供了如下诸多预操作：</p>
+<ul>
+<li>在”黏贴并转到”之前就开始进行网络请求和预渲染</li>
+<li>经常访问的站点可以预解析DNS</li>
+<li>点击地址栏时进行搜索预连接</li>
+<li>点击链接时，先预链接，再做跳转。</li>
+<li>……</li>
+</ul>
+<h3 id="其他方式优化"><a href="#其他方式优化" class="headerlink" title="其他方式优化"></a>其他方式优化</h3><p>实际上上文主要讲了客户端方面的优化工作，实际上对于”云”、”管”两端，还是有很多优化工作可以讲的，但是由于这个和前端关系不是特别密切，我挑一部分讲一讲。这些在我们前端做个人项目的后台时候也可以参考</p>
+<h5 id="后台提速"><a href="#后台提速" class="headerlink" title="后台提速"></a>后台提速</h5><ul>
+<li>直接使用IP，节省dns的查询时间</li>
+<li>维持长连接</li>
+<li>HTTP1.1启用包头节省</li>
+<li>服务器缓存</li>
+<li>文本资源压缩传输GZIP(6)</li>
+<li>图片尺寸压缩、图片质量压缩、支持webp和sharpp&#x2F;hevc格式。</li>
+</ul>
+<h5 id="降低网络时延"><a href="#降低网络时延" class="headerlink" title="降低网络时延"></a>降低网络时延</h5><ul>
+<li>就快接入和就近接入</li>
+</ul>
+<p>在选择接入点的时候，如果采用就近接入，可以保持路由稳定，有利于负载均衡，并且实现简单，便于维护。但是也有一定的缺点：经验判断，准确度不够高 ； 无法自动切换路由。</p>
+<p>相比较而言，选择就快接入，是一个能够提效的方式。</p>
+<h5 id="内容防劫持"><a href="#内容防劫持" class="headerlink" title="内容防劫持"></a>内容防劫持</h5><p>运营商劫持对我们来说已经是不陌生的话题了，但是X5内核有一个比较新的防劫持手段，就是客户端和云加速服务器同时采用轻量级http加密，虽然这种方式普适性不强，但是的确可以解决腾讯自身业务的防劫持问题。</p>
+<h4 id="QUIC和http2"><a href="#QUIC和http2" class="headerlink" title="QUIC和http2"></a>QUIC和http2</h4><p>QUIC 基于UDP的协议通讯方式，有这些优势：</p>
+<ul>
+<li>延迟少</li>
+<li>前向纠错</li>
+<li>没有**线头阻塞[注1]**的多路复用</li>
+<li>通信通道的定义基于ID而不是IP+端口，使得切换网络后继续转发链接成为可能</li>
+</ul>
+<p>——————</p>
+<p>注1：线头阻塞：</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender2/P4.png"></p>
+<p>——————</p>
+<p>附1: 带宽和延迟对网页加载的影响：</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender2/X1.png"></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2017-08-27T09:37:22.000Z" title="2017/8/27 17:37:22">2017-08-27</time>发表</span><span class="level-item"><time dateTime="2021-07-25T07:58:54.000Z" title="2021/7/25 15:58:54">2021-07-25</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2017/08/27/%E6%B7%B1%E5%85%A5%E6%B5%8F%E8%A7%88%E5%99%A8web%E6%B8%B2%E6%9F%93%E4%B8%8E%E4%BC%98%E5%8C%96/">深入浏览器web渲染与优化</a></h1><div class="content"><blockquote>
+<p>本文主要分析和总结web内核渲染的相关内容，以及在这方面前端可以做的性能优化工作。</p>
+</blockquote>
+<p>文章主要分为以下几个部分：</p>
+<ul>
+<li>blink内核的渲染机制</li>
+<li>chrome内核架构变迁</li>
+<li>分层渲染</li>
+<li>动画 &amp; canvas &amp; WebGl</li>
+</ul>
+<p><em>这里的前两部分可能会有些枯燥，如果是前端工程师并且想立即获得实际项目的建议的，可以直接阅读第三部分和第四部分</em></p>
+<h3 id="blink内核的渲染机制"><a href="#blink内核的渲染机制" class="headerlink" title="blink内核的渲染机制"></a>blink内核的渲染机制</h3><p>blink内核是Google基于Webkit内核开发的新的分支，而实际上，目前Chrome已经采用了blink内核，所以，我们接下来的有关分析大多基于blink内核的浏览器(Chrome)，就不再详细指明，当然，部分内容也会涉及到腾讯研发的X5内核(X5内核基于安卓的WebView，目前已经在手机QQ等产品中使用，基于X5内核的项目累计有数亿UV，上百亿PV)。</p>
+<p>一个页面的显示，实际上主要经历了下面的四个流程：</p>
+<p>加载 &#x3D;&gt; 解析 &#x3D;&gt; 排版 &#x3D;&gt; 渲染</p>
+<p>实际上，这里的渲染主要是指排版之后到最后的上屏绘制(这个时候内容已经排版好了)，一部分前端工程师通常会把一部分的排版工作理解到“渲染”的流程中(也就是下图中全部工作)，实际上这个理解是不准确的。</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender/P6.PNG"></p>
+<p>目前，浏览器的渲染采用的是分块渲染的机制，所谓的分块渲染的机制，其实应该这么理解：</p>
+<ul>
+<li>浏览器首先把整个网页分成一些低分辨率的块，再把网页分成高分辨率的块，然后给这些块排列优先级。</li>
+<li>处在可视区域内的低分辨率块的优先级会比较高，会被较先绘制。</li>
+<li>之后浏览器会把高分辨率的块进行绘制，同样也是先绘制处于可视区域内的，再绘制可视区域外的(由近到远)。</li>
+</ul>
+<p>以上讲的这些策略可以使可以使得浏览器优先展示可视区域内的内容，并且先展示大致内容，再展示高精度内容(当然，由于这个过程比较快，实际上我们大多时候是感受不到的)。</p>
+<p>另外这里值得提醒的一点是，分块的优先级是会根据到可视区域的距离来决定的，所以有些横着的内容(比如banner的滚动实现，通常会设置横向超出屏幕来表示隐藏)，也是会按照到可视区域的距离来决定优先级的。</p>
+<p>绘制的过程，可以被硬件加速，这里硬件加速的主要手段主要是指：</p>
+<ul>
+<li>硬件加速合成上屏</li>
+<li>2D Canvas、Video的硬件加速</li>
+<li>GPU光栅化<ul>
+<li>GPU光栅化速度更快，内存和CPU的消耗更少</li>
+<li>目前还没有办法对包含复杂矢量绘制的页面进行GPU光栅化</li>
+<li>GPU光栅化是未来趋势</li>
+</ul>
+</li>
+</ul>
+<h3 id="chrome内核架构变迁"><a href="#chrome内核架构变迁" class="headerlink" title="chrome内核架构变迁"></a>chrome内核架构变迁</h3><p>在渲染架构上，chrome也是经历了诸多变迁，早期的Chrome是这样的：</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender/P1.PNG"></p>
+<p>早期的chrome的架构实际上有以下缺点：</p>
+<ul>
+<li>Renderer线程任务繁重</li>
+<li>无法实时响应缩放滑动操作</li>
+<li>脏区域与滑动重绘区域有冲突<ul>
+<li>这里举个场景，假设一个gif，这个时候如果用户滑动，滑动新的需要绘制的内容和gif下一帧内容就会产生绘制冲突</li>
+</ul>
+</li>
+</ul>
+<p>当然，经过一系列的发展，Chrome现在是这样的：</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender/P2.PNG"></p>
+<p>在安卓上，Android 4.4的 Blink内核架构如下(4.4之前并不支持OpenGL)</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender/P3.PNG"></p>
+<p>当然，这种架构也有如下缺点：</p>
+<ul>
+<li>UI线程过于繁忙</li>
+<li>无法支持Canvas的硬件加速以及WebGL</li>
+</ul>
+<p>所以，后期发展成了这样：</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender/P4.PNG"></p>
+<p>总结看来，内核发展的趋势是：</p>
+<ul>
+<li>多线程化(可以充分利用多核心CPU)</li>
+<li>硬件加速(可以利用GPU)</li>
+</ul>
+<h3 id="分层渲染"><a href="#分层渲染" class="headerlink" title="分层渲染"></a>分层渲染</h3><p>在阅读这一章之前，我建议读者先去亲自体验一下所谓的“分层渲染”：</p>
+<blockquote>
+<p>打开Chrome浏览器，打开控制台，找到”Layers”，如果没有，那么在控制台右上角更多的图标-&gt;More tools 找到”Layers”，然后随便找个网页打开即可</p>
+</blockquote>
+<p>网页的分层渲染流程主要是下面这样的：</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender/P7.PNG"></p>
+<p>(<em>注意：多个RenderObject可能又会对应一个或多个RenderLayer</em>)</p>
+<p>既然才用了分层渲染，那么肯定可以来分层处理，分层渲染有如下优点：</p>
+<ul>
+<li>减少不必要的重新绘制</li>
+<li>可以实现较为复杂的动画</li>
+<li>能够方便实现复杂的CSS样式</li>
+</ul>
+<p>当然，分层渲染是会很影响渲染效率的，可以有好的影响，使用不当也会有差的影响，我们需要合理的控制和使用分层：</p>
+<ul>
+<li>如果小豆腐块分层较多，页面整体的分层数量较大，会导致每帧渲染时遍历分层和计算分层位置耗时较长啊(比较典型的是腾讯网移动端首页)。</li>
+<li>如果可视区域内分层太多且需要绘制的面积太大，渲染性能非常差，甚至无法达到正常显示的地步(比如有一些全屏H5)。</li>
+<li>如果页面几乎没有分层，页面变化时候需要重绘的区域较多。元素内容无变化只有位置发生变化的时候，可以利用分层来避免重绘。</li>
+</ul>
+<p>那么，是什么原因可以导致分层呢？目前每一个浏览器或者不同版本的浏览器分层策略都是有些不同的(虽然总体差不太多)，但最常见的几个分层原因是：transform、Z-index；还有可以使用硬件加速的video、canvas；fixed元素；混合插件(flash等)。关于其他更具体的内容，可以见下文。</p>
+<pre><code>//注:Chrome中符合创建新层的情况：
+Layer has 3D or perspective transform CSS properties(有3D元素的属性)
+Layer is used by &lt;video&gt; element using accelerated video decoding(video标签并使用加速视频解码)
+Layer is used by a &lt;canvas&gt; element with a 3D context or accelerated 2D context(canvas元素并启用3D)
+Layer is used for a composited plugin(插件，比如flash)
+Layer uses a CSS animation for its opacity or uses an animated webkit transform(CSS动画)
+Layer uses accelerated CSS filters(CSS滤镜)
+Layer with a composited descendant has information that needs to be in the composited layer tree, such as a clip or reflection(有一个后代元素是独立的layer)
+Layer has a sibling with a lower z-index which has a compositing layer (in other words the layer is rendered on top of a composited layer)(元素的相邻元素是独立layer)
+</code></pre>
+<p>最后，我们总结一下如何合理的设计分层：分层总的原则是，减少渲染重绘面积与减少分层个数和分层总面积：</p>
+<ul>
+<li>相对位置会发生变化的元素需要分层(比如banner图、滚动条)</li>
+<li>元素内容更新比较频繁的需要分层(比如页面中夹杂的倒计时等)</li>
+<li>较长较大的页面注意总的分层个数</li>
+<li>避免某一块区域分层过多，面积过大</li>
+</ul>
+<p>(<em>如果你给一个元素添加上了-webkit-transform: translateZ(0);或者 -webkit-transform: translate3d(0,0,0);属性，那么你就等于告诉了浏览器用GPU来渲染该层，与一般的CPU渲染相比，提升了速度和性能。(我很确定这么做会在Chrome中启用了硬件加速，但在其他平台不做保证。就我得到的资料而言，在大多数浏览器比如Firefox、Safari也是适用的)</em>)</p>
+<p>另外值得一提的是，X5对分层方面做了一定的优化工作，当其检测到分层过多可能会出现显示问题的时候会进行层合并，牺牲显示性能换取显示正确性。</p>
+<p>最后再提出一个小问题：</p>
+<p>以下哪种渲染方式是最优的呢？</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender/P8.PNG"></p>
+<p>这里实际上后者虽然在分层上满足总体原则，但是之前讲到浏览器的分块渲染机制，是按照到可视区域的距离排序的，考虑到这个因素，实际上后者这种方式可能会对分块渲染造成一定的困扰，并且也不是最优的。</p>
+<h3 id="动画-amp-canvas-amp-WebGl"><a href="#动画-amp-canvas-amp-WebGl" class="headerlink" title="动画 &amp; canvas &amp; WebGl"></a>动画 &amp; canvas &amp; WebGl</h3><p>讲最后一部分开始，首先抛出一个问题：CSS动画 or JS动画?</p>
+<p>对内核来说，实际上就是Renderer线程动画还是Compositor线程动画，二者实际上过程如下：</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender/P9.PNG"></p>
+<p>所以我们可以看出，Renderer线程是比Compositor线程动画性能差的(在中低端尤其明显)</p>
+<p>另外，无论是JS动画还是CSS动画，动画过程中的重绘以及样式变化都会拖慢动画执行以及引起卡顿<br>以下是一些不会触发重绘或者排版的CSS动画属性：</p>
+<ul>
+<li>cursor</li>
+<li>font-variant</li>
+<li>opacity</li>
+<li>orphans</li>
+<li>perspective</li>
+<li>perspecti-origin</li>
+<li>pointer-events</li>
+<li>transform</li>
+<li>transform-style</li>
+<li>widows</li>
+</ul>
+<p>想要了解更多内容，可以参考<a target="_blank" rel="noopener" href="https://csstriggers.com/">这里</a></p>
+<p>这方面最终的建议参考如下：</p>
+<ul>
+<li>尽量使用不会引起重绘的CSS属性动画，例如transform、opacity等</li>
+<li>动画一定要避免触发大量元素重新排版或者大面积重绘</li>
+<li>在有动画执行时，避免其他动画不相关因素引起排版和重绘</li>
+</ul>
+<h4 id="requestAnimationFrame"><a href="#requestAnimationFrame" class="headerlink" title="requestAnimationFrame"></a>requestAnimationFrame</h4><p>另外当我们在使用动画的时候，为了避免出现掉帧的情况，最好采用requestAnimationFrame这个API，这个API迎合浏览器的流程，并且能够保证在下一帧绘制的时候上一帧一定出现了：</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender/P11.PNG"></p>
+<h3 id="3D-canvas"><a href="#3D-canvas" class="headerlink" title="3D canvas"></a>3D canvas</h3><p>还有值得注意的是，有的时候我们需要涉及大量元素的动画(比如雪花飘落、多个不规则图形变化等)，这个时候如果用CSS动画，Animation动画的元素很多。，导致分层个数非常多，浏览器每帧都需要遍历计算所有分层，导致比较耗时、</p>
+<p>这个时候该怎么办呢？</p>
+<p>2D canvas上场。 </p>
+<p>和CSS动画相比，2D canvas的优点是这样的：</p>
+<ul>
+<li>硬件加速渲染</li>
+<li>渲染流程更优</li>
+</ul>
+<p>其渲染流程如下：</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender/P10.PNG"></p>
+<p>实际上以上流程比较耗时的是JS Call这一部分，执行opengl的这一部分还是挺快的。</p>
+<p>HTML 2D canvas 主要绘制如下三种元素：</p>
+<ul>
+<li>图片</li>
+<li>文字</li>
+<li>矢量</li>
+</ul>
+<p>这个过程可以采用硬件加速，硬件加速图片绘制的主要流程：</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender/P12.PNG"></p>
+<p>硬件加速文字绘制的主要流程：</p>
+<p><img src="https://www.10000h.top/images/data_img/webRender/P13.PNG"></p>
+<p>但对于矢量绘制而言，简单的图形，比如点、直线等可以直接使用OpenGL渲染，复杂的图形，如曲线等，无法采用OpenGL绘制。</p>
+<p>对于绘制效率来说，2D Canvas对绘制图片效率较高，绘制文字和矢量效率较低(<strong>所以建议是，我们如果能使用贴图就尽量使用贴图了</strong>)</p>
+<p>还有，有的时候我们需要先绘制到离屏canvas上面，然后再上屏，这个可以充分利用缓存。</p>
+<h3 id="3D-canvas-WebGL"><a href="#3D-canvas-WebGL" class="headerlink" title="3D canvas(WebGL)"></a>3D canvas(WebGL)</h3><p>目前，3D canvas(WebGL)的应用也越来越多，对于这类应用，现在已经有了不少已经成型的庫:</p>
+<ul>
+<li>通用引擎：threeJS、Pixi</li>
+<li>VR视频的专业引擎：krpano、UtoVR</li>
+<li>H5游戏引擎：Egret、Layabox、Cocos</li>
+</ul>
+<p>WebGL虽然包含Web，但本身对前端的要求最低，但是对OpenGL、数学相关的知识要求较高，所以如果前端工程师没有一定的基础，还是采用现在的流行庫。</p>
+<p>X5内核对于WebGl进行了性能上和耗电上的优化，并且也对兼容性错误上报和修复做了一定的工作。</p>
+<hr>
+<p>本文参考腾讯内部讲座资料整理而成，并融入一部分笔者的补充，谢绝任何形式的转载。</p>
+<p>其他优质好文：</p>
+<p><a target="_blank" rel="noopener" href="http://qingbob.com/javascript-high-performance-animation-and-page-rendering/">Javascript高性能动画与页面渲染</a></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2017-01-10T17:33:26.000Z" title="2017/1/11 01:33:26">2017-01-11</time>发表</span><span class="level-item"><time dateTime="2021-08-21T04:29:20.867Z" title="2021/8/21 12:29:20">2021-08-21</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2017/01/11/JS%E7%9A%84%E9%9D%99%E6%80%81%E4%BD%9C%E7%94%A8%E5%9F%9F%E3%80%81%E5%AD%90%E7%A8%8B%E5%BA%8F%E5%BC%95%E7%94%A8%E7%8E%AF%E5%A2%83%E4%B8%8E%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92%E7%B1%BB%E5%9E%8B/">JS的静态作用域</a></h1><div class="content"><h4 id="静态作用域"><a href="#静态作用域" class="headerlink" title="静态作用域"></a>静态作用域</h4><p>我们先来看下面这个小程序：</p>
+<pre><code> //JS版本：
+ function sub1() &#123;
+        var x;
+        function sub2() &#123; alert(x); &#125;
+        function sub3() &#123; var x; x=3; sub4(sub2); &#125;
+        function sub4(subx) &#123; var x; x=4; subx(); &#125;
+        x = 1;
+        sub3();
+    &#125;
+
+    sub1();
+    
+ #Python版本
+def sub1():
+    def sub2():
+        print x
+    def sub3():
+        x=3
+        sub4(sub2)
+    def sub4(subx):
+        x=4
+        subx()
+    x = 1
+    sub3()
+
+sub1()   
+</code></pre>
+<p>不用亲自运行，实际上输出结果都是1，这可能不难猜到，但是需要解释一番，鉴于Python和JS在这一点上表现的类似，我就以JS来分析。</p>
+<p>我们知道，JS是静态作用域的，所谓静态作用域就是作用域在编译时确定，所以sub2中引用的x，实际上和x&#x3D;3以及x&#x3D;4的x没有任何关系，指向第二行的var x;</p>
+<h4 id="子程序的引用环境"><a href="#子程序的引用环境" class="headerlink" title="子程序的引用环境"></a>子程序的引用环境</h4><p>实际上这里面还有一个子程序(注：子程序和函数不是很一样，但我们可以认为子程序包括函数，也约等于函数)的概念，sub2、sub3、sub4都是子程序，对于允许嵌套子程序的语言，应该如何使用执行传递的子程序的引用环境？</p>
+<ul>
+<li>浅绑定：如果这样的话，应该输出4，这对动态作用域的语言来说比较自然。</li>
+<li>深绑定：也就是输出1的情况，这对静态作用域的语言来说比较自然。</li>
+<li>Ad hoc binding: 这是第三种，将子程序作为实际参数传递到调用语句的环境。</li>
+</ul>
+<h4 id="参数传递类型"><a href="#参数传递类型" class="headerlink" title="参数传递类型"></a>参数传递类型</h4><p>参数传递类型我们普遍认为有按值传递和按引用传递两种，实际上不止。</p>
+<p>下面是一张图：</p>
+<p><img src="https://www.10000h.top/images/call.png"></p>
+<p>这张图对应的第一种传递方式，叫做Pass-by-Value(In mode)，第二种是Pass-by-Result(Out mode)，第三种是Pass-by-Value-Result(Inout mode),图上说的比较明白，实际上如果有result就是说明最后把结果再赋值给参数。</p>
+<p>第二种和第三种编程语言用的少，原因如下：</p>
+<blockquote>
+<p>Potential problem: sub(p1, p1)<br>With the two corresponding formal parameters having different names, whichever formal parameter is copied back last will represent current value of p1</p>
+</blockquote>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2016-12-28T14:28:59.000Z" title="2016/12/28 22:28:59">2016-12-28</time>发表</span><span class="level-item"><time dateTime="2021-08-20T11:07:55.625Z" title="2021/8/20 19:07:55">2021-08-20</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/IntelliJ-IDEA/">IntelliJ IDEA</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2016/12/28/IntelliJ-IDEA-plugins-develop/">IntelliJ IDEA 插件开发详细视频教程</a></h1><div class="content"><span id="more"></span>
+
+<p><img src="http://img.youmeek.com/2016/idea-plugins-develop.jpg" alt="IntelliJ IDEA 插件开发详细视频教程"></p>
+<hr>
+<h2 id="重要说明"><a href="#重要说明" class="headerlink" title="重要说明"></a>重要说明</h2><ul>
+<li>IntelliJ IDEA 的插件理论上是同时也适用于 JetBrains 公司下的其他大多数 IDE 的，因为这些 IDE 都是基于 IntelliJ IDEA 的基础平台进行开发的，请牢记这一点。</li>
+</ul>
+<h2 id="教程视频下载和介绍"><a href="#教程视频下载和介绍" class="headerlink" title="教程视频下载和介绍"></a>教程视频下载和介绍</h2><ul>
+<li>视频章节结构：<ul>
+<li><code>01_AS插件是什么_和IntellijIDEA关系</code></li>
+<li><code>02_常见的AS开发插件</code></li>
+<li><code>03_创建第一个Plugin插件</code></li>
+<li><code>04_翻译插件需求</code></li>
+<li><code>05_翻译开发过程整理</code></li>
+<li><code>06_获取用户选中的文本</code></li>
+<li><code>07_翻译插件显示气泡</code></li>
+<li><code>08_把插件上传到公共仓库</code></li>
+</ul>
+</li>
+<li>视频教程下载地址<ul>
+<li>原下载地址：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1nv79ptZ">http://pan.baidu.com/s/1nv79ptZ</a></li>
+<li>备用下载地址：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1eSoQHoA">http://pan.baidu.com/s/1eSoQHoA</a>，密码：gqo2，如果哪天下载地址失效，请在本 Github 项目发 Issues。</li>
+</ul>
+</li>
+<li>这套教程视频不是本人录制的，所以需要特别强调下，本套视频来自：<a target="_blank" rel="noopener" href="http://open.itcast.cn/java/14-539.html">传智播客公开课：Android Studio插件开发</a>，在此特别感谢别人的付出（鞠躬）。</li>
+</ul>
+<h2 id="其他图文资料介绍"><a href="#其他图文资料介绍" class="headerlink" title="其他图文资料介绍"></a>其他图文资料介绍</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/dc_726/article/details/14139155">http://blog.csdn.net/dc_726/article/details/14139155</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.mobile-open.com/2016/973070.html">http://www.mobile-open.com/2016/973070.html</a></li>
+</ul>
+<h2 id="插件开发说明"><a href="#插件开发说明" class="headerlink" title="插件开发说明"></a>插件开发说明</h2><ul>
+<li>如果你 Java 基础还算过关，看完这套教程简单的插件基本不会有任何问题的。</li>
+<li>IntelliJ IDEA 本身平台就自带了很多依赖包，如果能尽量用 IntelliJ IDEA 平台的依赖包就尽量别自己添加 jar，减少插件的容量。</li>
+</ul>
+<h2 id="IntelliJ-IDEA-官网插件开发相关资料"><a href="#IntelliJ-IDEA-官网插件开发相关资料" class="headerlink" title="IntelliJ IDEA 官网插件开发相关资料"></a>IntelliJ IDEA 官网插件开发相关资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/?idea">插件提交地址</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.jetbrains.org/intellij/sdk/docs/">官网插件开发指导文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/JetBrains/intellij-community">IntelliJ IDEA Community 源码</a></li>
+</ul>
+<h2 id="一些开源的-IntelliJ-IDEA-插件介绍"><a href="#一些开源的-IntelliJ-IDEA-插件介绍" class="headerlink" title="一些开源的 IntelliJ IDEA 插件介绍"></a>一些开源的 IntelliJ IDEA 插件介绍</h2><ul>
+<li>阅读别人插件有助于你的开发，希望你有一天能开发一个好用的插件。</li>
+<li>IntelliJ IDEA 的大量插件都是开源的，如果你有遇到你喜欢的插件，可以到 JetBrains 官网上找到这个插件的主页，很有可能在介绍中就有 Github 地址。感谢 Github 的存在。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/judasn/ChineseTypography-IDEA-Plugin">我写的插件：ChineseTypography，也是一个最简单的插件</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Skykai521/ECTranslation">https://github.com/Skykai521/ECTranslation</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/avast/android-butterknife-zelezny">https://github.com/avast/android-butterknife-zelezny</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/zzz40500/GsonFormat">https://github.com/zzz40500/GsonFormat</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/kstenschke/shifter-plugin">https://github.com/kstenschke/shifter-plugin</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/jansorg/SmarterEditor">https://github.com/jansorg/SmarterEditor</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/jansorg/BashSupport">https://github.com/jansorg/BashSupport</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/hsz/idea-gitignore">https://github.com/hsz/idea-gitignore</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/JetBrains/ideavim">https://github.com/JetBrains/ideavim</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/krasa/EclipseCodeFormatter">https://github.com/krasa/EclipseCodeFormatter</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/krasa/StringManipulation">https://github.com/krasa/StringManipulation</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/krasa/GrepConsole">https://github.com/krasa/GrepConsole</a></li>
+</ul>
+<hr>
+<ul>
+<li><strong>我的公众号：</strong></li>
+<li><img src="http://img.youmeek.com/2016/MyWeiXin2.jpg" alt="YouMeek开展捐赠陪聊服务（希望对 IntelliJ IDEA 新人有所帮助）"></li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2016-12-01T14:23:10.000Z" title="2016/12/1 22:23:10">2016-12-01</time>发表</span><span class="level-item"><time dateTime="2021-08-20T11:08:48.800Z" title="2021/8/20 19:08:48">2021-08-20</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/Mac/">Mac</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2016/12/01/Mac-peripheral/">一个Java程序员眼中的Mac OS（系列八：外设/配件介绍）</a></h1><div class="content"><span id="more"></span>
+
+<p><img src="http://img.youmeek.com/2016/Mac-peripheral.jpg" alt="外设/配件介绍"></p>
+<h2 id="本文初衷"><a href="#本文初衷" class="headerlink" title="本文初衷"></a>本文初衷</h2><ul>
+<li>整理自己脑袋中、收藏中的那些资料，来一次清空，让自己重新开始。</li>
+<li>帮助 Mac 后来者，减少他&#x2F;她入门成本</li>
+</ul>
+<h2 id="先总结"><a href="#先总结" class="headerlink" title="先总结"></a>先总结</h2><ul>
+<li>量力而行，确认你自己是必须要这个东西再决定购买。</li>
+<li>贵，真贵，特别贵</li>
+</ul>
+<h2 id="各类外设-x2F-配件"><a href="#各类外设-x2F-配件" class="headerlink" title="各类外设&#x2F;配件"></a>各类外设&#x2F;配件</h2><ul>
+<li>官网配件地址：<a target="_blank" rel="noopener" href="http://www.apple.com/cn/shop/mac/mac-accessories">http://www.apple.com/cn/shop/mac/mac-accessories</a></li>
+</ul>
+<h3 id="各类转接线"><a href="#各类转接线" class="headerlink" title="各类转接线"></a>各类转接线</h3><ul>
+<li>基础内容须知：<ul>
+<li>Thunderbolt 3，USB-C，Type-C，这三个东西你可以理解为都是同一个样子的接口，别管它那么多叫法。</li>
+<li>2016 款的 MacBook Pro 的接口是：Thunderbolt 3 (USB-C) </li>
+<li>2015 款的 MacBook Pro 的接口是：Thunderbolt 2</li>
+</ul>
+</li>
+<li>我原本整理了一堆的配件出来的，但是整着整着就不爽了，苹果实在够坑爹的，在迭代过程中各种完全不同的标准，真是让人不开心，这些配件还贵。大家自己看官网的那些线缆配件吧，左侧有筛选项的。</li>
+<li><a target="_blank" rel="noopener" href="http://www.apple.com/cn/shop/mac/mac-accessories/power-cables">官网：电源与线缆</a></li>
+<li>我这边的 2015 款 MacBook Pro 电源适配器，真贵：<a target="_blank" rel="noopener" href="http://www.apple.com/cn/shop/product/MD506CH/A/apple-85w-magsafe-2-power-adapter-for-macbook-pro-with-retina-display?fnode=8b&fs=f=15inchmacbookproretinadisplay&fh=4595%252B2c15">Apple 85W MagSafe 2 电源适配器（适用于配备 Retina 显示屏的 MacBook Pro）</a></li>
+</ul>
+<h3 id="触摸板"><a href="#触摸板" class="headerlink" title="触摸板"></a>触摸板</h3><ul>
+<li>MacBook 笔记本的触摸板确实比一般笔记本好用很多，所以台式机有需要用这个的倒是也可以建议买个。</li>
+<li><a target="_blank" rel="noopener" href="http://search.jd.com/Search?keyword=Magic%20Trackpad&enc=utf-8&cu=true&utm_source=ads.union.jd.com&utm_medium=tuiguang&utm_campaign=t_248690136_&utm_term=8167621f00484d24a236f6de24a4185c-p_276666007&abt=3">Magic Trackpad</a></li>
+</ul>
+<h3 id="鼠标"><a href="#鼠标" class="headerlink" title="鼠标"></a>鼠标</h3><ul>
+<li>虽然没有用过苹果这个鼠标，但是就一个字：贵，建议还是用普通的蓝牙鼠标吧。</li>
+<li><a target="_blank" rel="noopener" href="http://search.jd.com/Search?keyword=Magic%20Mouse&enc=utf-8&cu=true&utm_source=ads.union.jd.com&utm_medium=tuiguang&utm_campaign=t_248690136_&utm_term=189ee5f22e79498194262236daa73b29-p_276666007&abt=3">Magic Mouse</a></li>
+<li><a target="_blank" rel="noopener" href="http://search.jd.com/Search?keyword=%E8%93%9D%E7%89%99%E9%BC%A0%E6%A0%87&enc=utf-8&cu=true&utm_source=ads.union.jd.com&utm_medium=tuiguang&utm_campaign=t_248690136_&utm_term=46099470adfa454c8e3aa74e66fe1bab-p_276666007&abt=3">蓝牙鼠标</a></li>
+</ul>
+<h3 id="键盘"><a href="#键盘" class="headerlink" title="键盘"></a>键盘</h3><ul>
+<li>默认的键盘还可以，但是如果长久用，并且不经常带出去，可以考虑买个我上次主力推荐的：ikbc f 时光机系列</li>
+<li><a target="_blank" rel="noopener" href="http://www.youmeek.com/ikbc-f-rgb/">@YouMeek主推的机械键盘ikbc f 时光机系列</a></li>
+</ul>
+<h3 id="硬盘盒"><a href="#硬盘盒" class="headerlink" title="硬盘盒"></a>硬盘盒</h3><ul>
+<li>我主推这个牌子：奥睿科</li>
+<li><a target="_blank" rel="noopener" href="http://search.jd.com/Search?keyword=%E5%A5%A5%E7%9D%BF%E7%A7%91%20%E7%A1%AC%E7%9B%98%E7%9B%92&enc=utf-8&cu=true&utm_source=ads.union.jd.com&utm_medium=tuiguang&utm_campaign=t_248690136_&utm_term=ad5959dcedb14cdc833cb8c24b9d20f1-p_276666007&abt=3">奥睿科 硬盘盒</a></li>
+</ul>
+<h3 id="外置光驱"><a href="#外置光驱" class="headerlink" title="外置光驱"></a>外置光驱</h3><ul>
+<li>光驱这东西还是早点淘汰吧，确实有点烦人了在如今这个时代。</li>
+<li><a target="_blank" rel="noopener" href="http://search.jd.com/Search?keyword=usb%20%E5%A4%96%E7%BD%AE%E5%85%89%E9%A9%B1&enc=utf-8&cu=true&utm_source=ads.union.jd.com&utm_medium=tuiguang&utm_campaign=t_248690136_&utm_term=085e614cfc774270a8d72fd79147dc34-p_276666007&abt=3">USB 外置光驱</a></li>
+</ul>
+<h3 id="散热器"><a href="#散热器" class="headerlink" title="散热器"></a>散热器</h3><ul>
+<li>MacBook Pro 在运行大型软件确实会发热很快，底部会很烫，所以有需要的人还是可以考虑一下散热器的。</li>
+<li><a target="_blank" rel="noopener" href="http://search.jd.com/Search?keyword=mStand&enc=utf-8&cu=true&utm_source=ads.union.jd.com&utm_medium=tuiguang&utm_campaign=t_248690136_&utm_term=0986b3c0b8c84c9ca3188724aa08fbbc-p_276666007&abt=3">mStand 支架</a></li>
+</ul>
+<h3 id="内胆包"><a href="#内胆包" class="headerlink" title="内胆包"></a>内胆包</h3><ul>
+<li>如果你经常背着笔记本出门，那最好买一个内胆包，起到一个防震，防碰撞的作用。</li>
+<li><a target="_blank" rel="noopener" href="http://search.jd.com/Search?keyword=Incase%20%E5%86%85%E8%83%86%E5%8C%85&enc=utf-8&cu=true&utm_source=ads.union.jd.com&utm_medium=tuiguang&utm_campaign=t_248690136_&utm_term=016c77e864e34333acf7d0163c3fc600-p_276666007&abt=3">Incase 内胆包</a></li>
+<li><a target="_blank" rel="noopener" href="http://search.jd.com/Search?keyword=mac%20%E5%86%85%E8%83%86%E5%8C%85&enc=utf-8&cu=true&utm_source=ads.union.jd.com&utm_medium=tuiguang&utm_campaign=t_248690136_&utm_term=aaa43598a2ae48328bd4cd5920d9b719-p_276666007&abt=3">Mac 内胆包</a></li>
+</ul>
+<h3 id="USB-扩展"><a href="#USB-扩展" class="headerlink" title="USB 扩展"></a>USB 扩展</h3><ul>
+<li>先看下你笔记本是不是有 USB-C 的接口。</li>
+<li><a target="_blank" rel="noopener" href="http://search.jd.com/Search?keyword=USB%20%E6%89%A9%E5%B1%95&enc=utf-8&qrst=1&rt=1&stop=1&vt=2&psort=3&click=0">USB 扩展</a></li>
+<li><a target="_blank" rel="noopener" href="http://search.jd.com/Search?keyword=USB%20%E6%89%A9%E5%B1%95&enc=utf-8&qrst=1&rt=1&stop=1&vt=2&psort=3&click=0">Type-c 扩展</a></li>
+</ul>
+<h2 id="资料整理"><a href="#资料整理" class="headerlink" title="资料整理"></a>资料整理</h2><ul>
+<li>来自 Google 过程中的资料（真心感谢作者）：<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/hzlzh/Best-App/blob/master/Best-Accessories-Apple.md">https://github.com/hzlzh/Best-App/blob/master/Best-Accessories-Apple.md</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><ul>
+<li>Apple 是个坑爹货。</li>
+<li><img src="http://img.youmeek.com/YouMeek-WX.jpg" alt="YouMeek 公众号"></li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2016-11-30T15:21:40.000Z" title="2016/11/30 23:21:40">2016-11-30</time>发表</span><span class="level-item"><time dateTime="2021-08-20T11:08:34.309Z" title="2021/8/20 19:08:34">2021-08-20</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/Mac/">Mac</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2016/11/30/Mac-Java/">一个Java程序员眼中的Mac OS（系列七：Java 开发环境）</a></h1><div class="content"><span id="more"></span>
+
+<p><img src="http://img.youmeek.com/2016/Mac-Java.gif" alt="Java 开发环境"></p>
+<h2 id="本文初衷"><a href="#本文初衷" class="headerlink" title="本文初衷"></a>本文初衷</h2><ul>
+<li>整理自己脑袋中、收藏中的那些资料，来一次清空，让自己重新开始。</li>
+<li>帮助 Mac 后来者，减少他&#x2F;她入门成本</li>
+<li>如果你不是 Java 开发者，本章对你没啥太大意义。</li>
+</ul>
+<h2 id="先总结"><a href="#先总结" class="headerlink" title="先总结"></a>先总结</h2><ul>
+<li>本篇文章没有细到一步一步截图的地步，需要有 Windows 下 Java 开发经验，以及 Linux 部署 Java 环境为基础。</li>
+<li>其实 Java 相关的开发环境，不管是 Windows、Mac、Linux 其实本质都一样的，都是改路径，改系统变量，如果你还用 IntelliJ IDEA 这种 IDE，有些压根就不需要系统变量了。</li>
+<li>各系统的路径差异说明：<ul>
+<li>Windows 的路径结构是这样的：<code>D:\360Downloads\HotFix</code></li>
+<li>Mac&#x2F;Linux 的路径结构是这样的：<code>/usr/local</code></li>
+<li>没用过 Unix 系统的人会很不爽这种路径结构，其实嘛我觉得是 Windows 那种路径结构不好。</li>
+</ul>
+</li>
+<li>系统变量的更改位置，Mac&#x2F;Linux 一般都是习惯在终端改，Windows 一般在 GUI，但是本质 Windows 也是可以在 cmd 改的，只是 Windows 的终端真的是太差劲了。</li>
+</ul>
+<h2 id="JDK"><a href="#JDK" class="headerlink" title="JDK"></a>JDK</h2><ul>
+<li>官网下载 JDK7：<a target="_blank" rel="noopener" href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html</a></li>
+<li>官网下载 JDK8：<a target="_blank" rel="noopener" href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html</a></li>
+<li>Java 开发环境理论上一般都是这个优先安装的。</li>
+<li>安装过程和 Windows 没啥区别，都是下一步下一步，只是比 Windows 简单，连安装路径都不需要改而已，所以这里不截图了。</li>
+<li>我这边不管是 Windows、Mac、Linux，只要开发环境，JAVA_HOME 我都是 JDK8，同时还装有 JDK6、JDK7，在使用 IntelliJ IDEA 的时候，我可以同时使用三个版本的 JDK。</li>
+<li>JDK 的环境变量是要添加的，我这边可以贴一下。</li>
+<li>在本系列前面的章节中我已经说明了，我这边是 Zsh 环境，所以我需要编辑这个配置文件：<code>vim ~/.zshrc</code></li>
+<li>如果你是 bash，你需要编辑的是这个：<code>vim ~/.bash_profile</code></li>
+<li>修改后之后刷新配置文件我是：<code>source ~/.zshrc</code></li>
+</ul>
+<pre><code class="bash"># JDK 1.8
+JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home
+JRE_HOME=$JAVA_HOME/jre
+PATH=$PATH:$JAVA_HOME/bin
+CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+export JAVA_HOME
+export JRE_HOME
+export PATH
+export CLASSPATH
+</code></pre>
+<h2 id="IntelliJ-IDEA"><a href="#IntelliJ-IDEA" class="headerlink" title="IntelliJ IDEA"></a>IntelliJ IDEA</h2><ul>
+<li>官网下载：<a target="_blank" rel="noopener" href="http://www.jetbrains.com/idea/">http://www.jetbrains.com/idea/</a></li>
+<li>最优秀的 IDE，没有之一，我所有的生产力硬件设备都是为了支持它而购买的，所以内存一定要够大。</li>
+<li>下面的 Maven、Tomcat 都是依赖于 IntelliJ IDEA 运行的，所以本质上我只要搞定 IntelliJ IDEA，其他的 Java 开发环境 IntelliJ IDEA 都会帮我们解决。</li>
+<li>关于 IntelliJ IDEA Mac 下安装&#x2F;配置等相关，请看我写的这个系列，里面有详细说明：<a target="_blank" rel="noopener" href="https://github.com/judasn/IntelliJ-IDEA-Tutorial">IntelliJ IDEA 简体中文专题教程</a></li>
+<li>在 IntelliJ IDEA 有几个特别的地方我单独拿出来讲讲吧：<ul>
+<li>如果启动 Tomcat 的时候报：<code>Permission denied</code>，你则可以：打开终端，进入 Tomcat\bin 目录，然后执行：<code>chmod 777 *.sh</code></li>
+<li>如果启动 Tomcat 之后，控制台乱码了，并且你确认你在 IntelliJ IDEA 的 Preferences 中设置的控制台字体是支持中文的，那你可以尝试下在 Tomcat VM 参数上加上：<code>-Dfile.encoding=UTF-8</code></li>
+<li>Git 的路径配置：<code>Preferences -- Version Control -- Git -- Path to Git executable</code> 的值是：<code>/usr/local/git/bin/git</code></li>
+<li>如果你已经看过前面的：<a target="_blank" rel="noopener" href="http://code.youmeek.com/2016/11/29/2016/11/Mac-iTerm2/">一个Java程序员眼中的Mac OS（系列六：终端方案iTerm2 + Zsh）</a>，假设你也已经安装了 zsh<ul>
+<li>那你的 IntelliJ IDEA 终端路径可以改成 zsh 的，配置方法在 <code>Preferences -- Tools -- Terminal -- Shell path</code> 的值改为是：<code>/bin/zsh</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>IntelliJ IDEA 在 Mac 下的配置文件保存路径<ul>
+<li>下面内容中：<code>XXXXXX</code>，表示 IntelliJ IDEA 的版本号，IntelliJ IDEA 的配置目录是跟版本号有关系的。</li>
+<li><code>/Users/你的用户名/Library/Application Support/IntelliJIdeaXXXXXX</code>，用于保存安装的插件</li>
+<li><code>/Users/你的用户名/Library/Caches/IntelliJIdeaXXXXXX</code>，用于保存缓存、日志、以及本地的版本控制信息（local history 这个功能）</li>
+<li><code>/Users/你的用户名/Library/Preferences/IntelliJIdeaXXXXXX</code>，用于保存你的个人配置、授权文件，等价于 Windows 下的 <code>config</code> 目录</li>
+</ul>
+</li>
+</ul>
+<h2 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h2><ul>
+<li>官网下载：<a target="_blank" rel="noopener" href="http://maven.apache.org/download.cgi">http://maven.apache.org/download.cgi</a></li>
+<li>Maven 是绿色版的，任何系统都适用。</li>
+<li>安装方式和 Windows、Linux 没啥本质区别，都是把 zip 文件夹解压，然后新增几个系统变量，修改 Maven 配置文件参数。</li>
+<li>如果你不懂 Maven 相关知识可以查看我过去写的这篇文章：<a target="_blank" rel="noopener" href="http://code.youmeek.com/2016/03/09/2016/03/Maven/">构建工具-Maven-相关知识-整理专题</a></li>
+<li>我是把 Maven 解压后，直接把 Windows 的 settings.xml 复制过来，修改下该文件本地仓库的路径，其他没啥可以改的了。</li>
+<li>然后本地仓库的那些依赖包是直接从 Windows 下拷贝过来的，这个是任何系统下都兼容的，不需要额外处理。</li>
+<li>最后再用 IntelliJ IDEA 对 Maven 的配置路径重新做了修改。</li>
+<li>以上这些点都需要你对 Maven 和 IntelliJ IDEA 有了解，对于这两个东西我也在本文章都贴了相关的文章链接，我这里不多说了，学习总是需要花时间的。</li>
+<li>Maven 的环境变量是要添加的，我这边可以贴一下：</li>
+</ul>
+<pre><code class="bash">MAVEN_HOME=/Users/youmeek/my_software/work_software/maven3.3.9
+PATH=$PATH:$MAVEN_HOME/bin
+export MAVEN_HOME
+export PATH
+</code></pre>
+<h2 id="Tomcat"><a href="#Tomcat" class="headerlink" title="Tomcat"></a>Tomcat</h2><ul>
+<li>官网下载 Tomcat 7：<a target="_blank" rel="noopener" href="http://tomcat.apache.org/download-70.cgi">http://tomcat.apache.org/download-70.cgi</a></li>
+<li>官网下载 Tomcat 8：<a target="_blank" rel="noopener" href="http://tomcat.apache.org/download-80.cgi">http://tomcat.apache.org/download-80.cgi</a></li>
+<li>Tomcat 在 Windows 下虽然有安装版本，但是一般开发环境我们都不会下载安装版本的，所以假设你也是下载 zip 的压缩版本，这个版本任何系统都是通用的。</li>
+<li>因为是开发环境，所以不需要配置 CATALINA_HOME 变量，直接用 IntelliJ IDEA 指向 Tomcat 的解压目录即可，如果不懂，还是看我本文上面贴的 IntelliJ IDEA 系列教程地址。</li>
+</ul>
+<h2 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h2><ul>
+<li>官网下载 MySQL 5.6：<a target="_blank" rel="noopener" href="http://dev.mysql.com/downloads/mysql/5.6.html#downloads">http://dev.mysql.com/downloads/mysql/5.6.html#downloads</a></li>
+<li>官网下载 MySQL 5.7：<a target="_blank" rel="noopener" href="http://dev.mysql.com/downloads/mysql/">http://dev.mysql.com/downloads/mysql/</a></li>
+<li>MySQL 官网提供的 Mac 系统的安装包，是下一步下一步安装类型的，没啥难度，大家自己试一下。</li>
+<li>有几个点需要注意的是：<ul>
+<li>如何重置 root 密码：<ul>
+<li>打开：<code>系统偏好设置 -- 底部的 MySQL -- 点击：Stop MySQL Server</code>，根据提示输入你的 Mac 用户密码。</li>
+<li>打开终端，输入命令：<code>sudo /usr/local/mysql/bin/mysqld_safe --skip-grant-tables</code>，根据提示输入你的 Mac 用户密码，然后这个终端就这样放着，别动</li>
+<li>再打开一个新的终端，输入命令：<code>sudo /usr/local/mysql/bin/mysql -u root</code>，根据提示输入你的 Mac 用户密码，密码如果无误的话，此时就进入：<code>mysql &gt;</code> 这种状态下。</li>
+<li>在：<code>mysql &gt;</code> 这种状态下输入命令：<code>UPDATE user SET authentication_string=PASSWORD(&#39;123456&#39;) WHERE User=&#39;root&#39;;FLUSH PRIVILEGES;</code>，我把密码重置为：<code>123456</code> 了。</li>
+</ul>
+</li>
+<li>MySQL 配置文件设置<ul>
+<li>Mac 下的 MySQL 默认是没有 my.ini 或是 my.cnf 文件的，需要我们自己复制一个出来。</li>
+<li>通过终端进入这个目录：<code>cd /usr/local/mysql/support-files/</code>，从该目录下随便找一个 <code>.cnf</code> 的文件，复制命名为：<code>my.cnf</code>，然后按照 MySQL 的配置规则配置这个文件。</li>
+<li>然后把这个 <code>my.cnf</code> 的文件复制到 <code>/etc</code> 目录下</li>
+<li>重启 MySQL 服务即可</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h2><ul>
+<li>官网下载：<a target="_blank" rel="noopener" href="http://git-scm.com/download/mac">http://git-scm.com/download/mac</a></li>
+<li>安装过程和 Windows 没啥区别，都是下一步下一步。</li>
+<li>IntelliJ IDEA 对 Git 的支持很好，也不需要额外配置什么，IntelliJ IDEA 的 Git 操作都很便捷强烈使用 IntelliJ IDEA 作为 Git 的 GUI 操作工具。</li>
+</ul>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><ul>
+<li>感谢 JetBrains 这样的公司存在，让我省去很多麻烦。</li>
+<li><img src="http://img.youmeek.com/YouMeek-WX.jpg" alt="YouMeek 公众号"></li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2016-11-29T14:23:10.000Z" title="2016/11/29 22:23:10">2016-11-29</time>发表</span><span class="level-item"><time dateTime="2021-08-20T11:08:31.634Z" title="2021/8/20 19:08:31">2021-08-20</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/Mac/">Mac</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2016/11/29/Mac-iTerm2/">一个Java程序员眼中的Mac OS（系列六：终端方案iTerm2 + Zsh）</a></h1><div class="content"><span id="more"></span>
+
+<h2 id="本文初衷"><a href="#本文初衷" class="headerlink" title="本文初衷"></a>本文初衷</h2><ul>
+<li>整理自己脑袋中、收藏中的那些资料，来一次清空，让自己重新开始。</li>
+<li>帮助 Mac 后来者，减少他&#x2F;她入门成本</li>
+<li>如果你不是后台开发者，一般不需要用到这个东西，可以不用学的。如果你非要学，那你可以认为你现在看到的东西和在 Linux 上看到的没啥本质的区别，做好这个准备，对你很重要。</li>
+</ul>
+<h2 id="先总结"><a href="#先总结" class="headerlink" title="先总结"></a>先总结</h2><ul>
+<li>iTerm2 比 Mac 默认的 Terminal 终端好用，配合 Zsh 确实更加得体</li>
+<li><strong>牢记：</strong> 装了 zsh 之后，修改终端配置就变成了：<code>vim ~/.zshrc</code>，而不是：<code>vim ~/.bash_profile</code>，所以以后看到别人的文章中需要：<code>vim ~/.bash_profile</code>，那你自己要变通思想过来。</li>
+<li>同时更新修改后的配置文件也从：<code>source ~/.bash_profile</code>，变成了：<code>source ~/.zshrc</code>，当然还有其他取取巧方式，这里不谈。</li>
+</ul>
+<h2 id="iTerm2-知识"><a href="#iTerm2-知识" class="headerlink" title="iTerm2 知识"></a>iTerm2 知识</h2><h3 id="iTerm2-是什么"><a href="#iTerm2-是什么" class="headerlink" title="iTerm2 是什么"></a>iTerm2 是什么</h3><ul>
+<li>术语定义<ul>
+<li>iTerm2 官网：<a target="_blank" rel="noopener" href="http://iterm2.com/">http://iterm2.com/</a></li>
+<li>wiki 介绍：<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/ITerm2">https://en.wikipedia.org/wiki/ITerm2</a></li>
+<li>iTerm2 作者意思：Mac 的默认终端 Terminal 太难用了，我们开发一个新的终端来代替它吧。</li>
+</ul>
+</li>
+<li>同类常见技术<ul>
+<li><code>Terminal</code></li>
+</ul>
+</li>
+<li>学习前提&#x2F;依赖<ul>
+<li>一点英文</li>
+<li>一点 Unix&#x2F;Linux 系统的思想</li>
+<li>一点 Shell 概念</li>
+</ul>
+</li>
+</ul>
+<h3 id="为什么会出现"><a href="#为什么会出现" class="headerlink" title="为什么会出现"></a>为什么会出现</h3><ul>
+<li>有些操作，命令行或者说脚本的方式效率是远高于 GUI 界面操作的，这个概念需要用过 Unix&#x2F;Linux 做过开发的人会懂，特别是搞运维的。如果你不理解，可以找一些运维的视频教程来看看，会有很多事情的处理都是搞脚本的做的。</li>
+</ul>
+<h3 id="哪些人不喜欢-iTerm2"><a href="#哪些人不喜欢-iTerm2" class="headerlink" title="哪些人不喜欢 iTerm2"></a>哪些人不喜欢 iTerm2</h3><ul>
+<li>设计师？</li>
+<li>前端开发者？可能真正的好前端开发者也是会经常用终端的，因为 node.js 的 npm 就有很多命令。</li>
+<li>不喜欢学习的，因为这里面涉及到很多 Unix&#x2F;Linux 系统的知识点，很枯燥，而且很多快捷键需要背，需要花很多精力。</li>
+</ul>
+<h3 id="为什么学习-iTerm2"><a href="#为什么学习-iTerm2" class="headerlink" title="为什么学习 iTerm2"></a>为什么学习 iTerm2</h3><ul>
+<li>作为后端开发者必须学会的一个技能，不管是为了简化安装一些软件或是处理一些事情，还有工作中的后端程序的软件部署，都会跟 shell 打交道。</li>
+</ul>
+<h3 id="安装-iTerm2"><a href="#安装-iTerm2" class="headerlink" title="安装 iTerm2"></a>安装 iTerm2</h3><ul>
+<li>在安装之前先说下前提，你的 Mac 必须装有：Homebrew，等下 zsh 要用到。<ul>
+<li>如果你不知道 Homebrew 是做什么，可以查看我写的另外一篇文章：<a target="_blank" rel="noopener" href="http://code.youmeek.com/2016/11/27/2016/11/Mac-Homebrew/">一个Java程序员眼中的Mac OS（系列五：包管理工具）</a></li>
+</ul>
+</li>
+<li>下载 iTerm 2<ul>
+<li>当前时间（2016-10-31）最新版为：3.0.10</li>
+<li>下载地址，官网：<a target="_blank" rel="noopener" href="https://iterm2.com/">https://iterm2.com/</a></li>
+</ul>
+</li>
+<li>安装 iTerm 2<ul>
+<li>官网下载下来是一个 zip 压缩包，解压出来有一个 <code>.app</code> 文件，双击运行即可安装，或是拖到应用程序里面。</li>
+</ul>
+</li>
+<li>更改配色方案<ul>
+<li>目前大家喜欢设置的配色方案为 solarized，iTerm2 默认是有带的，如果没有则访问：<a target="_blank" rel="noopener" href="https://github.com/altercation/solarized">https://github.com/altercation/solarized</a><ul>
+<li>在项目中找到 solarized&#x2F;iterm2-colors-solarized 目录，下面有两个文件：Solarized Dark.itermcolors 和 Solarized Light.itermcolors，双击这两个文件就可以把配置文件导入到 iTerm 里了。</li>
+</ul>
+</li>
+<li>更改后的配色最终效果如下图：已经截图了。同时还要再切换到 Text 标签，把 <code>Draw bold text in bold font</code> 的勾去掉。</li>
+<li><img src="http://img.youmeek.com/2016/Mac-iTerm2-1.jpg" alt="iTerm2介绍"></li>
+</ul>
+</li>
+</ul>
+<h3 id="iTerm2-软件特色"><a href="#iTerm2-软件特色" class="headerlink" title="iTerm2 软件特色"></a>iTerm2 软件特色</h3><ul>
+<li>智能选中<ul>
+<li>在 iTerm2 中，连续双击选中，连续三击选中整行，连续四击智能选中（智能规则可配置），可以识别网址，引号引起的字符串，邮箱地址等。</li>
+<li>在 iTerm2 中，选中即复制。即任何选中状态的字符串都被放到了系统剪切板中。</li>
+</ul>
+</li>
+<li>Hotkey Window (快速调出窗口)<ul>
+<li>这个非常好用，默认是没有设置，需要自己设置下。</li>
+<li>实际使用时我们经常会遇到这种场景：有时候只是执行几行命令，然后就不再使用它。可是我们还是必须要打开终端，使用完成后关闭它。但是用 iTerm2 这个功能只要按快捷键，出来虚化的终端，输入命令，然后再把光标放在其他地方自动就消息了。</li>
+<li>设置和效果如下图：<ul>
+<li><img src="http://img.youmeek.com/2016/Mac-iTerm2-2.jpg" alt="iTerm2介绍"></li>
+<li><img src="http://img.youmeek.com/2016/Mac-iTerm2-3.jpg" alt="iTerm2介绍"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>iTerm2 常用快捷键<ul>
+<li>这篇文章配了很多图，如果你想更加具体地了解可以看这篇文章，我不想截图了：<a target="_blank" rel="noopener" href="http://swiftcafe.io/2015/07/25/iterm/">http://swiftcafe.io/2015/07/25/iterm/</a></li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">快捷键</th>
+<th align="left">介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">输入的命令开头字符 + Command + ;</td>
+<td align="left">根据输入的前缀历史记录自动补全</td>
+</tr>
+<tr>
+<td align="left">Command + ;</td>
+<td align="left">根据历史记录自动补全</td>
+</tr>
+<tr>
+<td align="left">Command + [ 或 command + ]</td>
+<td align="left">切换屏幕</td>
+</tr>
+<tr>
+<td align="left">Command + enter</td>
+<td align="left">进入全屏模式，再按一次返回</td>
+</tr>
+<tr>
+<td align="left">Command + 鼠标单击</td>
+<td align="left">可以打开文件，文件夹和链接（iTerm2 是可以对显示的内容进行点击的哦）</td>
+</tr>
+<tr>
+<td align="left">Command + n</td>
+<td align="left">新建新的 Window 窗口</td>
+</tr>
+<tr>
+<td align="left">Command + t</td>
+<td align="left">新建标签页</td>
+</tr>
+<tr>
+<td align="left">Command + w</td>
+<td align="left">关闭当前标签或是窗口</td>
+</tr>
+<tr>
+<td align="left">Command + d</td>
+<td align="left">竖直分屏</td>
+</tr>
+<tr>
+<td align="left">Command + r</td>
+<td align="left">清屏</td>
+</tr>
+<tr>
+<td align="left">Command + &#x2F;</td>
+<td align="left">按完之后，整个屏幕变成白茫茫的，而光标位置是一个小圆圈清除显示出来</td>
+</tr>
+<tr>
+<td align="left">Command + 方向键</td>
+<td align="left">切换标签页</td>
+</tr>
+<tr>
+<td align="left">Command + 数字</td>
+<td align="left">切换到指定数字标签页</td>
+</tr>
+<tr>
+<td align="left">Command + f</td>
+<td align="left">查找，所查找的内容会被自动复制 ,输入查找的部分字符，找到匹配的值按 tab，即可复制，带有补全功能</td>
+</tr>
+<tr>
+<td align="left">Command + option + e</td>
+<td align="left">全屏并排展示所有已经打开的标签页，带有可以搜索。</td>
+</tr>
+<tr>
+<td align="left">Command + Option + b</td>
+<td align="left">历史回放，i类似视频录像的东西，有记录你最近时间内的操作。有一个类似播放器的进度条可以拖动查看你做了什么。存放内容设置（Preferences -&gt; Genernal -&gt; Instant Replay）。</td>
+</tr>
+<tr>
+<td align="left">Command + Option + 数字</td>
+<td align="left">切换 Window 窗口</td>
+</tr>
+<tr>
+<td align="left">Command + shift + d</td>
+<td align="left">水平分屏</td>
+</tr>
+<tr>
+<td align="left">Command + shift + h</td>
+<td align="left">查看剪贴板历史，在光标位置下方会出现一列你输入过的历史记录</td>
+</tr>
+<tr>
+<td align="left">Command + Shift + m</td>
+<td align="left">可以保存当前位置，之后可以按Command + Shift + j跳回这个位置。</td>
+</tr>
+<tr>
+<td align="left">Command + shift + alt + w</td>
+<td align="left">关闭所有窗口</td>
+</tr>
+<tr>
+<td align="left">Control + u</td>
+<td align="left">清空当前行，无论光标在什么位置</td>
+</tr>
+<tr>
+<td align="left">Control + a</td>
+<td align="left">移动到行首</td>
+</tr>
+<tr>
+<td align="left">Control + e</td>
+<td align="left">移动到行尾</td>
+</tr>
+<tr>
+<td align="left">Control + f</td>
+<td align="left">向前移动，相当于方向键右</td>
+</tr>
+<tr>
+<td align="left">Control + b</td>
+<td align="left">向后移动，相当于方向键左</td>
+</tr>
+<tr>
+<td align="left">Control + p</td>
+<td align="left">上一条命令，相当于方向键上</td>
+</tr>
+<tr>
+<td align="left">Control + n</td>
+<td align="left">下一条命令，相当于方向键下</td>
+</tr>
+<tr>
+<td align="left">Control + r</td>
+<td align="left">搜索历史命令</td>
+</tr>
+<tr>
+<td align="left">Control + y</td>
+<td align="left">召回最近用命令删除的文字</td>
+</tr>
+<tr>
+<td align="left">Control + h</td>
+<td align="left">删除光标之前的字符</td>
+</tr>
+<tr>
+<td align="left">Control + d</td>
+<td align="left">删除光标所在位置的字符</td>
+</tr>
+<tr>
+<td align="left">Control + w</td>
+<td align="left">删除光标之前的单词</td>
+</tr>
+<tr>
+<td align="left">Control + k</td>
+<td align="left">删除从光标到行尾的内容</td>
+</tr>
+<tr>
+<td align="left">Control + c</td>
+<td align="left">结束当前状态，另起一行</td>
+</tr>
+<tr>
+<td align="left">Control + t</td>
+<td align="left">交换光标和之前的字符</td>
+</tr>
+</tbody></table>
+<h3 id="安装-Zsh-oh-my-Zsh"><a href="#安装-Zsh-oh-my-Zsh" class="headerlink" title="安装 Zsh + oh-my-Zsh"></a>安装 Zsh + oh-my-Zsh</h3><ul>
+<li>Zsh 官网：<a target="_blank" rel="noopener" href="https://www.zsh.org/">https://www.zsh.org/</a></li>
+<li>oh-my-Zsh 官网：<a target="_blank" rel="noopener" href="http://ohmyz.sh/">http://ohmyz.sh/</a></li>
+<li>先说下：Zsh 和 oh-my-Zsh 的关系<ul>
+<li>Zsh 是 Shell 中的一种，什么 Shell 你可以再搜索下，简单粗暴讲就是一个：命令解释器，你输入什么命令，它就执行什么，这个东西再 Unix 世界还有其他几个。</li>
+<li>由于 Zsh 配置门槛有点高，或者说需要专门花时间去了解 Zsh 才能配置好一个好用的 Zsh，也因为这样，用户也就相对少了。</li>
+<li>直到有一天 oh-my-Zsh 的作者诞生，他想要整理出一个配置框架出来，让大家直接使用他的这个公认最好的 Zsh 配置，省去繁琐的配置过程。所以，oh-my-Zsh 就诞生了，它只是会了让你减少 Zsh 的配置，然后又可以好好享受 Zsh 这个 Shell。</li>
+</ul>
+</li>
+<li>Mac 和一般 Linux 默认的 shell 是 bash，一般人都觉得不好用，我作为一般人，也喜欢 Zsh，所以这里就用 Zsh。</li>
+<li>为了简化配置 Zsh 过程，我们这里选择 oh-my-Zsh 这个配置库，这是目前大家公认好用的配置。</li>
+<li>打开终端，先安装 git（已经安装的跳过该步骤），输入命令：<code>brew install git</code></li>
+<li>打开终端，安装 wget 工具，输入命令：<code>brew install wget</code></li>
+<li>打开终端，安装 Zsh：<code>brew install Zsh</code></li>
+<li>打开终端，安装 oh-my-Zsh：<code>sh -c &quot;$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-Zsh/master/tools/install.sh -O -)&quot;</code><ul>
+<li>下载完后，会提示你输入当前登录系统的用户密码，输入完成之后就会从 bash 切换到 Zsh，如果你没有输入密码直接跳过了，可以运行该命令进行手动切换：<code>chsh -s /bin/Zsh 你当前系统用户名</code></li>
+<li>切换完成之后，关掉终端，重新打开终端即可</li>
+</ul>
+</li>
+<li>如果你需要修改 oh-my-Zsh 的主题，和安装 Zsh 插件，具体可以看我过去整理的这篇文章：<a target="_blank" rel="noopener" href="https://github.com/judasn/Linux-Tutorial/blob/master/Zsh.md">Zsh 入门</a></li>
+</ul>
+<h3 id="Zsh-软件特色"><a href="#Zsh-软件特色" class="headerlink" title="Zsh 软件特色"></a>Zsh 软件特色</h3><ul>
+<li>不区分大小写智能提示。我是不喜欢大小写区分的那种人，所以用了 zsh 之后，经常按 Tab 进行提示。</li>
+<li>此外按下 tab 键显示出所有待选项后，再按一次 tab 键，即进入选择模式，进入选择模式后，按 tab 切向下一个选项，按 shift + tab 键切向上一个选项，ctrl+f&#x2F;b&#x2F;n&#x2F;p 可以向前后左右切换。</li>
+<li>kill + 空格键 + Tab键，列出运行的进程，要啥哪个进程不需要再知道 PID 了，当然了 zsh，提供了让你知道 PID 的方法：<ul>
+<li>比如输入：kill vim，再按下 tab，会变成：kill 5643</li>
+</ul>
+</li>
+<li><code>ls **/*</code>，分层级地列出当前目录下所有文件及目录，并递归目录</li>
+<li><code>ls *.png</code> 查找当前目录下所有 png 文件</li>
+<li><code>ls **/*.png</code> 递归查找</li>
+<li>zsh 的目录跳转很智能，你无需输入 cd 就可直接输入路径即可。比如：<code>..</code> 表示后退一级目录，<code>../../</code> 表示后退两级，依次类推。</li>
+<li>在命令窗口中输入：<code>d</code>，将列出当前 session 访问过的所有目录，再按提示的数字即可进入相应目录。</li>
+<li>给 man 命令增加结果高亮显示：<ul>
+<li>编辑配置文件：<code>vim ~/.zshrc</code>，增加下面内容：</li>
+</ul>
+</li>
+</ul>
+<pre><code class="bash"># man context highlight
+export LESS_TERMCAP_mb=$&#39;\E[01;31m&#39;       # begin blinking
+export LESS_TERMCAP_md=$&#39;\E[01;38;5;74m&#39;  # begin bold
+export LESS_TERMCAP_me=$&#39;\E[0m&#39;           # end mode
+export LESS_TERMCAP_se=$&#39;\E[0m&#39;           # end standout-mode
+export LESS_TERMCAP_so=$&#39;\E[38;5;246m&#39;    # begin standout-mode - info box
+export LESS_TERMCAP_ue=$&#39;\E[0m&#39;           # end underline
+export LESS_TERMCAP_us=$&#39;\E[04;38;5;146m&#39; # begin underline
+</code></pre>
+<ul>
+<li>刷新配置文件：<code>source ~/.zshrc</code>，重新查看 man 的命令就可以有高亮了。</li>
+</ul>
+<h3 id="关于搭配上-tmux"><a href="#关于搭配上-tmux" class="headerlink" title="关于搭配上 tmux"></a>关于搭配上 tmux</h3><ul>
+<li>这个我觉得不是人人都需要的东西，如果经常用终端，或是运维人员可以考虑学这个东西，我的资料也是网上找的，你们可以自己找一下。</li>
+</ul>
+<h2 id="资料整理"><a href="#资料整理" class="headerlink" title="资料整理"></a>资料整理</h2><ul>
+<li>来自 Google 过程中的资料（真心感谢这些作者）：<ul>
+<li><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/3291de46f3ff">Mac 终端命令大全</a></li>
+<li><a target="_blank" rel="noopener" href="http://wiki.jikexueyuan.com/project/mac-dev-setup/iterm.html">http://wiki.jikexueyuan.com/project/mac-dev-setup/iterm.html</a></li>
+<li><a target="_blank" rel="noopener" href="http://wulfric.me/2015/08/iterm2/">http://wulfric.me/2015/08/iterm2/</a></li>
+<li><a target="_blank" rel="noopener" href="http://yanghui.name/blog/2015/07/19/make-all-command-through-proxy/">http://yanghui.name/blog/2015/07/19/make-all-command-through-proxy/</a></li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000003001555">https://segmentfault.com/a/1190000003001555</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.wklken.me/posts/2015/08/06/linux-tmux.html">http://www.wklken.me/posts/2015/08/06/linux-tmux.html</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.dreamxu.com/mac-terminal/">http://www.dreamxu.com/mac-terminal/</a></li>
+<li><a target="_blank" rel="noopener" href="http://zhaozhiming.github.io/blog/2015/11/22/save-and-restore-your-tmux/">http://zhaozhiming.github.io/blog/2015/11/22/save-and-restore-your-tmux/</a></li>
+<li><a target="_blank" rel="noopener" href="http://cenalulu.github.io/linux/tmux/">http://cenalulu.github.io/linux/tmux/</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/gatieme/article/details/49301037">http://blog.csdn.net/gatieme/article/details/49301037</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.jobbole.com/87278/">http://blog.jobbole.com/87278/</a></li>
+<li><a target="_blank" rel="noopener" href="http://wulfric.me/2015/08/zsh/">http://wulfric.me/2015/08/zsh/</a></li>
+<li><a target="_blank" rel="noopener" href="http://hujiandong.com/2016/09/11/iterm2/">http://hujiandong.com/2016/09/11/iterm2/</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/68ef9d2e1653">http://www.jianshu.com/p/68ef9d2e1653</a></li>
+<li><a target="_blank" rel="noopener" href="http://swiftcafe.io/2015/07/25/iterm/">http://swiftcafe.io/2015/07/25/iterm/</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><ul>
+<li>如果你需要它就你就好好学习，如果你的职业现在完全用不到，那就把这篇文章加收藏，有需要再打开，不希望你花时间多做一些没有太大意义的事情。</li>
+<li><img src="http://img.youmeek.com/YouMeek-WX.jpg" alt="YouMeek 公众号"></li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2016-11-27T14:23:11.000Z" title="2016/11/27 22:23:11">2016-11-27</time>发表</span><span class="level-item"><time dateTime="2021-08-20T11:08:17.371Z" title="2021/8/20 19:08:17">2021-08-20</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2016/11/27/judasn-mymusic-2016-10/">2016微信朋友圈音乐收集</a></h1><div class="content"><h1 id="微信朋友圈音乐收集2016-10合集-生活（音乐-文字）"><a href="#微信朋友圈音乐收集2016-10合集-生活（音乐-文字）" class="headerlink" title="@微信朋友圈音乐收集2016-10合集+生活（音乐+文字）"></a>@微信朋友圈音乐收集2016-10合集+生活（音乐+文字）</h1><p>
+    <a target="_blank" rel="noopener" href="http://img.youmeek.com/2016/judasn-mymusic-2016-10-A.jpg">
+    <img src="http://img.youmeek.com/2016/judasn-mymusic-2016-10-A.jpg" title="@微信朋友圈音乐收集2016-10合集(全)打包下载(配目录图)" alt="@微信朋友圈音乐收集2016-10合集(全)打包下载(配目录图)">
+    </a> 
+    <a target="_blank" rel="noopener" href="http://img.youmeek.com/2016/judasn-mymusic-2016-10-B.jpg">
+    <img src="http://img.youmeek.com/2016/judasn-mymusic-2016-10-B.jpg" title="@微信朋友圈音乐收集2016-10合集(全)打包下载(配目录图)" alt="@微信朋友圈音乐收集2016-10合集(全)打包下载(配目录图)">
+    </a>
+     <a target="_blank" rel="noopener" href="http://img.youmeek.com/2016/judasn-mymusic-2016-10-C.jpg">
+     <img src="http://img.youmeek.com/2016/judasn-mymusic-2016-10-C.jpg" title="@微信朋友圈音乐收集2016-10合集(全)打包下载(配目录图)" alt="@微信朋友圈音乐收集2016-10合集(全)打包下载(配目录图)">
+     </a>
+</p>
+     
+
+<hr>
+<ul>
+<li>10 月份，目前的我只记得我回了一趟家，把 iPhone 的 16G 硬盘换成了 64G，买了 MacBook Pro，貌似没有再发生什么事了，一切平静。</li>
+<li>移动端阅读的趋势我无法阻挡，可是我还是不愿意接受，我很喜欢电脑端的阅读和整理，但是不管怎样我还是开了公众号提供一个文章推送的入口，方便别人知道我更新了东西。</li>
+<li>RSS 的人会越来越少了，看来 Google 是对的，即使 GR 还在，也改变不了太多</li>
+<li>下载地址：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1o8LJhwe">http://pan.baidu.com/s/1o8LJhwe</a></li>
+<li>公众号提供自动回复功能，如果你想试听和下载对应月份的音乐请关注后根据提示进行操作！</li>
+<li><img src="http://img.youmeek.com/YouMeek-WX.jpg" alt="YouMeek 公众号"></li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2016-11-27T14:23:11.000Z" title="2016/11/27 22:23:11">2016-11-27</time>发表</span><span class="level-item"><time dateTime="2021-08-20T11:08:22.354Z" title="2021/8/20 19:08:22">2021-08-20</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2016/11/27/judasn-mymusic-2016-11/">2016微信朋友圈音乐收集</a></h1><div class="content"><h1 id="微信朋友圈音乐收集2016-11合集-生活（音乐-文字）"><a href="#微信朋友圈音乐收集2016-11合集-生活（音乐-文字）" class="headerlink" title="@微信朋友圈音乐收集2016-11合集+生活（音乐+文字）"></a>@微信朋友圈音乐收集2016-11合集+生活（音乐+文字）</h1><p>
+    <a target="_blank" rel="noopener" href="http://img.youmeek.com/2016/judasn-mymusic-2016-11-A.jpg">
+    <img src="http://img.youmeek.com/2016/judasn-mymusic-2016-11-A.jpg" title="@微信朋友圈音乐收集2016-11合集(全)打包下载(配目录图)" alt="@微信朋友圈音乐收集2016-11合集(全)打包下载(配目录图)">
+    </a> 
+    <a target="_blank" rel="noopener" href="http://img.youmeek.com/2016/judasn-mymusic-2016-11-B.jpg">
+    <img src="http://img.youmeek.com/2016/judasn-mymusic-2016-11-B.jpg" title="@微信朋友圈音乐收集2016-11合集(全)打包下载(配目录图)" alt="@微信朋友圈音乐收集2016-11合集(全)打包下载(配目录图)">
+    </a>
+     <a target="_blank" rel="noopener" href="http://img.youmeek.com/2016/judasn-mymusic-2016-11-C.jpg">
+     <img src="http://img.youmeek.com/2016/judasn-mymusic-2016-11-C.jpg" title="@微信朋友圈音乐收集2016-11合集(全)打包下载(配目录图)" alt="@微信朋友圈音乐收集2016-11合集(全)打包下载(配目录图)">
+     </a>
+</p>
+     
+
+<hr>
+<ul>
+<li>11 月最让自己感到意外的就是整理自己的生活购物指南、MacOS 系列，这个完全不在计划中，只是突然冒出来的。</li>
+<li>11 月也让我了解当有消费纠纷的时候要走哪些流程。广州这边的工商局看来还是有点用的，解决速度还是很快的，只奢望政府部门能日益高效。</li>
+<li>广州的天气时不时地升温到 20 度左右，看上去还没打算入冬的样子，只是不管天气如何，我是很想赖床了，醒来的第一个念头：变身植物人！</li>
+<li>这个月的歌曲我减少了几首歌没下载。有几首有版权的歌曲网易不给下载，我也懒得再去境外的站点下了，每个月就属这个境外下载就是烦人，即使开了 SS 一样很慢很慢，没办法这样折腾。</li>
+<li>对于下载境外的音乐，我在导航：<a target="_blank" rel="noopener" href="http://i.youmeek.com/">http://i.YouMeek.com</a>，有提供几个下载地址，有兴趣的可以自己去那几个网站下载，或是 Google 下：歌手+歌名+mp3 download，这样的字眼。</li>
+<li>下载地址：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1o8LJhwe">http://pan.baidu.com/s/1o8LJhwe</a></li>
+<li>公众号提供自动回复功能，如果你想试听和下载对应月份的音乐请关注后根据提示进行操作！<br><img src="http://img.youmeek.com/YouMeek-WX.jpg" alt="YouMeek 公众号"></li>
+</ul>
+</div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/7/">上一页</a></div><div class="pagination-next"><a href="/page/9/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/7/">7</a></li><li><a class="pagination-link is-current" href="/page/8/">8</a></li><li><a class="pagination-link" href="/page/9/">9</a></li><li><a class="pagination-link" href="/page/10/">10</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>

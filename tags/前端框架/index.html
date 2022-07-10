@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="robots" content="noindex"><meta><title>标签: 前端框架 - 一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="一枝清寒."><meta property="og:url" content="http://example.com/"><meta property="og:site_name" content="一枝清寒."><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:author" content="ChenShang"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com"},"headline":"一枝清寒.","image":["http://example.com/img/og_image.png"],"author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">标签</a></li><li class="is-active"><a href="#" aria-current="page">前端框架</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-04-11T07:07:20.000Z" title="2018/4/11 15:07:20">2018-04-11</time>发表</span><span class="level-item"><time dateTime="2021-07-25T07:58:54.000Z" title="2021/7/25 15:58:54">2021-07-25</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/04/11/dva%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/">dva源码解读</a></h1><div class="content"><h3 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h3><p>本文章用于个人学习研究，并不代表 dva 团队的任何观点。</p>
+<p>原文以及包含一定注释的代码见<a target="_blank" rel="noopener" href="https://github.com/aircloud/dva-analysis">这里</a>，若有问题也可以在<a target="_blank" rel="noopener" href="https://github.com/aircloud/dva-analysis/issues">这里</a>进行讨论</p>
+<h3 id="起步"><a href="#起步" class="headerlink" title="起步"></a>起步</h3><h4 id="为什么是dva"><a href="#为什么是dva" class="headerlink" title="为什么是dva?"></a>为什么是dva?</h4><p>笔者对 dva 的源代码进行解读，主要考虑到 dva 并不是一个和我们熟知的主流技术无关的从0到1的框架，相反，它是对主流技术进行整合，提炼，从而形成一种最佳实践，分析 dva，意味着我们可以对自己掌握的很多相关技术进行回顾，另外，dva 的代码量并不多，也不至于晦涩难懂，可以给我们平时的业务开发以启发。</p>
+<p>本文章作为 dva 的源码解读文章，并不面向新手用户，读者应当有一定的 react 使用经验和 ECMAscript 2015+ 的使用经验，并且应当了解 redux 和 redux-saga，以及对 dva 的使用有所了解(可以从<a target="_blank" rel="noopener" href="https://github.com/dvajs/dva/blob/master/README_zh-CN.md#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8-dva-">这里</a>了解为什么需要使用 dva)</p>
+<p>重点推荐:</p>
+<ul>
+<li>通过<a target="_blank" rel="noopener" href="https://github.com/dvajs/dva-knowledgemap">这里</a>的内容了解使用dva的最小知识集</li>
+<li>通过<a target="_blank" rel="noopener" href="https://redux-saga-in-chinese.js.org/docs/introduction/index.html">这里</a>学习 redux-saga</li>
+</ul>
+<p>其他推荐：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/dvajs/dva/blob/master/docs/Concepts_zh-CN.md">dva的概念</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/dvajs/dva/blob/master/docs/API_zh-CN.md">dva的全部API</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/sorrycc/blog/issues/1">React+Redux 最佳实践</a></li>
+<li><a target="_blank" rel="noopener" href="http://slides.com/sorrycc/dva#/">React在蚂蚁金服的实践</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/sorrycc/blog/issues/48">dva 2.0的改进</a></li>
+<li><a target="_blank" rel="noopener" href="http://cn.redux.js.org/docs/recipes/ComputingDerivedData.html">ReSelect介绍</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/04d3fefea8d7">浅析Redux 的 store enhancer</a></li>
+</ul>
+<p>几个 dva 版本之间的关系:</p>
+<ul>
+<li><a href="mailto:&#100;&#x76;&#97;&#64;&#x32;&#46;&#x30;">&#100;&#x76;&#97;&#64;&#x32;&#46;&#x30;</a>：基于 react 和 react-router@4</li>
+<li><a href="mailto:&#100;&#118;&#x61;&#45;&#x72;&#101;&#97;&#x63;&#116;&#45;&#114;&#x6f;&#117;&#x74;&#101;&#114;&#x2d;&#x33;&#64;&#49;&#x2e;&#48;">&#100;&#118;&#x61;&#45;&#x72;&#101;&#97;&#x63;&#116;&#45;&#114;&#x6f;&#117;&#x74;&#101;&#114;&#x2d;&#x33;&#64;&#49;&#x2e;&#48;</a>：基于 react 和 react-router@3</li>
+<li><a href="mailto:&#100;&#x76;&#97;&#45;&#x6e;&#x6f;&#x2d;&#x72;&#111;&#x75;&#116;&#101;&#x72;&#x40;&#49;&#46;&#x30;">&#100;&#x76;&#97;&#45;&#x6e;&#x6f;&#x2d;&#x72;&#111;&#x75;&#116;&#101;&#x72;&#x40;&#49;&#46;&#x30;</a>：无路由版本，适用于多页面场景，可以和 next.js 组合使用</li>
+<li><a href="mailto:&#100;&#118;&#97;&#45;&#x63;&#111;&#x72;&#x65;&#64;&#49;&#46;&#48;">&#100;&#118;&#97;&#45;&#x63;&#111;&#x72;&#x65;&#64;&#49;&#46;&#48;</a>：仅封装了 redux 和 redux-saga</li>
+</ul>
+<p>我们本次主要分析目标为 <a href="mailto:&#100;&#x76;&#97;&#64;&#x32;&#x2e;&#48;">&#100;&#x76;&#97;&#64;&#x32;&#x2e;&#48;</a> 和 <a href="mailto:&#x64;&#118;&#x61;&#x2d;&#x63;&#x6f;&#x72;&#x65;&#64;&#x31;&#x2e;&#x30;">&#x64;&#118;&#x61;&#x2d;&#x63;&#x6f;&#x72;&#x65;&#64;&#x31;&#x2e;&#x30;</a></p>
+<h3 id="我们为什么需要-redux-saga"><a href="#我们为什么需要-redux-saga" class="headerlink" title="我们为什么需要 redux-saga"></a>我们为什么需要 redux-saga</h3><p>目前，在大多数项目开发中，我们现在依然采用的是redux-thunk + async&#x2F;await (或 Promise)。</p>
+<p>实际上这个十几行的插件已经完全可以解决大多是场景下的问题了，如果你在目前的工作中正在使用这一套方案并且能够完全将当下的需求应付自如并且没有什么凌乱的地方，其实也是没有必要换成redux-saga的。</p>
+<p>接下来我们讲 redux-saga，先看名字：saga，这个术语常用于CQRS架构，代表查询与责任分离。</p>
+<p>相比于 redux-thunk，前者通常是把数据查询等请求放在 actions 中(不纯净的 actions)，并且这些 actions 可以继续回调调用其他 actions(纯净的 actions)，从而完成数据的更新；而 redux-saga，则保持了 actions 的纯粹性，单独抽出一层专门来处理数据请求等操作(saga函数)。</p>
+<p>这样做还有另外一些好处：</p>
+<ul>
+<li>由于我们已经将数据处理数据请求等异步操作抽离出来了，并且通过 generator 来处理，我们便可以方便地进行多种异步管理：比如同时按顺序执行多个任务、在多个异步任务中启动race等。</li>
+<li>这样做可以延长任务的生命周期，我们的一次调用可以不再是一个”调完即走”的过程，还可以是一个LLT（Long Lived Transaction)的事物处理过程，比如我们可以将用户的登入、登出的管理放在一个saga函数中处理。</li>
+</ul>
+<p>当然，redux-saga还有比如拥有有诸多常用并且声明式易测的 Effects、可以无阻塞的fork等一些更复杂的异步操作和管理方法，如果应用中有较多复杂的异步操作流程，使用redux-saga无疑会让条理更加清楚。</p>
+<p>当然，本文的目的不是介绍或者安利redux-saga，只是因为redux-saga是 dva 的一个基础，相关概念点到为止，如需了解更多请自行参考资料。</p>
+<h3 id="dva-源码解读"><a href="#dva-源码解读" class="headerlink" title="dva 源码解读"></a>dva 源码解读</h3><p>我们的源码分析流程是这样的：通过一个使用 dva 开发的例子，随着其对 dva 函数的逐步调用，来分析内部 dva 相关函数的实现原理。</p>
+<p>我们分析采用的例子是 dva 官方提供的一个增删改查的应用，可以在<a target="_blank" rel="noopener" href="https://github.com/dvajs/dva/tree/rewrite-dynamic">这里</a>找到它的源代码。</p>
+<p>我们先看该例子的入口文件：</p>
+<pre><code>import dva from &#39;dva&#39;;
+import createHistory from &#39;history/createBrowserHistory&#39;;
+import createLoading from &#39;dva-loading&#39;;
+import &#123; message &#125; from &#39;antd&#39;;
+import &#39;./index.css&#39;;
+
+const ERROR_MSG_DURATION = 3; // 3 秒
+
+// 1. Initialize
+const app = dva(&#123;
+  history: createHistory(),
+  onError(e) &#123;
+    message.error(e.message, ERROR_MSG_DURATION);
+  &#125;,
+&#125;);
+
+// 2. Plugins
+app.use(createLoading());
+
+// 3. Model
+// Moved to router.js
+// 这里的 Model 被转移到了动态加载的 router 里面，我们也可以如下写：
+// app.model(require(&#39;./models/users&#39;));
+
+// 4. Router
+app.router(require(&#39;./router&#39;));
+
+// 5. Start
+app.start(&#39;#root&#39;);
+</code></pre>
+<p>我们发现dva从初始化配置到最后的start(现在的dva start函数在不传入container的情况下可以返回React Component，便于服务端渲染等，但这里我们还是按照例子的写法来)。</p>
+<p>这里我们先有必要解释一下，dva 在当前依据能力和依赖版本的不同，有多个可引入的版本，我们的例子和所要分析的源代码都是基于 react-router V4 的 dva 版本。</p>
+<p>在源代码中，相关目录主要为 dva 目录(packages&#x2F;dva) 和 dva-core(packages&#x2F;dva-core)目录，前者主要拥有history管理、router、动态加载等功能，而后者是不依赖这些内容的基础模块部分，为前者所引用</p>
+<h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><p>第一步这里传入了两个内容：(dva构造函数总共可以传入那些 opts，会在下文中进行说明)</p>
+<pre><code>const app = dva(&#123;
+  history: createHistory(),
+  onError(e) &#123;
+    message.error(e.message, ERROR_MSG_DURATION);
+  &#125;,
+&#125;);
+</code></pre>
+<p>这一步的相关核心代码如下:</p>
+<pre><code>export default function (opts = &#123;&#125;) &#123;
+  const history = opts.history || createHashHistory(); // 默认为 HashHistory
+  const createOpts = &#123;
+    initialReducer: &#123;
+      routing, // 来自 react-router-redux 的 routerReducer
+    &#125;,
+    setupMiddlewares(middlewares) &#123;
+      return [
+        routerMiddleware(history), // 来自 react-router-redux 的 routerMiddleware
+        ...middlewares,
+      ];
+    &#125;,
+    setupApp(app) &#123;
+      app._history = patchHistory(history); 
+    &#125;,
+  &#125;;
+
+  const app = core.create(opts, createOpts);
+  const oldAppStart = app.start;
+  app.router = router;
+  app.start = start;
+  return app;
+  
+  // 一些用到的函数的定义...
+  
+&#125;  
+</code></pre>
+<p>这里面大多数内容都比较简单，这里面提两个地方：</p>
+<ol>
+<li>patchHistory：</li>
+</ol>
+<pre><code>function patchHistory(history) &#123;
+  const oldListen = history.listen;
+  history.listen = (callback) =&gt; &#123;
+    callback(history.location);
+    return oldListen.call(history, callback);
+  &#125;;
+  return history;
+&#125;
+</code></pre>
+<p>显然，这里的意思是让第一次被绑定 listener 的时候执行一遍 callback，可以用于初始化相关操作。</p>
+<p>我们可以在<code>router.js</code>中添加如下代码来验证：</p>
+<pre><code>  history.listen((location, action)=&gt;&#123;
+    console.log(&#39;history listen:&#39;, location, action)
+  &#125;)
+</code></pre>
+<ol start="2">
+<li>在完成可选项的构造之后，调用了 dva-core 中暴露的 create 函数。</li>
+</ol>
+<p>create 函数本身也并不复杂，核心代码如下：</p>
+<pre><code class="javascript">export function create(hooksAndOpts = &#123;&#125;, createOpts = &#123;&#125;) &#123;
+  const &#123;
+    initialReducer,
+    setupApp = noop,
+  &#125; = createOpts;
+
+  const plugin = new Plugin(); // 实例化钩子函数管理类
+  plugin.use(filterHooks(hooksAndOpts)); // 这个时候先对 obj 进行清理，清理出在我们定义的类型之外的 hooks，之后进行统一绑定
+
+  const app = &#123;
+    _models: [
+      prefixNamespace(&#123; ...dvaModel &#125;), // 前缀处理
+    ],
+    _store: null,
+    _plugin: plugin,
+    use: plugin.use.bind(plugin),
+    model, // 下文定义
+    start, // 下文定义
+  &#125;;
+  return app;
+ 
+  //一些函数的定义
+  
+&#125;  
+</code></pre>
+<p>这里面我们可以看到，这里的 <code>hooksAndOpts</code> 实际上就是一开始我们构造 dva 的时候传入的 opts 对象经过处理之后的结果。</p>
+<p>我们可以传入的可选项，实际上都在 <code>Plugin.js</code> 中写明了:</p>
+<pre><code>const hooks = [
+  &#39;onError&#39;,
+  &#39;onStateChange&#39;,
+  &#39;onAction&#39;,
+  &#39;onHmr&#39;,
+  &#39;onReducer&#39;,
+  &#39;onEffect&#39;,
+  &#39;extraReducers&#39;,
+  &#39;extraEnhancers&#39;,
+];
+</code></pre>
+<p>具体 <a target="_blank" rel="noopener" href="https://github.com/dvajs/dva/blob/master/docs/API_zh-CN.md#appusehooks">hooks的作用可以在这里进行查阅</a>。</p>
+<p>Plugin 插件管理类(实际上我认为称其为钩子函数管理类比较合适)除了定义了上文的使用到的use方法(挂载插件)、还有apply方法(执行某一个钩子下挂载的所有回调)、get方法(获取某一个钩子下的所有回调，返回数组)</p>
+<h4 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h4><p>这里的第二步比较简洁：我们知道实际上这里就是使用了<code>plugin.use</code>方法挂载了一个插件</p>
+<pre><code class="javascript">app.use(createLoading()); // 需要注意，插件挂载需要在 app.start 之前
+</code></pre>
+<p>createLoading 这个插件实际上是官方提供的 Loading 插件，通过这个插件我们可以非常方便地进行 Loading 的管理，无需进行手动管理，我们可以先<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/61fe7a57fad4">看一篇文章</a>来简单了解一下。</p>
+<p>这个插件看似神奇，实际上原理也比较简单，主要用了<code>onEffect</code>钩子函数(装饰器)：</p>
+<pre><code class="javascript">function onEffect(effect, &#123; put &#125;, model, actionType) &#123;
+    const &#123; namespace &#125; = model;
+    if (
+        (only.length === 0 &amp;&amp; except.length === 0)
+        || (only.length &gt; 0 &amp;&amp; only.indexOf(actionType) !== -1)
+        || (except.length &gt; 0 &amp;&amp; except.indexOf(actionType) === -1)
+    ) &#123;
+        return function*(...args) &#123;
+            yield put(&#123; type: SHOW, payload: &#123; namespace, actionType &#125; &#125;);
+            yield effect(...args);
+            yield put(&#123; type: HIDE, payload: &#123; namespace, actionType &#125; &#125;);
+        &#125;;
+    &#125; else &#123;
+        return effect;
+    &#125;
+  &#125;
+</code></pre>
+<p>结合基于的redux-saga，在目标异步调用开始的时候<code>yield put(&#123; type: SHOW, payload: &#123; namespace, actionType &#125; &#125;);</code>，在异步调用结束的时候<code>yield put(&#123; type: HIDE, payload: &#123; namespace, actionType &#125; &#125;);</code>，这样就可以管理异步调用开始和结束的Loading状态了。</p>
+<h4 id="第三步"><a href="#第三步" class="headerlink" title="第三步"></a>第三步</h4><p>第三步这里其实省略了，因为使用了动态加载，将 Models 定义的内容和 React Component 进行了动态加载，实际上也可以按照注释的方法来写。</p>
+<p>但是没有关系，我们还是可以分析 models 引入的文件中做了哪些事情(下面列出的代码在原基础上进行了一些简化):</p>
+<pre><code class="javascript">import queryString from &#39;query-string&#39;;
+import * as usersService from &#39;../services/users&#39;;
+
+export default &#123;
+  namespace: &#39;users&#39;,
+  state: &#123;
+    list: [],
+    total: null,
+    page: null,
+  &#125;,
+  reducers: &#123;
+    save(state, &#123; payload: &#123; data: list, total, page &#125; &#125;) &#123;
+      return &#123; ...state, list, total, page &#125;;
+    &#125;,
+  &#125;,
+  effects: &#123;
+    *fetch(&#123; payload: &#123; page = 1 &#125; &#125;, &#123; call, put &#125;) &#123;
+      const &#123; data, headers &#125; = yield call(usersService.fetch, &#123; page &#125;);
+      yield put(&#123;
+        type: &#39;save&#39;,
+        payload: &#123;
+          data,
+          total: parseInt(headers[&#39;x-total-count&#39;], 10),
+          page: parseInt(page, 10),
+        &#125;,
+      &#125;);
+    &#125;,
+    //...
+    *reload(action, &#123; put, select &#125;) &#123;
+      const page = yield select(state =&gt; state.users.page);
+      yield put(&#123; type: &#39;fetch&#39;, payload: &#123; page &#125; &#125;);
+    &#125;,
+  &#125;,
+  subscriptions: &#123;
+    setup(&#123; dispatch, history &#125;) &#123;
+      return history.listen((&#123; pathname, search &#125;) =&gt; &#123;
+        const query = queryString.parse(search);
+        if (pathname === &#39;/users&#39;) &#123;
+          dispatch(&#123; type: &#39;fetch&#39;, payload: query &#125;);
+        &#125;
+      &#125;);
+    &#125;,
+  &#125;,
+&#125;;
+</code></pre>
+<p>这些内容，我们通过<code>app.model(require(&#39;./models/users&#39;));</code>就可以引入。</p>
+<p>实际上，model 函数本身还是比较简单的，但由于 dva 拥有 model 动态加载的能力，实际上调用 app.start 前和 app.start 后model函数是不一样的。</p>
+<p>调用 start 函数前，我们直接挂载即可(因为start函数中会对所有model进行遍历性统一处理，所以无需过多处理)：</p>
+<pre><code class="javascript">function model(m) &#123;
+    if (process.env.NODE_ENV !== &#39;production&#39;) &#123;
+      checkModel(m, app._models);
+    &#125;
+    app._models.push(prefixNamespace(m));
+    // 把 model 注册到 app 的 _models 里面，但是当 app start 之后，就不能仅仅用这种方法了，需要 injectModel
+  &#125;
+</code></pre>
+<p>调用了 start 函数之后，model函数被替换成如下:</p>
+<pre><code class="javascript">function injectModel(createReducer, onError, unlisteners, m) &#123;
+    model(m);
+
+    const store = app._store;
+    if (m.reducers) &#123;
+      store.asyncReducers[m.namespace] = getReducer(m.reducers, m.state);
+      store.replaceReducer(createReducer(store.asyncReducers));
+    &#125;
+    if (m.effects) &#123;
+      store.runSaga(app._getSaga(m.effects, m, onError, plugin.get(&#39;onEffect&#39;)));
+    &#125;
+    if (m.subscriptions) &#123;
+      unlisteners[m.namespace] = runSubscription(m.subscriptions, m, app, onError);
+    &#125;
+  &#125;
+</code></pre>
+<p><strong>我们首先分析第一个 if 中的内容</strong>：首先通过getReducer函数将转换好的 reducers 挂载(或替换)到 store.asyncReducers[m.namespace] 中，然后通过 redux 本身提供的能力 replaceReducer 完成 reducer 的替换。</p>
+<p>这里我们需要注意 getReducer 函数，实际上，dva 里面 reducers 写法和我们之前直接使用 redux 的写法略有不同：</p>
+<p>我们这里的 reducers，实际上要和 action 中的 actionType 同名的 reducer，所以这里我们没有必要去写 switch case 了，对于某一个 reducer 来说其行为应该是确定的，这给 reducers 的写法带来了一定的简化，当然，我们可以使用 extraReducers 定义我们之前习惯的那种比较复杂的 reducers。</p>
+<p><strong>接下来我们分析第二个 if 中的内容</strong>：第二个函数首先获取到了我们定义的 effects 并通过 _getSaga 进行处理，然后使用 <code>runSaga</code>(实际上就是createSagaMiddleware().run，来自于redux-saga) 进行执行。</p>
+<p>实际上，这里的 <code>_getSaga</code> 函数比较复杂，我们接下来重点介绍这个函数。</p>
+<p><code>_getSaga</code> 函数由 <code>getSaga.js</code> 暴露，其定义如下：</p>
+<pre><code class="javascript">export default function getSaga(resolve, reject, effects, model, onError, onEffect) &#123;
+  return function *() &#123;  // 返回一个函数
+    for (const key in effects) &#123;  // 这个函数对 effects 里面的所有键
+      if (Object.prototype.hasOwnProperty.call(effects, key)) &#123; // 先判断一下键是属于自己的
+        const watcher = getWatcher(resolve, reject, key, effects[key], model, onError, onEffect);
+        // 然后调用getWatch获取watcher
+        const task = yield sagaEffects.fork(watcher); // 利用 fork 开启一个 task
+        yield sagaEffects.fork(function *() &#123; // 这样写的目的是，如果我们移除了这个 model 要及时结束掉
+          yield sagaEffects.take(`$&#123;model.namespace&#125;/@@CANCEL_EFFECTS`);
+          yield sagaEffects.cancel(task);
+        &#125;);
+      &#125;
+    &#125;
+  &#125;;
+&#125;
+</code></pre>
+<p>getWatcher 的一些核心代码如下:</p>
+<pre><code class="javascript">
+function getWatcher(resolve, reject, key, _effect, model, onError, onEffect) &#123;
+  let effect = _effect;
+  let type = &#39;takeEvery&#39;;
+  let ms;
+
+  if (Array.isArray(_effect)) &#123;
+    effect = _effect[0];
+    const opts = _effect[1];
+    // 对 opts 进行一定的校验
+    //...
+  &#125;
+
+  function *sagaWithCatch(...args) &#123; // 都会调用这个过程
+    try &#123;
+      yield sagaEffects.put(&#123; type: `$&#123;key&#125;$&#123;NAMESPACE_SEP&#125;@@start` &#125;);
+      const ret = yield effect(...args.concat(createEffects(model)));
+      yield sagaEffects.put(&#123; type: `$&#123;key&#125;$&#123;NAMESPACE_SEP&#125;@@end` &#125;);
+      resolve(key, ret);
+    &#125; catch (e) &#123;
+      onError(e);
+      if (!e._dontReject) &#123;
+        reject(key, e);
+      &#125;
+    &#125;
+  &#125;
+
+  const sagaWithOnEffect = applyOnEffect(onEffect, sagaWithCatch, model, key); 
+  // 挂载 onEffect 钩子
+
+  switch (type) &#123;
+    case &#39;watcher&#39;:
+      return sagaWithCatch;
+    case &#39;takeLatest&#39;:
+      return function*() &#123;
+        yield takeLatest(key, sagaWithOnEffect);
+      &#125;;
+    case &#39;throttle&#39;: // 起到节流的效果，在 ms 时间内仅仅会被触发一次
+      return function*() &#123;
+        yield throttle(ms, key, sagaWithOnEffect);
+      &#125;;
+    default:
+      return function*() &#123;
+        yield takeEvery(key, sagaWithOnEffect);
+      &#125;;
+  &#125;
+&#125;
+</code></pre>
+<p>这个函数的工作，可以主要分为以下三个部分：</p>
+<p>1.将 effect 包裹成 sagaWithCatch，除了便于错误处理和增加前后钩子，值得我们注意的是 resolve 和 reject，</p>
+<p>这个 resolve 和 reject，实际上是来自<code>createPromiseMiddleware.js</code></p>
+<p>我们知道，我们在使用redux-saga的过程中，实际上是监听未来的action，并执行 effects，所以我们在一个 effects 函数中执行一些异步操作，然后 put(dispatch) 一个 action，还是会被监听这个 action 的其他 saga 监听到。</p>
+<p>所以就有如下场景：我们 dispatch 一个 action，这个时候如果我们想获取到什么时候监听这个 action 的 saga 中的异步操作执行结束，是办不到的(因为不是所有的时候我们都把所有处理逻辑写在 saga 中)，所以我们的 dispatch 有的时候需要返回一个 Promise 从而我们可以进行异步结束后的回调(这个 Promise 在监听者 saga 异步执行完后被决议，见上文<code>sagaWithCatch</code>函数源代码)。</p>
+<p>如果我讲的还是比较混乱，也可以参考<a target="_blank" rel="noopener" href="https://github.com/dvajs/dva/issues/175">这个issue</a></p>
+<p>对于这个情况，我认为这是 dva 代码最精彩的地方之一，作者通过定义如下的middleware:</p>
+<pre><code class="javascript"> const middleware = () =&gt; next =&gt; (action) =&gt; &#123;
+    const &#123; type &#125; = action;
+    if (isEffect(type)) &#123;
+      return new Promise((resolve, reject) =&gt; &#123;
+        map[type] = &#123;
+          resolve: wrapped.bind(null, type, resolve),
+          reject: wrapped.bind(null, type, reject),
+        &#125;;
+      &#125;);
+    &#125; else &#123;
+      return next(action);
+    &#125;
+  &#125;;
+
+  function wrapped(type, fn, args) &#123;
+    if (map[type]) delete map[type];
+    fn(args);
+  &#125;
+
+  function resolve(type, args) &#123;
+    if (map[type]) &#123;
+      map[type].resolve(args);
+    &#125;
+  &#125;
+
+  function reject(type, args) &#123;
+    if (map[type]) &#123;
+      map[type].reject(args);
+    &#125;
+  &#125;
+</code></pre>
+<p>并且在上文的<code>sagaWithCatch</code>相关effect执行结束的时候调用 resolve，让 dispatch 返回了一个 Promise。</p>
+<p>当然，上面这段代码还是有点问题的，这样会导致同名 reducer 和 effect 不会 fallthrough（即两者都执行），因为都已经返回了，action 便不会再进一步传递，关于这样设计的好坏，在<a target="_blank" rel="noopener" href="https://github.com/sorrycc/blog/issues/48">这里</a>有过一些讨论，笔者不进行展开表述。</p>
+<p>2.在上面冗长的第一步之后，又通过<code>applyOnEffect</code>函数包裹了<code>OnEffect</code>的钩子函数，这相当于是一种<code>compose</code>，(上文的 dva-loading 中间件实际上就是在这里被处理的)其实现对于熟悉 redux 的同学来说应该不难理解：</p>
+<pre><code class="javascript">function applyOnEffect(fns, effect, model, key) &#123;
+  for (const fn of fns) &#123;
+    effect = fn(effect, sagaEffects, model, key);
+  &#125;
+  return effect;
+&#125;
+</code></pre>
+<p>3.最后，根据我们定义的type(默认是<code>takeEvery</code>，也就是都执行)，来选择不同的 saga，takeLatest 即为只是执行最近的一个，throttle则起到节流的效果，一定时间内仅仅允许被触发一次，这些都是 redux-saga 的内部实现，dva 也是基本直接引用，因此在这里不进行展开。</p>
+<p><strong>最后我们分析<code>injectModel</code>第三个<code>if</code>中的内容</strong>:处理<code>subscriptions</code>:</p>
+<pre><code class="javascript">if (m.subscriptions) &#123;
+  unlisteners[m.namespace] = runSubscription(m.subscriptions, m, app, onError);
+&#125;
+</code></pre>
+<p><code>subscriptions</code>可以理解为和这个model有关的全局监听，但是相对独立。这一个步骤首先调用<code>runSubscription</code>来一个一个调用我们的<code>subscriptions</code>:</p>
+<pre><code class="javascript">export function run(subs, model, app, onError) &#123; // 在index.js中被重命名为 runSubscription
+  const funcs = [];
+  const nonFuncs = [];
+  for (const key in subs) &#123;
+    if (Object.prototype.hasOwnProperty.call(subs, key)) &#123;
+      const sub = subs[key];
+      const unlistener = sub(&#123;
+        dispatch: prefixedDispatch(app._store.dispatch, model),
+        history: app._history,
+      &#125;, onError);
+      if (isFunction(unlistener)) &#123;
+        funcs.push(unlistener);
+      &#125; else &#123;
+        nonFuncs.push(key);
+      &#125;
+    &#125;
+  &#125;
+  return &#123; funcs, nonFuncs &#125;;
+&#125;
+</code></pre>
+<p>正如我们所期待的，<code>run</code>函数就是一个一个执行<code>subscriptions</code>，但是这里有一点需要我们注意的，我们定义的<code>subscriptions</code>应该是需要返回一个<code>unlistener</code>来返回接触函数，这样当整个 model 被卸载的时候 dva 会自动调用这个接解除函数(也就是为什么这里的返回函数被命名为<code>unlistener</code>)</p>
+<h4 id="第四步"><a href="#第四步" class="headerlink" title="第四步"></a>第四步</h4><p>源代码中的第四步，是对 router 的挂载：</p>
+<pre><code class="javascript">app.router(require(&#39;./router&#39;));
+</code></pre>
+<p><code>require(&#39;./router&#39;)</code>返回的内容在源代码中经过一系列引用传递最后直接被构造成 React Component 并且最终调用 ReactDom.render 进行渲染，这里没有什么好说的，值得一提的就是 router 的动态加载。</p>
+<p>动态加载在该样例中是这样使用的：</p>
+<pre><code class="javascript">import React from &#39;react&#39;;
+import &#123; Router, Switch, Route &#125; from &#39;dva/router&#39;;
+import dynamic from &#39;dva/dynamic&#39;;
+
+function RouterConfig(&#123; history, app &#125;) &#123;
+  const IndexPage = dynamic(&#123;
+    app,
+    component: () =&gt; import(&#39;./routes/IndexPage&#39;),
+  &#125;);
+
+  const Users = dynamic(&#123;
+    app,
+    models: () =&gt; [
+      import(&#39;./models/users&#39;),
+    ],
+    component: () =&gt; import(&#39;./routes/Users&#39;),
+  &#125;);
+
+  history.listen((location, action)=&gt;&#123;
+    console.log(&#39;history listen:&#39;, location, action)
+  &#125;)
+
+  return (
+    &lt;Router history=&#123;history&#125;&gt;
+      &lt;Switch&gt;
+        &lt;Route exact path=&quot;/&quot; component=&#123;IndexPage&#125; /&gt;
+        &lt;Route exact path=&quot;/users&quot; component=&#123;Users&#125; /&gt;
+      &lt;/Switch&gt;
+    &lt;/Router&gt;
+  );
+&#125;
+</code></pre>
+<p>我们可以看出，主要就是利用<code>dva/dynamic.js</code>暴露的 dynamic 函数进行动态加载，接下来我们简单看一下 dynamic 函数做了什么:</p>
+<pre><code class="javascript">export default function dynamic(config) &#123;
+  const &#123; app, models: resolveModels, component: resolveComponent &#125; = config;
+  return asyncComponent(&#123;
+    resolve: config.resolve || function () &#123;
+      const models = typeof resolveModels === &#39;function&#39; ? resolveModels() : [];
+      const component = resolveComponent();
+      return new Promise((resolve) =&gt; &#123;
+        Promise.all([...models, component]).then((ret) =&gt; &#123;
+          if (!models || !models.length) &#123;
+            return resolve(ret[0]);
+          &#125; else &#123;
+            const len = models.length;
+            ret.slice(0, len).forEach((m) =&gt; &#123;
+              m = m.default || m;
+              if (!Array.isArray(m)) &#123;
+                m = [m];
+              &#125;
+              m.map(_ =&gt; registerModel(app, _)); // 注册所有的 model
+            &#125;);
+            resolve(ret[len]);
+          &#125;
+        &#125;);
+      &#125;);
+    &#125;,
+    ...config,
+  &#125;);
+&#125;
+</code></pre>
+<p>这里主要调用了 asyncComponent 函数，接下来我们再看一下这个函数：</p>
+<pre><code class="javascript">function asyncComponent(config) &#123;
+  const &#123; resolve &#125; = config;
+
+  return class DynamicComponent extends Component &#123;
+    constructor(...args) &#123;
+      super(...args);
+      this.LoadingComponent =
+        config.LoadingComponent || defaultLoadingComponent;
+      this.state = &#123;
+        AsyncComponent: null,
+      &#125;;
+      this.load();
+    &#125;
+
+    componentDidMount() &#123;
+      this.mounted = true;
+    &#125;
+
+    componentWillUnmount() &#123;
+      this.mounted = false;
+    &#125;
+
+    load() &#123;
+      resolve().then((m) =&gt; &#123;
+        const AsyncComponent = m.default || m;
+        if (this.mounted) &#123;
+          this.setState(&#123; AsyncComponent &#125;);
+        &#125; else &#123;
+          this.state.AsyncComponent = AsyncComponent; // eslint-disable-line
+        &#125;
+      &#125;);
+    &#125;
+
+    render() &#123;
+      const &#123; AsyncComponent &#125; = this.state;
+      const &#123; LoadingComponent &#125; = this;
+      if (AsyncComponent) return &lt;AsyncComponent &#123;...this.props&#125; /&gt;;
+
+      return &lt;LoadingComponent &#123;...this.props&#125; /&gt;;
+    &#125;
+  &#125;;
+&#125;
+</code></pre>
+<p>这个函数逻辑比较简洁，我们分析一下动态加载流程；</p>
+<ul>
+<li>在 constructor 里面调用 <code>this.load();</code> ( LoadingComponent 为占位 component)</li>
+<li>在 <code>this.load();</code> 函数里面调用 <code>dynamic</code> 函数返回的 resolve 方法</li>
+<li>resolve 方法实际上是一个 Promise，把相关 models 和 component 加载完之后 resolve (区分这两个 resolve)</li>
+<li>加载完成之后返回 AsyncComponent (即加载的 Component)</li>
+</ul>
+<p>动态加载主流程结束，至于动态加载的代码分割工作，可以使用 webpack3 的 <code>import()</code> 动态加载能力(例子中也是这样使用的)。</p>
+<h4 id="第五步"><a href="#第五步" class="headerlink" title="第五步"></a>第五步</h4><p>第五步骤就是 start 了：</p>
+<pre><code class="javascript">app.start(&#39;#root&#39;);
+</code></pre>
+<p>这个时候如果我们在 start 函数中传入 DomElement 或者 DomQueryString，就会直接启动应用了，如果我们这个时候不传入任何内容，实际上返回的是一个<code>&lt;Provider /&gt;</code> (React Component)，便于服务端渲染。 相关判断逻辑如下：</p>
+<pre><code class="javascript"> if (container) &#123;
+      render(container, store, app, app._router);
+      app._plugin.apply(&#39;onHmr&#39;)(render.bind(null, container, store, app));
+    &#125; else &#123;
+      return getProvider(store, this, this._router);
+    &#125;
+</code></pre>
+<p>至此，主要流程结束，以上几个步骤也包括了 dva 源码做的主要工作。</p>
+<p>当然 dva 源码中还有一些比如前缀处理等工作，但是相比于以上内容非常简单，所以在这里不进行分析了。</p>
+<h3 id="dva-core-文件目录"><a href="#dva-core-文件目录" class="headerlink" title="dva-core 文件目录"></a>dva-core 文件目录</h3><p>dva-core中的源码文件目录以及其功能:</p>
+<ul>
+<li>checkModel 对我们定义的 Model 进行检查是否符合要求</li>
+<li>constants 非常简单的常量文件，目前只定义了一个常量：NAMESPACE_SEP(&#x2F;)</li>
+<li>cratePromiseMiddleware 笔者自己定义的 redux 插件</li>
+<li>createStore 封装了 redux 原生的 createStore</li>
+<li>getReducer 这里面的函数其实主要就是调用了 handleActions 文件导出的函数</li>
+<li>getSaga 将用户输入的 effects 部分的键值对函数进行管理</li>
+<li>handleActions 是将 dva 风格的 reducer 和 state 转化成 redux 本来接受的那种方式</li>
+<li>index 主入口文件</li>
+<li>Plugin 插件类：可以管理不同钩子事件的回调函数，拥有增加、获取、执行钩子函数的功能</li>
+<li>perfixedDispatch 该文件提供了对 Dispatch 增加前缀的工具性函数 prefixedDispatch</li>
+<li>prefixNamespace 该文件提供了对 reducer 和 effects 增加前缀的工具性函数 prefixNamespace</li>
+<li>prefixType 判断是 reducer 还是 effects</li>
+<li>subscriptions 该文件提供了运行 subscriptions 和调用用户返回的 unlisten 函数以及删除缓存的功能</li>
+<li>utils 提供一些非常基础的工具函数</li>
+</ul>
+<h3 id="优势总结"><a href="#优势总结" class="headerlink" title="优势总结"></a>优势总结</h3><ul>
+<li>动态 model，已经封装好了整套调用，动态添加&#x2F;删除 model 变得非常简单</li>
+<li>默认封装好了管理 effects 的方式，有限可选可配置，降低学习成本的同时代码更利于维护</li>
+<li>易于上手，集成redux、redux-saga、react-router等常用功能</li>
+</ul>
+<h3 id="劣势总结"><a href="#劣势总结" class="headerlink" title="劣势总结"></a>劣势总结</h3><ul>
+<li>版本区隔不明显，dva 有 1.x 和 2.x 两种版本，之间API有些差异，但是官网提供的一些样例等中没有说明基于的版本，并且有的还是基于旧版本的，会给新手带来很多疑惑。</li>
+<li>内容繁杂，但是却没有一个整合性质的官方网站，大都是通过 list 的形式列下来写在README的。</li>
+<li>目前比如动态加载等还存在着一些问题，和直接采用react配套工具写的效果有所区别。</li>
+<li>很多 issues 不知道为什么就被关闭了，作者在最后也并未给出合理的解释。</li>
+<li>dva2 之后有点将 effects 和 actions 混淆，这一点我也并不是非常认同，当然原作者可能有自己的考虑，这里不过多评议。</li>
+</ul>
+<p>总之，作为一个个人主力的项目(主要开发者贡献了99%以上的代码)，可以看出作者的功底深厚，经验丰富，但是由于这样一个体系化的东西牵扯内容较多，并且非常受制于react、redux、react-router、redux-saga等的版本影响，<strong>不建议具备一定规模的非阿里系团队在生产环境中使用</strong>，但是如果是快速成型的中小型项目或者个人应用，使用起来还是有很大帮助的。</p>
+<h3 id="TODOS"><a href="#TODOS" class="headerlink" title="TODOS"></a>TODOS</h3><p>笔者也在准备做一个和 dva 处于同一性质，但是设计、实现和使用有所区别的框架，希望能够尽快落成。</p>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>

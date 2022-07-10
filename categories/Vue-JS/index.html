@@ -1,0 +1,1174 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="robots" content="noindex"><meta><title>分类: Vue.JS - 一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="一枝清寒."><meta property="og:url" content="http://example.com/"><meta property="og:site_name" content="一枝清寒."><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:author" content="ChenShang"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com"},"headline":"一枝清寒.","image":["http://example.com/img/og_image.png"],"author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/categories">分类</a></li><li class="is-active"><a href="#" aria-current="page">Vue.JS</a></li></ul></nav></div></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2021/04/27/vue-2/"><img class="fill" src="https://bu.dusays.com/2021/08/22/e37ea84a849ae.jpg" alt="Vue.JS基础的详讲( 组件 )"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-27T13:08:17.000Z" title="2021/4/27 21:08:17">2021-04-27</time>发表</span><span class="level-item"><time dateTime="2022-01-16T01:16:55.387Z" title="2022/1/16 09:16:55">2022-01-16</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/Vue-JS/">Vue.JS</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2021/04/27/vue-2/">Vue.JS基础的详讲( 组件 )</a></h1><div class="content"><h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><blockquote>
+<p>Vue的组件是Vue.JS里最难掌握的，当然也是最有趣，精彩的。</p>
+</blockquote>
+<p>基本分类为</p>
+<ul>
+<li>根组件</li>
+<li>可复用的功能组件</li>
+</ul>
+<h4 id="根组件的创建"><a href="#根组件的创建" class="headerlink" title="根组件的创建"></a>根组件的创建</h4><p>通过 <code>vue</code> 提供的构造函数可以实例化出来一个跟组件实例对象</p>
+<pre><code class="js">let app = new Vue(创建组件所需要的一些配置选项); // [根组件]
+</code></pre>
+<p><em>[vue组件，配置（声明式）构建方式<br>React组件，命令式]</em></p>
+<pre><code class="js">// 对于React
+        // render函数:确定组件的视图
+        class MyComponent extends React.Component&#123;
+
+        &#125;
+        ReactDOM.render(
+            &lt;MyComponent&gt;,
+            document.querySelector(&#39;#app&#39;)
+        );
+
+// 对于Vue
+        let app = new Vue(&#123;
+            el:&#39;#app&#39;,//挂载点
+            template:`
+                &lt;div&gt;这是vue&lt;/div&gt;
+            `          //最后组件产生的视图覆盖掉挂载点
+        &#125;)
+
+        如果不写el挂载点，只有模板。使用app对象.$mount(&#39;#app&#39;); // 手动挂载
+</code></pre>
+<h4 id="可复用的功能组件"><a href="#可复用的功能组件" class="headerlink" title="可复用的功能组件"></a>可复用的功能组件</h4><p>通过 <code>Vue</code> 提供的静态方法 <code>component</code> 窗口可复用的功能组件</p>
+<pre><code class="js">let component1 = Vue.component(创建组件所需要的一些配置选项)
+</code></pre>
+<p>注意事项:<br>[React中区分原生元素和自定义组件，原生：div(小写)，自定义组件Div(首字母必须大写)<br>Vue中，必须小写。<br>Vue：注册时：驼峰MyComponent。使用：my-component。Vue在遇到的时候也会自动解析成驼峰式的MyComponent去在注册的组件中寻找。]</p>
+<pre><code class="html">&lt;body&gt;
+
+    &lt;div id=&quot;app&quot;&gt;
+        &lt;h1&gt;这是vue&lt;/h1&gt;
+        &lt;hr /&gt;
+        &lt;my-component&gt;&lt;/my-component&gt;
+        &lt;my-component&gt;&lt;/my-component&gt;
+        &lt;!--注意转换规则:驼峰变串--&gt;
+    &lt;/div&gt;
+
+    &lt;script src=&quot;js/vue.js&quot;&gt;&lt;/script&gt;
+
+    &lt;script&gt;
+
+        Vue.component(&#39;MyComponent&#39;, &#123;//注意转换规则:驼峰变串
+            template: `
+                &lt;div&gt;MyComponent&lt;/div&gt;
+            `
+        &#125;);
+
+        let app = new Vue(&#123;
+            el: &#39;#app&#39;
+        &#125;);
+
+    &lt;/script&gt;
+
+&lt;/body&gt;
+</code></pre>
+<blockquote>
+<p>组件配置选项：<a target="_blank" rel="noopener" href="https://cn.vuejs.org/v2/api/">https://cn.vuejs.org/v2/api/</a></p>
+</blockquote>
+<h4 id="组件内容渲染"><a href="#组件内容渲染" class="headerlink" title="组件内容渲染"></a>组件内容渲染</h4><p>渲染一个组件的内容可以通过两种方式来进行</p>
+<ul>
+<li>template 选项</li>
+<li>render 选项（函数）</li>
+</ul>
+<h5 id="template"><a href="#template" class="headerlink" title="template"></a>template</h5><p>type : string</p>
+<p>组件的模板结构（HTML），模板内容会被 vue 进行渲染，生成最终的 HTML 内容，并替换占位（挂载）元素</p>
+<h5 id="el"><a href="#el" class="headerlink" title="el"></a>el</h5><p>type : string | Element</p>
+<p>提供一个在页面上已存在的 DOM 元素作为 Vue 实例的挂载目标。可以是 CSS 选择器，也可以是一个 HTMLElement 实例，</p>
+<p>该选择只对 new 创建的实例有效<br>如果提供 el ，但是没有提供 template ，则 el 的内容讲作为 template</p>
+<h5 id="render"><a href="#render" class="headerlink" title="render"></a>render</h5><p>type : (createElement: () &#x3D;&gt; VNode) &#x3D;&gt; VNode</p>
+<p>发挥 JavaScript 最大的编程能力，直接创建 VNode （虚拟dom对象），优先级高于 el 和 template</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://cn.vuejs.org/v2/guide/render-function.html">https://cn.vuejs.org/v2/guide/render-function.html</a></p>
+</blockquote>
+<pre><code class="js">         /**
+         * vue:  template -&gt; vNode -&gt; HTML
+         * react:   JSX -&gt; VDOM -&gt; HTML
+         */
+        let app = new Vue(&#123;
+            el: &#39;#app&#39;, // 挂载点不能是html、body元素
+            template: `&lt;div&gt;开课吧&lt;/div&gt;`,
+            render(createElement) &#123;
+                // render优先级高于其他视图处理
+                // return `&lt;div&gt;开课吧&lt;/div&gt;`;
+
+                let vNode = createElement(
+                    &#39;div&#39;,
+                    &#39;开课吧123&#39;
+                );
+                // console.log(vNode);
+
+                /**
+                 * vNode 类似原生中的 元素对象
+                 */
+                // let div = document.createElement(&#39;div&#39;);
+                // let text = document.createTextNode(&#39;开课吧&#39;);
+                // div.appendChild(text);
+                // console.dir(div);
+
+                return vNode;
+
+            &#125;
+        &#125;);
+</code></pre>
+<h3 id="使用-mount-方法延迟-Vue-实例的挂载"><a href="#使用-mount-方法延迟-Vue-实例的挂载" class="headerlink" title="使用 $mount 方法延迟 Vue 实例的挂载"></a>使用 $mount 方法延迟 Vue 实例的挂载</h3><p>当 Vue 实例没有 el 选项的时候，它会处于一种 未挂载 的状态，我们可以通过组件 Vue 实例对象的 $mount 方法来手动挂载，通过该方式，我们也可以达到延迟 Vue 实例的挂载的目的</p>
+<h3 id="渲染的3个注意事项"><a href="#渲染的3个注意事项" class="headerlink" title="渲染的3个注意事项"></a>渲染的3个注意事项</h3><pre><code class="js">        /**
+         *  // 挂载点不能是html、body元素
+         */
+        let app = new Vue(&#123;
+            el: &#39;body&#39;,
+            template: `&lt;div&gt;开课吧&lt;/div&gt;`
+        &#125;);
+
+        /**
+         * 每一个组件有且只能有一个顶级元素
+         */
+        let app = new Vue(&#123;
+            el: &#39;#app&#39;,
+            template: `&lt;div&gt;开课吧&lt;/div&gt;&lt;div&gt;开课吧&lt;/div&gt;`
+        &#125;);
+
+        /**
+         * 如果一个组件没有template也没有render，那么el（挂载点）的outerHTML就作为模板
+         */
+        let app = new Vue(&#123;
+            el: &#39;#app&#39;
+        &#125;);
+</code></pre>
+<h3 id="组件中的数据（状态）"><a href="#组件中的数据（状态）" class="headerlink" title="组件中的数据（状态）"></a>组件中的数据（状态）</h3><p>data<br>组件内部使用的数据，data 是一个对象，data 中的值可以中模板中直接访问</p>
+<h3 id="Vue-实例组件（根组件）的-data-是一个对象"><a href="#Vue-实例组件（根组件）的-data-是一个对象" class="headerlink" title="Vue 实例组件（根组件）的 data 是一个对象"></a>Vue 实例组件（根组件）的 data 是一个对象</h3><p>可复用功能组件的 data 必须是一个函数，且该函数必须返回一个对象（因为复用性，避免多个组件实例引用同一个对象。换句话说，组件中使用的数据必须是一个对象，但是可复用组件的这个数据对象必须通过函数返回</p>
+<h4 id="data-的访问"><a href="#data-的访问" class="headerlink" title="data 的访问"></a>data 的访问</h4><p>data 数据可以直接通过组件实例对象访问，也可以通过实例对象下的 <code>$data</code> 属性进行访问</p>
+<p>组件实例对象下有很多的以 $ 开头的属性，这些都是实例对象内置的一些属性和方法，vue 为了区分数据与内置属性方法，内置的属性和方法默认都是以 <code>$</code> 开始的，所以我们中数据中应该避免使用 <code>$</code> 开头的数据</p>
+<h3 id="模板语法"><a href="#模板语法" class="headerlink" title="模板语法"></a>模板语法</h3><p>vue 使用了基于 html 的模板语法，使用声明式的方式把实例中的数据（data）与 DOM 进行绑定，data 中的数据在模板中可以直接使用</p>
+</div></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2021/04/27/vue-3/"><img class="fill" src="https://bu.dusays.com/2021/08/22/e37ea84a849ae.jpg" alt="Vue.JS基础的详讲( MVVN )"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-27T12:17:08.000Z" title="2021/4/27 20:17:08">2021-04-27</time>发表</span><span class="level-item"><time dateTime="2021-08-22T13:56:06.955Z" title="2021/8/22 21:56:06">2021-08-22</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/Vue-JS/">Vue.JS</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2021/04/27/vue-3/">Vue.JS基础的详讲( MVVN )</a></h1><div class="content"><h1 id="一-vue-js的M-V-VM思想"><a href="#一-vue-js的M-V-VM思想" class="headerlink" title="一 vue.js的M-V-VM思想"></a>一 vue.js的M-V-VM思想</h1><p>MVVM 是Model-View-ViewModel 的缩写，它是一种基于前端开发的架构模式。</p>
+<p>　　1. Model指代的就是vue对象的data属性里面的数据。这里的数据要显示到页面中。</p>
+<p>　　2. View指代的就是vue中数据要显示的HTML页面，在vue中，也称之为“视图模板” 。</p>
+<p>　　3. ViewModel指代的是vue.js中我们编写代码时的vm对象了，它是vue.js的核心，</p>
+<p>　　　　&gt; 负责连接 View 和 Model，保证视图和数据的一致性，所以前面代码中，data里面的数据被显示中p标签中就是vm对象自动完成的。</p>
+<h1 id="二-大致的用法"><a href="#二-大致的用法" class="headerlink" title="二.大致的用法"></a>二.大致的用法</h1><pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+    &lt;script src=&quot;js/vue.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+    window.onload = function()&#123;
+        // 创建vm对象
+        var vm = new Vue(&#123;
+            el: &quot;#app&quot;,
+            data: &#123;
+                name:&quot;大标题&quot;,
+                age:16,
+            &#125;,
+        &#125;)
+    &#125;
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id=&quot;app&quot;&gt;
+        &lt;!-- 在双标签中显示数据要通过&#123;&#123;  &#125;&#125;来完成 --&gt;
+        &lt;h1&gt;&#123;&#123;name&#125;&#125;&lt;/h1&gt;
+        &lt;p&gt;&#123;&#123;age&#125;&#125;&lt;/p&gt;
+        &lt;!-- 在表单输入框中显示数据要使用v-model来完成 --&gt;
+        &lt;input type=&quot;text&quot; v-model=&quot;name&quot;&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<ol>
+<li><p>如果要输出data里面的数据作为普通标签的内容，需要使用<code>&#123;&#123; &#125;&#125;</code></p>
+</li>
+<li><p>使用v-model把data里面的数据显示到表单元素以后，一旦用户修改表单元素的值</p>
+</li>
+</ol>
+<p>　　　则data里面对应数据的值也会随之发生改变，甚至，页面中凡是使用了这个数据都会发生变化。</p>
+<ol start="3">
+<li>双花括号仅用输出文本内容,如果要输出html代码,则不能使用这个.要使用<code>v-html</code>来输出.<br>　<code>v-html</code>必须在html标签里面作为属性写出来.</li>
+</ol>
+<pre><code class="html">&lt;span v-html=&quot;img&quot;&gt;&lt;/span&gt;
+&lt;script&gt;
+let vm = new Vue(&#123;
+el:&quot;.app&quot;,
+data:&#123;
+img:&#39;&lt;img src=&quot;images/shendan.png&quot;&gt;&#39;,
+&#125;
+&#125;)
+&lt;/script&gt;
+</code></pre>
+<ol start="4">
+<li>在输出内容到普通标签的使用<code>&#123;&#123; &#125;&#125;</code>还支持js代码。</li>
+</ol>
+<pre><code class="html">　　&lt;h1&gt;&#123;&#123;str1.split("").reverse().join("")&#125;&#125;&lt;/h1&gt;
+</code></pre>
+<ol start="5">
+<li>支持js的运算符</li>
+</ol>
+<pre><code class="html">　　&lt;h1&gt;&#123;&#123;num1+3&#125;&#125;&lt;/h1&gt;
+</code></pre>
+<ol start="6">
+<li>三元运算符,类似于python里面的三元表达式<br>　　三元运算符的语法:<br>　　　　判断条件 ? 条件为true : 条件为false的结果</li>
+</ol>
+<pre><code class="html">　　　　&lt;h1&gt;num1和num2之间进行比较,最大值:&#123;&#123; num2>num1?num2:num1 &#125;&#125;&lt;/h1&gt;
+</code></pre>
+<p>　　python 三元表达式[三目运算符]的语法:</p>
+<pre><code class="python">　　　　a if 条件 else b
+</code></pre>
+<ol start="7">
+<li>图片标签</li>
+</ol>
+<pre><code class="html">&lt;span v-html=&quot;img&quot;&gt;&lt;/span&gt;
+&lt;img :src=&quot;img2&quot; alt=&quot;&quot; width=&quot;200px&quot;&gt;  &lt;!-- 冒号：表示 设置属性 --&gt;
+
+data:&#123;  // data 相当于  model
+               img:&#39;&lt;img src=&quot;img/1.png&quot; width=&quot;100px&quot;&gt;&#39; ,// 数据为标签时，在页面展示时需要放在一个标签中显示设置v-html 属性
+               img2:&#39;img/1.png&#39; , //用设置属性的方法  :src=&#39;img2&#39;
+           &#125;
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+    &lt;script src=&quot;vue.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;div id=&quot;app&quot;&gt;
+    &lt;span v-html=&quot;img&quot;&gt;&lt;/span&gt;
+    &lt;img :src=&quot;img2&quot; alt=&quot;&quot; width=&quot;200px&quot;&gt;  &lt;!-- 冒号：表示 设置属性 --&gt;
+    &lt;img v-bind:src=&quot;img2&quot; width=&quot;50&quot;&gt;  &lt;!--1.0版本用  v-bind： 设置属性--&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+    // 页面加载完执行
+    window.onload=function (ev) &#123;
+
+
+       let vm = new Vue(&#123;
+           // 至少两个数据el 和data
+           el:&#39;#app&#39;, //通过css 选择器   确定vue要控制的范围
+           data:&#123;  // data 相当于  model
+               img:&#39;&lt;img src=&quot;img/1.png&quot; width=&quot;100px&quot;&gt;&#39; ,// 数据为标签时，在页面展示时需要放在一个标签中显示设置v-html 属性
+               img2:&#39;img/1.png&#39; , //用设置属性的方法  :src=&#39;img2&#39;
+           &#125;
+
+       &#125;)
+
+    &#125;
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h1 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h1><h2 id="1-指令-Directives-是带有“v-”前缀的特殊属性。每一个指令在vue中都有固定的作用。"><a href="#1-指令-Directives-是带有“v-”前缀的特殊属性。每一个指令在vue中都有固定的作用。" class="headerlink" title="1.指令 (Directives) 是带有“v-”前缀的特殊属性。每一个指令在vue中都有固定的作用。"></a>1.指令 (Directives) 是带有“v-”前缀的特殊属性。每一个指令在vue中都有固定的作用。</h2><p>在vue中，提供了很多指令，常用的有：v-if、v-model、v-for等等。</p>
+<p>　　指令会在vm对象的data属性的数据发生变化时，会同时改变元素中的其控制的内容或属性。</p>
+<p>vue1.x写法                  ——&gt;      vue2.x的写法<br>　　v-html                    ——&gt;  　　　　<code>&#123;&#123; &#125;&#125;</code><br>　　v-bind:属性名        —-&gt;         :属性                表示： 设置属性<br>　　v-on:事件名         —-&gt;     @事件名</p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+    &lt;script src=&quot;vue.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;div id=&quot;app&quot;&gt;
+    &lt;span v-html=&quot;img&quot;&gt;&lt;/span&gt;
+    &lt;p v-html=&quot;&#123;&#123;title&#125;&#125;&quot;&gt;&lt;/p&gt;
+    &lt;img v-bind:src=&quot;img2&quot; width=&quot;50&quot;&gt;  &lt;!--1.0版本用  v-bind： 设置属性--&gt;
+    &lt;button v-on:click=&quot;func&quot;&gt;点击&lt;/button&gt;  &lt;!-- 点击事件  --&gt;
+    &lt;button @click=&quot;(num&lt;10)?(num):(num-10)&quot;&gt;点击&#123;&#123;num&#125;&#125;&lt;/button&gt;  &lt;!-- 点击事件  使用了三元运算符  --&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+    // 页面加载完执行
+    window.onload=function (ev) &#123;
+
+
+       let vm = new Vue(&#123;
+           // 至少两个数据el 和data
+           el:&#39;#app&#39;, //通过css 选择器   确定vue要控制的范围
+           data:&#123;  // data 相当于  model
+               img:&#39;&lt;img src=&quot;img/1.png&quot; width=&quot;100px&quot;&gt;&#39; ,// 数据为标签时，在页面展示时需要放在一个标签中显示设置v-html 属性
+               title:&quot;hello world&quot;,
+               num:10
+           &#125;,
+           methods:&#123;
+               func:function () &#123;
+                   alert(&quot;你点我干嘛！&quot;);
+               &#125;
+           &#125;
+
+
+       &#125;)
+
+    &#125;
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h2 id="2-操作属性"><a href="#2-操作属性" class="headerlink" title="2. 操作属性"></a>2. 操作属性</h2><p>格式：</p>
+<p>&lt;标签名 :标签属性&#x3D;”data属性”&gt;&lt;&#x2F;标签名&gt;</p>
+<pre><code class="html">&lt;p :title=&quot;str1&quot;&gt;&#123;&#123; str1 &#125;&#125;&lt;/p&gt;      &lt;!-- 也可以使用v-html显示双标签的内容，&#123;&#123; &#125;&#125; 是简写 --&gt;
+&lt;a :href=&quot;url2&quot;&gt;淘宝&lt;/a&gt;
+&lt;a v-bind:href=&quot;url1&quot;&gt;百度&lt;/a&gt;       &lt;!-- v-bind是vue1.x版本的写法 --&gt;
+</code></pre>
+<p>3.事件绑定<br>有两种写法，@事件名 和 v-on:事件名</p>
+<pre><code class="html">&lt;button v-on:click=&quot;num++&quot;&gt;按钮&lt;/button&gt; &lt;!-- v-on 是vue1.x版本的写法 --&gt;
+&lt;button @click=&quot;num+=5&quot;&gt;按钮2&lt;/button&gt;
+</code></pre>
+<ol>
+<li><p>使用@事件名来进行事件的绑定<br>语法：</p>
+<h1 @click="num++"></h1>
+</li>
+<li><p>绑定的事件的事件名，全部都是js的事件名：<br>　　@submit —&gt; onsubmit<br>　　@focus —&gt; onfocus</p>
+</li>
+</ol>
+<ul>
+<li>案例1 ：</li>
+</ul>
+<p>　　- 知识点：</p>
+<p>　　　　1. v-model     input 框</p>
+<p>　　　　2. @click  点击事件</p>
+<p>　　　　3. 三元运算符</p>
+<p>核心代码:</p>
+<pre><code class="html">&lt;button @click=&quot;num+=1&quot;&gt;添加商品&lt;/button&gt;
+    &lt;input type=&quot;text&quot; v-model=&quot;num&quot;&gt;
+    &lt;button @click=&quot;(num&lt;=1)?(num=1):(num-=1)&quot;&gt;减少商品&lt;/button&gt; &lt;!--三元运算 --&gt;
+</code></pre>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+    &lt;script src=&quot;vue.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script&gt;
+    // 页面加载完执行
+    window.onload=function (ev) &#123;
+
+
+       let vm = new Vue(&#123;
+           // 至少两个数据el 和data
+           el:&#39;#app&#39;, //通过css 选择器   确定vue要控制的范围
+           data:&#123;  // data 相当于  model
+               num:10
+           &#125;
+
+       &#125;)
+
+    &#125;
+&lt;/script&gt;
+&lt;div id=&quot;app&quot;&gt;
+
+    &lt;button @click=&quot;num+=1&quot;&gt;添加商品&lt;/button&gt;
+    &lt;input type=&quot;text&quot; v-model=&quot;num&quot;&gt;
+    &lt;button @click=&quot;(num&lt;=1)?(num=1):(num-=1)&quot;&gt;减少商品&lt;/button&gt; &lt;!--三元运算 --&gt;
+&lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h2 id="4-操作样式"><a href="#4-操作样式" class="headerlink" title="4 操作样式"></a>4 操作样式</h2><ol>
+<li>控制标签class类名</li>
+</ol>
+<p>格式：<br><code>&lt;h1 :class=&quot;值&quot;&gt;元素&lt;/h1&gt;</code> 值可以是<strong>对象、对象名、数组</strong><br>添加class类名，值是一个<strong>对象</strong></p>
+<pre><code class="html">&lt;style&gt;
+   .box1&#123;color: red;border: 1px solid #000;&#125;
+   .box2&#123;background-color: orange;font-size: 32px;&#125;
+&lt;/style&gt;
+
+&lt;!---直接给标签设置class属性时，用的是  单花括号  --&gt;
+    &lt;p :class=&quot;&#123;box1:mycls1&#125;&quot;&gt;段落一&lt;/p&gt;
+    &lt;p @click=&quot;mycls3=!mycls3&quot; :class=&quot;&#123;box2:mycls3,box1:mycls2,&#125;&quot;&gt;段落一&lt;/p&gt;  
+</code></pre>
+<pre><code class="Vue">data:&#123;  // data 相当于  model
+         mycls1:false, // class属性设置是 bool
+         mycls2:true,
+         mycls3:true
+    &#125;
+&#123;
+class类1:布尔值变量1,
+class类2:布尔值变量2,
+&#125;
+</code></pre>
+<ol start="3">
+<li>批量给元素增加多个class样式类</li>
+</ol>
+<pre><code class="html">&lt;style&gt;
+    .box4&#123;
+        background-color: red;
+    &#125;
+    .box5&#123;
+        color: green;
+    &#125;
+  &lt;/style&gt;
+
+
+&lt;!-- 批量给元素增加多个class样式类 --&gt;
+    &lt;style&gt;
+    .box6&#123;background-color: red;&#125;
+    .box7&#123;color: green;&#125;
+    .box8&#123;border: 1px solid yellow;&#125;
+    &lt;/style&gt;
+
+&lt;div id=&quot;app3&quot;&gt;
+   &lt;p :class=&quot;[mycls1,mycls2]&quot;&gt;第3段落&lt;/p&gt;
+&lt;/div&gt;
+&lt;script&gt;
+    let vm3=new Vue(&#123;
+        el:&quot;#app3&quot;,
+        data:&#123;
+
+            mycls1:&#123;
+                box6:false,
+                box7:true
+            &#125;,
+            mycls2:&#123;
+               box8:true
+            &#125;
+        &#125;
+    &#125;)
+&lt;/script&gt;
+</code></pre>
+<ol start="2">
+<li>控制标签style样式<br>格式1：值是json对象，对象写在元素的:style属性中</li>
+</ol>
+<pre><code class="html">&lt;div :style=&quot;&#123;color: activeColor, fontSize: fontSize + &#39;px&#39; &#125;&quot;&gt;&lt;/div&gt;
+
+data: &#123;
+activeColor: &#39;red&#39;,
+fontSize: 30
+&#125;
+格式2：值是对象变量名，对象在data中进行声明
+
+&lt;div v-bind:style=&quot;styleObject&quot;&gt;&lt;/div&gt;
+
+data: &#123;
+styleObject: &#123;
+color: &#39;red&#39;,
+fontSize: &#39;13px&#39;
+&#125;
+&#125;
+格式3：值是数组
+
+&lt;div v-bind:style=&quot;[style1, style2]&quot;&gt;&lt;/div&gt;
+
+data: &#123;
+style1:&#123;
+color:&quot;red&quot;
+&#125;,
+style2:&#123;
+background:&quot;yellow&quot;,
+fontSize: &quot;21px&quot;
+&#125;
+&#125;
+</code></pre>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+    &lt;script src=&quot;vue.js&quot;&gt;&lt;/script&gt;
+    &lt;style&gt;
+       .box1&#123;color: red;border: 1px solid #000;&#125;
+        .box2&#123;background-color: orange;font-size: 32px;&#125;
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;!--方式一--&gt;
+&lt;div id=&quot;box1&quot;&gt;
+    &lt;p :style=&quot;&#123;color:mycolor,backgroundColor:mybg&#125;&quot;&gt;第一段内容&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;br&gt;
+&lt;script&gt;
+
+    var vm1= new Vue(&#123;
+        el:&quot;#box1&quot;,
+        data:&#123;
+            mycolor:&#39;red&#39;,
+            mybg:&#39;pink&#39;
+        &#125;
+    &#125;)
+
+&lt;/script&gt;
+
+
+&lt;!--方式二--&gt;
+&lt;div id=&quot;box2&quot;&gt;
+    &lt;p :style=&quot;mystyle&quot;&gt;第一段内容&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;br&gt;
+&lt;script&gt;
+
+    var vm2= new Vue(&#123;
+        el:&quot;#box2&quot;,
+        data:&#123;
+            mystyle:&#123;
+                color:&quot;red&quot;,
+                backgroundColor:&quot;pink&quot;
+            &#125;
+        &#125;
+    &#125;)
+
+&lt;/script&gt;
+
+
+&lt;!--方式三：--&gt;
+&lt;div id=&quot;box3&quot;&gt;
+    &lt;div :style=&quot;[mystyle,mystyle2]&quot;&gt;第一段内容&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;br&gt;
+&lt;script&gt;
+    var vm3= new Vue(&#123;
+        el:&quot;#box3&quot;,
+        data:&#123;
+            mystyle:&#123;
+                color:&quot;red&quot;,
+                backgroundColor:&quot;pink&quot;
+            &#125;,
+             mystyle2:&#123;
+                height:&quot;400px&quot;,
+                width:&quot;400px&quot;
+            &#125;
+
+        &#125;
+    &#125;)
+
+&lt;/script&gt;
+</code></pre>
+<blockquote>
+<p>例子<br>3. 条件渲染指令<br>vue中提供了两个指令可以用于判断是否要显示元素，分别是v-if和v-show。</p>
+</blockquote>
+<ol>
+<li><code>v-if</code></li>
+</ol>
+<pre><code class="html">&lt;!-- vue对象最终会把条件的结果变成布尔值 --&gt;
+&lt;h1 v-if=&quot;ok&quot;&gt;Yes&lt;/h1&gt;
+data:&#123;
+ok:false // true则是显示，false是该标签不会出现，不只是隐藏
+&#125;
+2 v-else
+
+v-else指令来表示 v-if 的“else 块”，v-else 元素必须紧跟在带 v-if 或者 v-else-if 的元素的后面，否则它将不会被识别。
+
+&lt;h1 v-if=&quot;ok&quot;&gt;Yes&lt;/h1&gt;
+&lt;h1 v-else&gt;No&lt;/h1&gt;
+
+data:&#123;
+ok:false // true则是显示，false是隐藏
+&#125;
+3 v-else-if
+
+&lt;h1 v-if=&quot;num==1&quot;&gt;num的值为1&lt;/h1&gt;
+&lt;h1 v-else-if=&quot;num==2&quot;&gt;num的值为2&lt;/h1&gt;
+&lt;h1 v-else&gt;num的值是&#123;&#123;num&#125;&#125;&lt;/h1&gt;
+
+data:&#123;
+num:2
+&#125;
+4 v-show
+
+用法和v-if大致一样，区别在于2点：
+
+1. v-show后面不能v-else
+2. v-show隐藏元素时，使用的是display:none来隐藏的，
+
+　　而v-if是直接从HTML文档中移除元素[ DOM操作中的remove ]
+
+&lt;h1 v-show=&quot;ok&quot;&gt;Hello!&lt;/h1&gt;
+</code></pre>
+<p>data数据：<br>data:{<br>ok:false &#x2F;&#x2F; true则是显示，false是隐藏<br>案例：</p>
+<pre><code class="html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+    &lt;script src=&quot;vue.js&quot;&gt;&lt;/script&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id=&quot;box&quot;&gt;
+       &lt;p v-if=&quot;is_login&quot;&gt;欢迎再次登录我们网站&lt;/p&gt;
+       &lt;p v-else&gt;&lt;a href=&quot;&quot;&gt;注册&lt;/a&gt;&lt;a href=&quot;&quot;&gt;登录&lt;/a&gt;&lt;/p&gt;
+
+
+        &lt;p v-if=&quot;num%3==0&quot;&gt;这个数能被3整除&lt;/p&gt;
+        &lt;p v-else-if=&quot;num%5==0&quot;&gt;这个数能被5整除&lt;/p&gt;
+        &lt;p v-else-if=&quot;num==1&quot;&gt;这个数为&#123;&#123;num&#125;&#125;&lt;/p&gt;
+        &lt;p v-else&gt;你好&lt;/p&gt;
+        &lt;!--v-show 符合条件就展示 ，不符合条件就隐藏 --&gt;
+        &lt;p v-show=&quot;num==3&quot;&gt;这个数为3&lt;/p&gt;
+        &lt;p v-show=&quot;num&quot;&gt;这个数为3&lt;/p&gt;
+    &lt;/div&gt;
+
+&lt;/body&gt;
+
+&lt;script&gt;
+    var vm =new Vue(&#123;
+        el:&#39;#box&#39;,
+        data:&#123;
+            // is_login:true,
+            is_login:false,
+            num:3
+        &#125;
+
+
+    &#125;)
+&lt;/script&gt;
+&lt;/html&gt;
+</code></pre>
+<p>v-if v-else v-show<br>5 列表渲染指令<br>在vue中，可以通过v-for指令可以将一组数据渲染到页面中，数据可以是数组或者对象。</p>
+<p>数据是数组：</p>
+<pre><code class="html">&lt;ul&gt;
+&lt;!--i是列表的每一个元素--&gt;
+&lt;li v-for=&quot;i in list&quot;&gt;&#123;&#123;i&#125;&#125;&lt;/li&gt;
+&lt;/ul&gt;
+数据是对象：
+
+&lt;ul&gt;
+&lt;!--i是每一个value值,j是每一个键名--&gt;
+&lt;li v-for=&quot;(i, j) in obj1&quot;&gt;&#123;&#123;j&#125;&#125;:&#123;&#123;i&#125;&#125;&lt;/li&gt;
+&lt;/ul&gt;
+实用案例
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+    &lt;script src=&quot;vue.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script&gt;
+    // 页面加载完执行
+    window.onload=function (ev) &#123;
+
+
+       let vm = new Vue(&#123;
+           // 至少两个数据el 和data
+           el:&#39;#app&#39;, //通过css 选择器   确定vue要控制的范围
+           data:&#123;  // data 相当于  model
+               num:10
+           &#125;
+
+       &#125;)
+
+    &#125;
+&lt;/script&gt;
+&lt;div id=&quot;app&quot;&gt;
+
+    &lt;button @click=&quot;num+=1&quot;&gt;添加商品&lt;/button&gt;
+    &lt;input type=&quot;text&quot; v-model=&quot;num&quot;&gt;
+    &lt;button @click=&quot;(num&lt;=1)?(num=1):(num-=1)&quot;&gt;减少商品&lt;/button&gt; &lt;!--三元运算 --&gt;
+&lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>商品增减</p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+   &lt;meta charset=&quot;UTF-8&quot;&gt;
+   &lt;title&gt;Title&lt;/title&gt;
+   &lt;script src=&quot;vue.js&quot;&gt;&lt;/script&gt;
+   &lt;style&gt;
+
+       span&#123;
+           height: 100px;
+           width: 100px;
+           background: grey;
+           display: inline-block;
+           line-height: 100px;
+           text-align: center;
+       &#125;
+       .new div&#123;
+           width: 320px;
+           height: 300px;
+           background: red;
+           display: none;
+       &#125;
+       .new .active&#123;
+           display: block;
+       &#125;
+       .current&#123;
+           background: red;
+       &#125;
+   &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+   &lt;div id=&quot;box&quot;&gt;
+       &lt;div class=&#39;item&#39;&gt;
+           &lt;span :class=&quot;num==1?&#39;current&#39;:&#39;&#39;&quot; @click=&quot;num=1&quot;&gt;国内新闻&lt;/span&gt;
+           &lt;span :class=&quot;num==2?&#39;current&#39;:&#39;&#39;&quot; @click=&quot;num=2&quot;&gt;国外新闻&lt;/span&gt;
+           &lt;span :class=&quot;num==3?&#39;current&#39;:&#39;&#39;&quot; @click=&quot;num=3&quot;&gt;银河新闻&lt;/span&gt;
+       &lt;/div&gt;
+       &lt;div class=&quot;new&quot; &gt;
+           &lt;div :class=&quot;num==1?&#39;active&#39;:&#39;&#39;&quot;&gt;国内新闻&lt;/div&gt;
+           &lt;div :class=&quot;num==2?&#39;active&#39;:&#39;&#39;&quot;&gt;国外新闻&lt;/div&gt;
+           &lt;div :class=&quot;num==3?&#39;active&#39;:&#39;&#39;&quot;&gt;银河新闻&lt;/div&gt;
+       &lt;/div&gt;
+   &lt;/div&gt;
+
+&lt;/body&gt;
+
+&lt;script&gt;
+   var vm =new Vue(&#123;
+       el:&#39;#box&#39;,
+       data:&#123;
+           num:1
+       &#125;
+
+
+   &#125;)
+&lt;/script&gt;
+&lt;/html&gt;
+</code></pre>
+<p>内容切换</p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+    &lt;script src=&quot;../vue.js&quot;&gt;&lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;bootstrap/css/bootstrap.css&quot;&gt;
+&lt;/head&gt;
+&lt;style&gt;
+    .active &#123;
+        color: red
+    &#125;
+
+    #good_add, #good_edit &#123;
+        width: 300px;
+        height: 300px;
+        border: 1px solid grey;
+        background: grey;
+        text-align: center;
+        /*display: none;*/
+    &#125;
+    .proform&#123;
+        display: block;
+    &#125;
+    .hide_cls&#123;
+        display: none;
+    &#125;
+    #good_edit div ,#good_add div&#123;
+        margin-top: 20px;
+    &#125;
+
+&lt;/style&gt;
+&lt;body&gt;
+
+
+&lt;div id=&quot;box&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col col-md-3&quot;&gt;
+            &lt;div id=&quot;good_add&quot; :class=&quot;&#123;&#39;proform&#39;:add_cls1,&#39;hide_cls&#39;:add_cls2&#125;&quot;&gt;
+                &lt;h3&gt;添加商品&lt;/h3&gt;
+                &lt;div&gt;商品标题&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;input type=&quot;text&quot; v-model=&quot;add_name&quot;&gt;&lt;/div&gt;
+                &lt;div&gt;商品数量&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;input type=&quot;text&quot; v-model=&quot;add_num&quot;&gt;&lt;/div&gt;
+                &lt;div&gt;商品价格&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;input type=&quot;text&quot; v-model=&quot;add_price&quot;&gt;&lt;/div&gt;
+                &lt;div&gt;&lt;button class=&quot;btn btn-default&quot; @click=&quot;add_keep&quot; style=&quot;margin-right: 20px&quot;&gt;保存&lt;/button &gt;&lt;button class=&quot;btn btn-default &quot; @click=&quot;add_cancel&quot; style=&quot;margin-left: 20px&quot;&gt;取消&lt;/button&gt;&lt;/div&gt;
+
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;col col-md-6 &quot;&gt;
+            &lt;button class=&quot;btn btn-info&quot; @click=&quot;add&quot;&gt;添加&lt;/button&gt;
+
+            &lt;table class=&quot;table table-bordered&quot;&gt;
+                &lt;tr&gt;
+                    &lt;th&gt;编号&lt;/th&gt;
+                    &lt;th&gt;书名&lt;/th&gt;
+                    &lt;th&gt;价格&lt;/th&gt;
+                    &lt;th&gt;数量&lt;/th&gt;
+                    &lt;th&gt;操作&lt;/th&gt;
+                &lt;/tr&gt;
+                &lt;tbody&gt;
+                &lt;tr v-for=&quot;good,key in goods&quot;&gt;
+                    &lt;td&gt;&#123;&#123;key+1&#125;&#125;&lt;/td&gt;
+                    &lt;td&gt;&#123;&#123;good.name&#125;&#125;&lt;/td&gt;
+                    &lt;td v-if=&quot;good.price&gt;100&quot; :class=&quot;&#123;active:mycls&#125;&quot;&gt;&#123;&#123;good.price&#125;&#125;&lt;/td&gt;
+                    &lt;td v-if=&quot;good.price&lt;=100&quot;&gt;&#123;&#123;good.price&#125;&#125;&lt;/td&gt;
+                    &lt;td&gt;&#123;&#123;good.num&#125;&#125;&lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;button class=&quot;btn btn-info&quot; @click=&quot;edit(key)&quot;&gt;编辑&lt;/button&gt;
+                        &lt;button class=&quot;btn btn-danger&quot; @click=&quot;goods.splice(key,1)&quot;&gt;删除&lt;/button&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+
+                &lt;/tbody&gt;
+            &lt;/table&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col col-md-3 pull-right&quot;&gt;
+            &lt;div id=&quot;good_edit&quot; :class=&quot;&#123;&#39;proform&#39;:edit_cls1,&#39;hide_cls&#39;:edit_cls2&#125;&quot; &gt;
+            &lt;!--&lt;div&gt;编号&lt;input type=&quot;text&quot; v-model=&quot;k&quot;&gt;&lt;/div&gt;--&gt;
+            &lt;h3&gt;编辑商品&lt;/h3&gt;
+            &lt;div&gt;商品标题&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;input type=&quot;text&quot; v-model=&quot;name&quot;&gt;&lt;/div&gt;
+            &lt;div&gt;商品数量&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;input type=&quot;text&quot; v-model=&quot;num&quot;&gt;&lt;/div&gt;
+            &lt;div&gt;商品价格&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;input type=&quot;text&quot; v-model=&quot;price&quot;&gt;&lt;/div&gt;
+            &lt;div&gt;&lt;button class=&quot;btn btn-default&quot; @click=&quot;edit_keep&quot; style=&quot;margin-right: 20px&quot;&gt;保存&lt;/button &gt;&lt;button class=&quot;btn btn-default&quot; @click=&quot;edit_cancel&quot; style=&quot;margin-left: 20px&quot;&gt;取消&lt;/button&gt;&lt;/div&gt;
+
+        &lt;/div&gt;
+        &lt;/div&gt;
+
+
+    &lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;script&gt;
+    let l = new Vue(&#123;
+
+        el: &quot;#box&quot;,
+        data: &#123;
+            goods: [
+                &#123;&#39;name&#39;: &quot;python1&quot;, &#39;price&#39;: 150,&quot;num&quot;:1000&#125;,
+                &#123;&#39;name&#39;: &quot;python2&quot;, &#39;price&#39;: 100,&quot;num&quot;:2000&#125;,
+                &#123;&#39;name&#39;: &quot;python3&quot;, &#39;price&#39;: 70,&quot;num&quot;:3000&#125;,
+                &#123;&#39;name&#39;: &quot;python4&quot;, &#39;price&#39;: 60,&quot;num&quot;:4000&#125;,
+                &#123;&#39;name&#39;: &quot;python5&quot;, &#39;price&#39;: 110,&quot;num&quot;:5000&#125;
+            ],
+            //编辑所用的值
+            k:&quot;&quot;,// 记录该书的索引值，方便编辑后保存用
+            name:&quot;&quot;, //点击编辑时，把该书的开始name显示 ，之后修改后同步改变，下面的价格和数量也是一样
+            price:&quot;&quot;,
+            num:&quot;&quot;,
+            edit_init_dic:&quot;&quot;,// 点击编辑时，记录最初 的书籍信息
+            // edit_init_k:&quot;&quot;,//点击编辑时，记录该书最初索引值  可以不用
+
+            edit_cls1: false,
+            edit_cls2: true,
+
+            //添加用的参数
+            add_name:&quot;&quot;,
+            add_price:&quot;&quot;,
+            add_num:&quot;&quot;,
+            add_cls1:false,
+            add_cls2:true,
+            mycls:true
+
+
+        &#125;,
+         methods:&#123;
+                edit:function (key) &#123;
+                    //显示编辑框
+                     this.edit_cls1=true;
+                     this.edit_cls2=false;
+                    //数据处理
+                    this.k=key;
+                    this.name=this.goods[key].name;
+                    this.price=this.goods[key].price;
+                    this.num=this.goods[key].num;
+                    this.edit_init_dic=&#123;&quot;name&quot;:this.goods[key].name,&quot;price&quot;:this.goods[key].price,&quot;num&quot;:this.goods[key].num&#125;;
+                    this.edit_init_k=key
+                &#125;,
+                edit_keep:function () &#123;
+                    this.goods.splice(this.k,1,&#123;&quot;name&quot;:this.name,&quot;price&quot;:this.price,&#39;num&#39;:this.num&#125;)
+                    this.edit_cls1=false;
+                    this.edit_cls2=true;
+                &#125;,
+                edit_cancel:function () &#123;
+                    this.goods.splice(this.k,1,this.edit_init_dic);
+                    this.edit_cls1=false;
+                    this.edit_cls2=true;
+                &#125;,
+                add:function () &#123;
+                    //点击添加按钮弹出 添加框  //:class=&quot;&#123;&#39;proform&#39;:add_cls1,&#39;hide_cls&#39;:add_cls2&#125;
+                    this.add_cls1=true;
+                    this.add_cls2=false;
+
+                    //将上次的数据清空显示
+                    this.add_name=&quot;&quot;;
+                    this.add_price=&quot;&quot;;
+                    this.add_num=&quot;&quot;;
+
+                &#125;,
+                add_keep:function () &#123;
+                    //保存数据
+                    this.goods.splice(this.goods.length,1,&#123;&#39;name&#39;:this.add_name,&#39;price&#39;:this.add_price,&#39;num&#39;:this.add_num&#125;);
+                    //隐藏 添加框
+                    this.add_cls1=false;
+                    this.add_cls2=true;
+
+                &#125;,
+                add_cancel:function () &#123;
+                    //把数据清空
+                    this.add_name=&quot;&quot;;
+                    this.add_price=&quot;&quot;;
+                    this.add_num=&quot;&quot;;
+                    //隐藏 添加框
+                    this.add_cls1=false;
+                    this.add_cls2=true;
+
+                &#125;
+
+            &#125;
+    &#125;)
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>表格的增删改查</p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+    &lt;script src=&quot;../vue.js&quot;&gt;&lt;/script&gt;
+    &lt;style&gt;
+        table,tr,th,td&#123;
+            border: 1px solid;
+            border-collapse: collapse;
+            text-align: center;
+        &#125;
+        table&#123;
+            width: 600px;
+            margin-left: 100px;
+        &#125;
+        th&#123;
+            padding-top: 10px;
+        &#125;
+        .box&#123;
+            width: 300px;
+            height: 200px;
+            border: 1px solid;
+            border-radius: 5px;
+            position: fixed;
+            margin: auto;
+            right: 0;
+            left: 0;
+            top: 0;
+            bottom: 0;
+        &#125;
+        .box div&#123;
+            text-align: center;
+            margin: 15px;
+        &#125;
+        .box button&#123;
+            margin: 20px;
+        &#125;
+        table button&#123;
+            margin-left: 10px;
+        &#125;
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;div id=&quot;app&quot;&gt;
+    &lt;body&gt;
+    &lt;div&gt;&lt;button @click=&quot;is_show=true&quot;&gt;添加商品&lt;/button&gt;&lt;/div&gt;
+    &lt;table&gt;
+        &lt;tr&gt;
+            &lt;th&gt;商品编号&lt;/th&gt;
+            &lt;th&gt;商品名称&lt;/th&gt;
+            &lt;th&gt;商品价格&lt;/th&gt;
+            &lt;th&gt;商品数量&lt;/th&gt;
+            &lt;th&gt;操作&lt;/th&gt;
+        &lt;/tr&gt;
+        &lt;tbody&gt;
+            &lt;tr v-for=&quot;good,key in goods&quot;&gt;
+                &lt;td&gt;&#123;&#123;key+1&#125;&#125;&lt;/td&gt;
+                &lt;td&gt;&#123;&#123;good.name&#125;&#125;&lt;/td&gt;
+                &lt;td&gt;&#123;&#123;good.price&#125;&#125;&lt;/td&gt;
+                &lt;td&gt;&#123;&#123;good.num&#125;&#125;&lt;/td&gt;
+                &lt;td&gt;&lt;button @click=&quot;edit(key)&quot;&gt;编辑&lt;/button&gt;&lt;button @click=&quot;del(key)&quot;&gt;删除&lt;/button&gt;&lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+    &lt;div class=&quot;box&quot; v-show=&quot;is_show&quot;&gt;
+        &lt;div&gt;商品名称：&lt;input type=&quot;text&quot; v-model=&quot;name&quot;&gt;&lt;/div&gt;
+        &lt;div&gt;商品价格：&lt;input type=&quot;text&quot; v-model=&quot;price&quot;&gt;&lt;/div&gt;
+        &lt;div&gt;商品数量：&lt;input type=&quot;text&quot; v-model=&quot;num&quot;&gt;&lt;/div&gt;
+
+        &lt;div&gt;&lt;button @click=&quot;keep&quot; &gt;保存&lt;/button&gt;&lt;button @click=&quot;cancel&quot;&gt;取消&lt;/button&gt;&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;/body&gt;
+&lt;/div&gt;
+
+
+&lt;script&gt;
+    var vm = new Vue(&#123;
+
+        el:&quot;#app&quot;,
+
+        data:&#123;
+            edit_key:&#39;&#39;,
+            name:&#39;&#39;,
+            price:&#39;&#39;,
+            num:&#39;&#39;,
+            is_show:false,
+            goods: [
+                &#123;&#39;name&#39;: &quot;python1&quot;, &#39;price&#39;: 150,&quot;num&quot;:1000&#125;,
+                &#123;&#39;name&#39;: &quot;python2&quot;, &#39;price&#39;: 100,&quot;num&quot;:2000&#125;,
+                &#123;&#39;name&#39;: &quot;python3&quot;, &#39;price&#39;: 70,&quot;num&quot;:3000&#125;,
+                &#123;&#39;name&#39;: &quot;python4&quot;, &#39;price&#39;: 60,&quot;num&quot;:4000&#125;,
+                &#123;&#39;name&#39;: &quot;python5&quot;, &#39;price&#39;: 110,&quot;num&quot;:5000&#125;]
+        &#125;,
+        methods:&#123;
+            //删除
+            del:function (key) &#123;
+                this.goods.splice(key,1);
+
+            &#125;,
+            // 保存
+            keep:function () &#123;
+                // box 隐藏
+                this.is_show=false;
+                 // 数据追加到后面
+                if (this.edit_key)&#123;
+                    //编辑时保存
+                    this.goods[this.edit_key].name=this.name;
+                    this.goods[this.edit_key].price=this.price;
+                    this.goods[this.edit_key].num=this.num;
+
+                &#125;else &#123;
+                     this.goods.push(&#123;&quot;name&quot;:this.name,&quot;price&quot;:this.price,&quot;num&quot;:this.num&#125;);
+                &#125;
+                //清空 数据
+                this.name=&quot;&quot;;
+                this.price=&quot;&quot;;
+                this.num=&quot;&quot;;
+                this.edit_key=&#39;&#39;;
+            &#125;,
+            cancel:function () &#123;
+                //添加时取消
+                 this.is_show=false;
+                  //清空 数据
+                this.name=&quot;&quot;;
+                this.price=&quot;&quot;;
+                this.num=&quot;&quot;;
+                this.edit_key=&#39;&#39;;
+
+            &#125;,
+            //编辑
+            edit:function (key) &#123;
+                //显示box
+                this.edit_key=key;
+                this.is_show=true;
+                //将数据显示
+                this.name=this.goods[key].name;
+                this.price=this.goods[key].price;
+                this.num=this.goods[key].num;
+
+            &#125;
+
+        &#125;
+    &#125;)
+
+&lt;/script&gt;
+&lt;/html&gt;
+</code></pre>
+</div></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2021/04/26/vue-1/"><img class="fill" src="https://bu.dusays.com/2021/08/22/e37ea84a849ae.jpg" alt="Vue.JS基础的详讲( 安装 )"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-26T13:15:48.000Z" title="2021/4/26 21:15:48">2021-04-26</time>发表</span><span class="level-item"><time dateTime="2021-08-22T13:55:55.232Z" title="2021/8/22 21:55:55">2021-08-22</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/Vue-JS/">Vue.JS</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2021/04/26/vue-1/">Vue.JS基础的详讲( 安装 )</a></h1><div class="content"><h1 id="Vue-JS"><a href="#Vue-JS" class="headerlink" title="Vue.JS"></a>Vue.JS</h1><p><img src="https://cn.vuejs.org/images/logo.png" alt="Vue —— 一种渐进式JS框架"></p>
+<h2 id="Vue是个啥？"><a href="#Vue是个啥？" class="headerlink" title="Vue是个啥？"></a>Vue是个啥？</h2><blockquote>
+<p>Vue (读音 &#x2F;vjuː&#x2F;，类似于 view) 是一套用于构建用户界面的渐进式框架。与其它大型框架不同的是，Vue 被设计为可以自底向上逐层应用。Vue 的核心库只关注视图层，不仅易于上手，还便于与第三方库或既有项目整合。另一方面，当与现代化的工具链以及各种支持类库结合使用时，Vue 也完全能够为复杂的单页应用提供驱动。</p>
+</blockquote>
+<p>说简单点就是<code>Vue</code>是一套用于构建用户界面(模板引擎)的渐进式）框架</p>
+<h2 id="渐进式"><a href="#渐进式" class="headerlink" title="渐进式"></a>渐进式</h2><p><img src="https://upimage.alexhchu.com/2021/04/26/e2e7e214907fe.png" alt="渐进式"></p>
+<h3 id="Vue2-0-中，“渐进式框架”和“自底向上增量开发的设计”这两个概念是什么？"><a href="#Vue2-0-中，“渐进式框架”和“自底向上增量开发的设计”这两个概念是什么？" class="headerlink" title="Vue2.0 中，“渐进式框架”和“自底向上增量开发的设计”这两个概念是什么？"></a>Vue2.0 中，“渐进式框架”和“自底向上增量开发的设计”这两个概念是什么？</h3><p><img src="https://pic4.zhimg.com/80/v2-cc3ec77bdca6da1a7e276918d894490b_720w.jpg?source=1940ef5c" alt="渐进式"><br>我理解的“渐进式框架”也非常简单，就是用你想用或者能用的功能特性，你不想用的部分功能可以先不用。<strong>VUE不强求你一次性接受并使用它的全部功能特性。</strong><br>场景一：公司刚开始一个项目，技术人员对Vue的掌握也不足够。那么我们就不能使用VUE了么？当然不是，如果你只是使用VUE做些<strong>基础操作</strong>，如：页面渲染、表单处理提交功能，那还是非常简单的，成熟技术人员上手也就一两天。完全可以用它去代替jquery。并不需要你去引入其他复杂<strong>特性功能。</strong><br>场景二：我们项目用了VUE，使用的效果也挺好。那么我们想逐渐实现代码组件化，实现代码的复用，或者是基于组件原型的跨项目的代码复用。那么我们就可以引入VUE的components组件特性了。<br>场景三：我们的项目规模逐渐的变大了，我们可能会逐渐用到前端路由、状态集中管理、并最终实现一个高度工程化的前端项目。这些功能特性我们可以逐步引入，当然不用也可以。<br>所以VUE的适用面很广，你可以用它代替老项目中的JQuery。也可以在新项目启动初期，有限的使用VUE的功能特性，从而降低上手的成本。<br>MVVM响应式编程模型，避免直接操作DOM , 降低DOM操作的复杂性。</p>
+<ul>
+<li>MVVM：页面输入改变数据，数据改变影响页面数据展示与渲染</li>
+<li>M（model）：普通的javascript数据对象</li>
+<li>V（view）：前端展示页面</li>
+<li>VM（ViewModel）：用于双向绑定数据与页面，对于我们的课程来说，就是vue的实例</li>
+</ul>
+<h4 id="VUE核心功能"><a href="#VUE核心功能" class="headerlink" title="VUE核心功能"></a>VUE核心功能</h4><ul>
+<li>声明式渲染：页面渲染、表单处理提交、帮我们管理DOM(虚拟DOM)节点</li>
+<li>组件：组件化开发：增强代码的复用能力，复杂系统代码维护更简单</li>
+</ul>
+<p><img src="https://upimage.alexhchu.com/2021/04/26/4df7df5a47ff6.jpg"><br>前端路由：更流畅的的用户体验、灵活的在页面切换已渲染组件的显示，不需与后端做多余的交互<br>状态集中管理：MVVM响应式模型基础上实现多组件之间的状态数据同步与管理<br>前端工程化：结合webpack等前端打包工具，管理多种静态资源，代码，测试，发布等，整合前端大型项目。</p>
+<h2 id="引入-安装"><a href="#引入-安装" class="headerlink" title="引入(安装)"></a>引入(安装)</h2><h3 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h3><p>Vue 不支持 IE8 及以下版本，因为 Vue 使用了 IE8 无法模拟的 ECMAScript 5 特性。但它支持所有兼容 <strong>ECMAScript 5</strong> 的浏览器。</p>
+<h3 id="语义化版本控制"><a href="#语义化版本控制" class="headerlink" title="语义化版本控制"></a>语义化版本控制</h3><p>Vue 在其所有项目中公布的功能和行为都遵循语义化版本控制。对于未公布的或内部暴露的行为，其变更会描述在发布说明中。</p>
+<h3 id="官网日志"><a href="#官网日志" class="headerlink" title="官网日志"></a>官网日志</h3><p>最新稳定版本：2.6.12<br>每个版本的更新日志见 <a target="_blank" rel="noopener" href="https://github.com/vuejs/vue/releases">GitHub</a>。</p>
+<h3 id="Script引入"><a href="#Script引入" class="headerlink" title="Script引入"></a>Script引入</h3><p>首先，我们还是用JS引入 <em>Vue</em></p>
+<pre><code class="html">&lt;script src=&quot;https://cdn.jsdelivr.net/npm/vue/dist/vue.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<div class='tip error faa-spin animated'><p>欲知后事如何，且听下回分解<p></div>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>

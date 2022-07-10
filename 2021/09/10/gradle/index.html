@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Gradle - 一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="软件行业的蓬勃发展，新旧交替，版本构建工具从 ant -&amp;gt; maven -&amp;gt; gradle 进行演变，个人不喜欢 maven 的 xml 的配置文件，基于  Groovy 语言作为构建脚本语言，相对于 JAVA 开发人员来说比较容易上手，动态语言也比 xml 配置文件更灵活，构建速度也更加的快速，所以入了 gradle 的坑。当然，目前，很多公司还是使用 maven 作为构建工具，所以"><meta property="og:type" content="blog"><meta property="og:title" content="Gradle"><meta property="og:url" content="http://example.com/2021/09/10/gradle/"><meta property="og:site_name" content="一枝清寒."><meta property="og:description" content="软件行业的蓬勃发展，新旧交替，版本构建工具从 ant -&amp;gt; maven -&amp;gt; gradle 进行演变，个人不喜欢 maven 的 xml 的配置文件，基于  Groovy 语言作为构建脚本语言，相对于 JAVA 开发人员来说比较容易上手，动态语言也比 xml 配置文件更灵活，构建速度也更加的快速，所以入了 gradle 的坑。当然，目前，很多公司还是使用 maven 作为构建工具，所以"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:published_time" content="2021-09-10T15:51:38.000Z"><meta property="article:modified_time" content="2021-09-10T15:51:39.405Z"><meta property="article:author" content="ChenShang"><meta property="article:tag" content="JAVA"><meta property="article:tag" content="gradle"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2021/09/10/gradle/"},"headline":"Gradle","image":["http://example.com/img/og_image.png"],"datePublished":"2021-09-10T15:51:38.000Z","dateModified":"2021-09-10T15:51:39.405Z","author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":"软件行业的蓬勃发展，新旧交替，版本构建工具从 ant -&gt; maven -&gt; gradle 进行演变，个人不喜欢 maven 的 xml 的配置文件，基于  Groovy 语言作为构建脚本语言，相对于 JAVA 开发人员来说比较容易上手，动态语言也比 xml 配置文件更灵活，构建速度也更加的快速，所以入了 gradle 的坑。当然，目前，很多公司还是使用 maven 作为构建工具，所以"}</script><link rel="canonical" href="http://example.com/2021/09/10/gradle/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-09-10T15:51:38.000Z" title="2021/9/10 23:51:38">2021-09-10</time>发表</span><span class="level-item"><time dateTime="2021-09-10T15:51:39.405Z" title="2021/9/10 23:51:39">2021-09-10</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile">Gradle</h1><div class="content"><p>软件行业的蓬勃发展，新旧交替，版本构建工具从 <strong>ant -&gt; maven -&gt; gradle</strong> 进行演变，个人不喜欢 maven 的 xml 的配置文件，基于  <strong>Groovy</strong> 语言作为构建脚本语言，相对于 JAVA 开发人员来说比较容易上手，动态语言也比 xml 配置文件更灵活，构建速度也更加的快速，所以入了 gradle 的坑。当然，目前，很多公司还是使用 maven 作为构建工具，所以建议maven 还是要懂点的。</p>
+<p>本文仅供自己学习 gradle 的记录笔记，如果你想深入的学习，请戳 <a target="_blank" rel="noopener" href="https://docs.gradle.org/current/userguide/userguide.html"><strong>官方文档</strong></a></p>
+<p>个人觉得，官方文档是最好的学习文档，我简单过了一遍，感觉官方文档的例子都很精炼，总结得很到位，底下很多代码实例也是来自官方文档。</p>
+<span id="more"></span>
+
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>每一次  Gradle  构建都是由一个或者多个 <strong>projects</strong> 组成，</p>
+<p>比如一个  <strong>root projects</strong>  依赖多个 <strong>sub projects</strong> <strong>(module)</strong> 项目，每个 projects 又由编译，打包，生成javadoc，发布等多个 <strong>tasks</strong> 组成。<strong>tasks</strong> 之间也可以相互依赖，形成一个依赖关系图以确保他们的执行顺序。</p>
+<h3 id="项目-Projects"><a href="#项目-Projects" class="headerlink" title="项目 Projects"></a>项目 Projects</h3><p>一个项目代表一个正在构建的组件，比如一个jar文件，当构建启动的时候，<strong>Gradle</strong> 会基于 <strong>build.gradle</strong> 实例化一个 <strong>org.gradle.api.Project</strong> 类，并且能够通过 project 变量使其隐式可用。</p>
+<p>属性: <strong>group name version</strong></p>
+<p>方法: <strong>apply denpendencies repositories task</strong></p>
+<p>其他配置方式: <strong>ext gradle.properties</strong></p>
+<h3 id="任务-Tasks"><a href="#任务-Tasks" class="headerlink" title="任务 Tasks"></a>任务 Tasks</h3><p>任务对应 <strong>org.gradle.api.Task</strong> ，主要包括任务动作和任务依赖。任务工作定义了一个最小的工作单元，可以定义依赖其他任务，动作序列和动作执行条件等。</p>
+<p>方法: <strong>dependsOn doFirst do Last(&lt;&lt;)</strong>  </p>
+<h3 id="构建生命周期-Build-Lifecycle"><a href="#构建生命周期-Build-Lifecycle" class="headerlink" title="构建生命周期 Build Lifecycle"></a>构建生命周期 Build Lifecycle</h3><p>A Gradle build has three distinct phases.</p>
+<ul>
+<li><p>Initialization</p>
+<p>Gradle supports single and multi-project builds. During the initialization phase, Gradle determines which projects are going to take part in the build, and creates a <a target="_blank" rel="noopener" href="https://docs.gradle.org/current/dsl/org.gradle.api.Project.html">Project</a> instance for each of these projects.</p>
+</li>
+<li><p>Configuration</p>
+<p>During this phase the project objects are configured. The build scripts of <em>all</em> projects which are part of the build are executed.</p>
+</li>
+<li><p>Execution</p>
+<p>Gradle determines the subset of the tasks, created and configured during the configuration phase, to be executed. The subset is determined by the task name arguments passed to the <code>gradle</code> command and the current directory. Gradle then executes each of the selected tasks.</p>
+</li>
+</ul>
+<h3 id="配置文件-Settings-file"><a href="#配置文件-Settings-file" class="headerlink" title="配置文件 Settings file"></a>配置文件 Settings file</h3><p>简要概述，就是如果你是多项目，那么你要在 root project 里创建 <strong>settings.gradle</strong> 里去定义跟 sub project的关系，这个文件会在所有 project build.gradle 执行前执行。</p>
+<p>每个 project 都有一个构建脚本 <strong>build.gradle</strong> 来完成每个 project 的构建。</p>
+<p>在构建的时候，你如果需要对 gradle 运行一些通用的构建配置，你可以定义在 <strong>gradle.properties</strong> 里，比如全局的 group 跟 name 等。</p>
+<p>另外，gradle 是插件配置，你可以通过 <strong>apply</strong> 引入各种现成的或者自定义的插件构建脚本。</p>
+<p>关于 gradle 项目的几种构建脚本或者配置文件描述如下</p>
+<h4 id="settings-gradle"><a href="#settings-gradle" class="headerlink" title="settings.gradle"></a>settings.gradle</h4><p>This is executed during the <strong>initialization</strong> phase.</p>
+<p>The main role of settings.gradle is to define all included submodules and to mark the directory root of a tree of modules, so you can only have one <code>settings.gradle</code> file in a multi-module project.</p>
+<pre><code class="java">rootProject.name = &#39;project-x&#39;
+
+include &#39;sub-a&#39;, &#39;sub-b&#39;
+</code></pre>
+<p>The settings file is also written in groovy, and submodule lookup can be adapted alot.</p>
+<h4 id="build-gradle"><a href="#build-gradle" class="headerlink" title="build.gradle"></a>build.gradle</h4><p>This is executed during the <strong>configuration</strong> phase.</p>
+<p>There is one such file per module, it contains the build logic for this module.</p>
+<p>In the <code>build.gradle</code> file of the <strong>main module</strong>, you can use <code>allprojects &#123;&#125;</code> or <code>subprojects &#123;&#125;</code>to define settings for all other modules.</p>
+<p>In the <code>build.gradle</code> file of the submodules, you can use <code>compile project(&#39;:sub-a&#39;)</code> to make one submodule depend on the other.</p>
+<h4 id="gradle-properties"><a href="#gradle-properties" class="headerlink" title="gradle.properties"></a>gradle.properties</h4><p>This is optional, it’s main purpose is to provide startup options to use for running gradle itself, e.g.</p>
+<pre><code class="java">org.gradle.jvmargs=-Dfile.encoding=UTF-8 ...
+org.gradle.configureondemand=true
+</code></pre>
+<h4 id="gradle-x2F-utils-gradle"><a href="#gradle-x2F-utils-gradle" class="headerlink" title="gradle&#x2F;utils.gradle"></a>gradle&#x2F;utils.gradle</h4><p>(Any name of folder or file is possible.) You can define additional custom gradle files to reuse definitions, and include them in other gradle files via</p>
+<pre><code class="java">apply from: &quot;$rootDir/gradle/utils.gradle&quot;
+</code></pre>
+<h2 id="Groovy-基础"><a href="#Groovy-基础" class="headerlink" title="Groovy 基础"></a>Groovy 基础</h2><p>Groovy是一门jvm语言，它最终是要编译成class文件然后在jvm上执行，所以Java语言的特性Groovy都支持，我们完全可以混写Java和Groovy。</p>
+<p>既然如此，那Groovy的优势是什么呢？简单来说，Groovy提供了更加灵活简单的语法，大量的语法糖以及闭包特性可以让你用更少的代码来实现和Java同样的功能。比如解析xml文件，Groovy就非常方便，只需要几行代码就能搞定，而如果用Java则需要几十行代码。</p>
+<h3 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h3><p>深入学习或者有问题请戳 <a target="_blank" rel="noopener" href="http://docs.groovy-lang.org/latest/html/groovy-jdk/index-all.html"><strong>Groovy Api文档</strong></a></p>
+<pre><code class="groovy">// 完全兼容 java 的语法
+
+// 分号可选
+
+// 类，方法默认都是 public
+
+// 编译器给属性自动添加 getter/setter 方法
+
+// 属性可以直接通过 . 号获取 
+
+// == 调用 equals 方法，判断对象是否同一个使用.is()
+Object a = new Object()
+Object b = a.clone()
+
+assert a == b
+assert !a.is(b)
+
+// 弱类型语言，可以直接用 def 定义
+def version = 1
+
+// assert 语句
+version = null
+assert version == 2
+
+// 括号可选
+println version
+
+// 方法返回值可省略
+def hello() &#123;
+    1;
+&#125;
+
+// 字符串
+
+// .1 单引号仅仅表示字符
+def s1 = &#39;hello world&#39;
+
+// .2 双引号可以引用变量
+def world = &#39;world&#39;
+def s2 = &quot;hello $&#123;world&#125;&quot;
+
+// .3 三个引号可以换行
+def s3 = &#39;&#39;&#39; hello 
+world
+&#39;&#39;&#39;
+
+// 循环
+for (i in 1..5)&#123;
+    println(&quot;hello world&quot;)
+&#125;
+4.times &#123;
+    println it
+&#125;
+
+// 集合api
+
+// .1 list -&gt; ArrayList
+def buildTools = [&#39;ant&#39;, &#39;maven&#39;]
+buildTools &lt;&lt; &#39;gradle&#39;
+assert buildTools.getClass() == ArrayList
+assert buildTools.size
+
+// .2 map -&gt; LinkedHashMap
+def map = &#39;a&#39;:&#39;b&#39;
+def buildYears = [&#39;ant&#39;: 2000, &#39;maven&#39;: 2004]
+buildYears.gradle = 2009
+println buildYears.ant
+println buildYears[&#39;ant&#39;]
+println buildYears.getClass()
+
+// 闭包 -&gt; 类似于c语言的函数指针，可以作为方法的参数和返回值，也可以作为一个变量而存在。
+def c1 = &#123;
+    v -&gt;
+        println v
+&#125;
+def c2 = &#123;
+    println &#39;world&#39;
+&#125;
+def method1(Closure closure) &#123;方法: apply denpendencies repositories task
+
+
+    closure(&#39;hello&#39;)
+&#125;
+def method2(Closure closure) &#123;
+    closure()
+&#125;
+
+c1.call(&#39;hello&#39;)
+c1(&#39;hello&#39;)
+c2.call()
+method1(c1)
+method2(c2)
+
+// io
+def file = new File(&quot;a.txt&quot;)
+
+println &quot;read file using two parameters&quot;
+file.eachLine &#123; line, lineNo -&gt;
+
+    println &quot;$&#123;lineNo&#125; $&#123;line&#125;&quot;
+
+&#125;
+
+println &quot;read file using one parameters&quot;
+file.eachLine &#123; line -&gt;
+
+    println &quot;$&#123;line&#125;&quot;
+
+&#125;
+
+file.eachLine(&quot;utf-8&quot;) &#123;
+    println it
+&#125;
+
+// wich 操作符
+Book bk = new Book()
+bk.id = 1
+bk.name = &quot;android art&quot;
+bk.press = &quot;china press&quot;
+
+Book bk = new Book() 
+bk.with &#123;
+    id = 1
+    name = &quot;android art&quot;
+    press = &quot;china press&quot;
+&#125;
+
+// 判断是否为真
+if (name) &#123;&#125;
+
+// 三元表达式
+def result = name ?: &quot;Unknown&quot;
+
+// 非空判断
+println order?.customer?.address
+
+// switch
+def x = 1.23
+def result = &quot;&quot;
+switch (x) &#123;
+    case &quot;foo&quot;: result = &quot;found foo&quot;
+
+    // lets fall through
+
+    case &quot;bar&quot;: result += &quot;bar&quot;
+    case [4, 5, 6, &#39;inList&#39;]: result = &quot;list&quot;
+    break
+
+    case 12..30: result = &quot;range&quot;
+    break
+
+    case Integer: result = &quot;integer&quot;
+    break
+
+    case Number: result = &quot;number&quot;
+    break
+
+    case &#123; it &gt; 3 &#125;: result = &quot;number &gt; 3&quot;
+    break
+
+    default: result = &quot;default&quot;
+&#125;
+assert result == &quot;number&quot;
+</code></pre>
+<h3 id="构建脚本解析"><a href="#构建脚本解析" class="headerlink" title="构建脚本解析"></a>构建脚本解析</h3><p>详细介绍或者想深入了解请戳 <a target="_blank" rel="noopener" href="https://docs.gradle.org/current/javadoc/org/gradle/api/Project.html#apply(java.util.Map)"><strong>官方api</strong></a></p>
+<pre><code class="groovy">
+//  PluginAware.apply(java.util.Map) 
+apply plugin:&#39;java&#39;
+
+version = &#39;0.1&#39;
+
+// void	repositories​(Closure configureClosure)	
+// Configures the repositories for this project.
+repositories &#123;
+    mavenCentral()
+&#125;
+
+// void dependencies​(Closure configureClosure)
+// Configures the dependencies for this project.
+dependencies &#123;
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    compile group: &#39;com.google.guava&#39;, name: &#39;guava&#39;, version: &#39;27.1-jre&#39;
+&#125;
+</code></pre>
+<h2 id="Todo"><a href="#Todo" class="headerlink" title="Todo"></a>Todo</h2><h3 id="使用插件"><a href="#使用插件" class="headerlink" title="使用插件"></a>使用插件</h3><p>Gradle的设计理念是，所有有用的特性都由<a target="_blank" rel="noopener" href="http://www.gradle.org/docs/current/userguide/plugins.html">Gradle插件</a>提供，一个Gradle插件能够：</p>
+<ul>
+<li><p>在项目中添加新任务</p>
+</li>
+<li><p>为新加入的任务提供默认配置，这个默认配置会在项目中注入新的约定（如源文件位置）。</p>
+</li>
+<li><p>加入新的属性，可以覆盖插件的默认配置属性。</p>
+</li>
+<li><p>为项目加入新的依赖。</p>
+</li>
+</ul>
+<p>Gradle 用户手册提供了 <a target="_blank" rel="noopener" href="https://docs.gradle.org/current/userguide/plugin_reference.html"><strong>一系列标准的gradle插件</strong></a>  </p>
+<h4 id="The-Java-Plugin"><a href="#The-Java-Plugin" class="headerlink" title="The Java Plugin"></a>The Java Plugin</h4><p>比如 <strong>The Java Plugin</strong>， 提供了 java 相关的目录结构，属性配置，构建任务等等</p>
+<p>如果我们使用标准的gradle插件，</p>
+<p>注意这个不能在配置在 <strong>multi-project configurations(subprojects<code>, </code>allprojects)</strong></p>
+<pre><code class="groovy">plugins: &#123;
+    id: &#39;java&#39;
+&#125;
+</code></pre>
+<p>当然我们也可以使用 <strong>apply</strong> 方法，就比较灵活了</p>
+<pre><code class="groovy">apply plugin: &#39;java&#39;
+</code></pre>
+<p>我们还可以定义 jvm 的编译级别</p>
+<pre><code class="groovy">sourceCompatibility: 1.8
+targetCompatibility: 1.8
+</code></pre>
+<h5 id="Project-Layout"><a href="#Project-Layout" class="headerlink" title="Project Layout"></a>Project Layout</h5><p>当我们使用 java 这个插件的时候，它默认的项目结构是</p>
+<ul>
+<li><p><code>src/main/java</code></p>
+<p>Production Java source.</p>
+</li>
+<li><p><code>src/main/resources</code></p>
+<p>Production resources, such as XML and properties files.</p>
+</li>
+<li><p><code>src/test/java</code></p>
+<p>Test Java source.</p>
+</li>
+<li><p><code>src/test/resources</code></p>
+<p>Test resources.</p>
+</li>
+<li><p><code>src/*sourceSet*/java</code></p>
+<p>Java source for the source set named <em>sourceSet</em>.</p>
+</li>
+<li><p><code>src/*sourceSet*/resources</code></p>
+<p>Resources for the source set named <em>sourceSet</em>.</p>
+</li>
+</ul>
+<p>当然我们也可以更改它</p>
+<pre><code class="groovy">sourceSets &#123;
+    main &#123;
+        java &#123;
+            srcDirs = [&#39;src/java&#39;]
+        &#125;
+        resources &#123;
+            srcDirs = [&#39;src/resources&#39;]
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h5 id="Dependency-management"><a href="#Dependency-management" class="headerlink" title="Dependency management"></a>Dependency management</h5><ul>
+<li><p><code>compile</code>(Deprecated)</p>
+<p>Compile time dependencies. Superseded by <code>implementation</code>.</p>
+</li>
+<li><p><code>implementation</code> extends <code>compile</code></p>
+<p>Implementation only dependencies.</p>
+</li>
+<li><p><code>compileOnly</code></p>
+<p>Compile time only dependencies, not used at runtime.</p>
+</li>
+<li><p><code>compileClasspath</code> extends <code>compile, compileOnly, implementation</code></p>
+<p>Compile classpath, used when compiling source. Used by task <code>compileJava</code>.</p>
+</li>
+<li><p><code>annotationProcessor</code></p>
+<p>Annotation processors used during compilation.</p>
+</li>
+<li><p><code>runtime</code>(Deprecated) extends <code>compile</code></p>
+<p>Runtime dependencies. Superseded by <code>runtimeOnly</code>.</p>
+</li>
+<li><p><code>runtimeOnly</code></p>
+<p>Runtime only dependencies.</p>
+</li>
+<li><p><code>runtimeClasspath</code> extends <code>runtimeOnly, runtime, implementation</code></p>
+<p>Runtime classpath contains elements of the implementation, as well as runtime only elements.</p>
+</li>
+<li><p><code>testCompile</code>(Deprecated) extends <code>compile</code></p>
+<p>Additional dependencies for compiling tests. Superseded by <code>testImplementation</code>.</p>
+</li>
+<li><p><code>testImplementation</code> extends <code>testCompile, implementation</code></p>
+<p>Implementation only dependencies for tests.</p>
+</li>
+<li><p><code>testCompileOnly</code></p>
+<p>Additional dependencies only for compiling tests, not used at runtime.</p>
+</li>
+<li><p><code>testCompileClasspath</code> extends <code>testCompile, testCompileOnly, testImplementation</code></p>
+<p>Test compile classpath, used when compiling test sources. Used by task <code>compileTestJava</code>.</p>
+</li>
+<li><p><code>testRuntime</code>(Deprecated) extends <code>runtime, testCompile</code></p>
+<p>Additional dependencies for running tests only. Used by task <code>test</code>. Superseded by <code>testRuntimeOnly</code>.</p>
+</li>
+<li><p><code>testRuntimeOnly</code> extends <code>runtimeOnly</code></p>
+<p>Runtime only dependencies for running tests. Used by task <code>test</code>.</p>
+</li>
+<li><p><code>testRuntimeClasspath</code> extends <code>testRuntimeOnly, testRuntime, testImplementation</code></p>
+<p>Runtime classpath for running tests.</p>
+</li>
+<li><p><code>archives</code></p>
+<p>Artifacts (e.g. jars) produced by this project. Used by tasks <code>uploadArchives</code>.</p>
+</li>
+<li><p><code>default</code> extends <code>runtime</code></p>
+<p>The default configuration used by a project dependency on this project. Contains the artifacts and dependencies required by this project at runtime.</p>
+</li>
+</ul>
+<h5 id="jar"><a href="#jar" class="headerlink" title="jar"></a>jar</h5><p>插件也会提供很多构建任务，比如 <strong>compileJava</strong> ， <strong>processResources</strong>，<strong>classes</strong>，<strong>jar</strong>，<strong>clean</strong>，<strong>test</strong> 等等，这里只简要地提一下 <strong>jar</strong> 构建的 <strong>Manifest</strong></p>
+<p>Each jar or war object has a <code>manifest</code> property with a separate instance of <a target="_blank" rel="noopener" href="https://docs.gradle.org/current/javadoc/org/gradle/api/java/archives/Manifest.html">Manifest</a>. When the archive is generated, a corresponding <code>MANIFEST.MF</code> file is written into the archive.</p>
+<pre><code class="groovy">jar &#123;
+    from &#123; configurations.compile.collect &#123; it.isDirectory() ? it : zipTree(it) &#125; &#125;
+    manifest &#123;
+        attributes &#39;Main-Class&#39;: &#39;cn.jianchengwang.todo.gradle.HelloWorld&#39;
+    &#125;
+&#125;
+</code></pre>
+<h4 id="The-War-Plugin"><a href="#The-War-Plugin" class="headerlink" title="The War Plugin"></a>The War Plugin</h4><p>The War plugin extends the Java plugin to add support for assembling web application WAR files. It disables the default JAR archive generation of the Java plugin and adds a default WAR archive task.</p>
+<p>这里只显示一些简单的配置脚本</p>
+<pre><code class="groovy">apply plugin: &#39;war&#39;
+
+configurations &#123;
+   moreLibs
+&#125;
+
+repositories &#123;
+   flatDir &#123; dirs &quot;lib&quot; &#125;
+   jcenter()
+&#125;
+
+dependencies &#123;
+    implementation module(&quot;:compile:1.0&quot;) &#123;
+        dependency &quot;:compile-transitive-1.0@jar&quot;
+        dependency &quot;:providedCompile-transitive:1.0@jar&quot;
+    &#125;
+    providedCompile &quot;javax.servlet:servlet-api:2.5&quot;
+    providedCompile module(&quot;:providedCompile:1.0&quot;) &#123;
+        dependency &quot;:providedCompile-transitive:1.0@jar&quot;
+    &#125;
+    runtimeOnly &quot;:runtime:1.0&quot;
+    providedRuntime &quot;:providedRuntime:1.0@jar&quot;
+    testImplementation &quot;junit:junit:4.12&quot;
+    moreLibs &quot;:otherLib:1.0&quot;
+&#125;
+
+war &#123;
+    from &#39;src/rootContent&#39; // adds a file-set to the root of the archive
+    webInf &#123; from &#39;src/additionalWebInf&#39; &#125; // adds a file-set to the WEB-INF dir.
+    classpath fileTree(&#39;additionalLibs&#39;) // adds a file-set to the WEB-INF/lib dir.
+    classpath configurations.moreLibs // adds a configuration to the WEB-INF/lib dir.
+    webXml = file(&#39;src/someWeb.xml&#39;) // copies a file to WEB-INF/web.xml
+&#125;
+</code></pre>
+<p>其他还有很多官方标准插件这里就不都叙述了，还有怎么编写 gradle 插件，官方文档里有详细的介绍，有兴趣可以去了解下。</p>
+<h3 id="自定义任务"><a href="#自定义任务" class="headerlink" title="自定义任务"></a>自定义任务</h3><pre><code class="groovy">
+task hello &#123;
+    doLast -&gt; &#123;
+        println &#39;hello world&#39;
+    &#125;
+&#125;
+
+task count &#123;
+    &lt;&lt; &#123;
+        4.times &#123; print &quot;$it &quot; &#125;
+    &#125;
+&#125;
+
+// Task dependencies
+task intro &#123;
+    dependsOn hello
+    doLast &#123;
+        println &quot;I&#39;m Gradle&quot;
+    &#125;
+&#125;
+
+// Dynamic tasks
+4.times &#123; counter -&gt;
+    task &quot;task$counter&quot; &#123;
+        doLast &#123;
+            println &quot;I&#39;m task number $counter&quot;
+        &#125;
+    &#125;
+&#125;
+
+// Manipulating existing tasks
+hello.doFirst &#123;
+    println &#39;Hello Venus&#39;
+&#125;
+hello.configure &#123;
+    doLast &#123;
+        println &#39;Hello Mars&#39;
+    &#125;
+&#125;
+hello.configure &#123;
+    doLast &#123;
+        println &#39;Hello Jupiter&#39;
+    &#125;
+&#125;
+
+// Extra task properties
+task myTask &#123;
+    ext.myProperty = &quot;myValue&quot;
+&#125;
+
+task printTaskProperties &#123;
+    doLast &#123;
+        println myTask.myProperty
+    &#125;
+&#125;
+
+// Default tasks
+// Gradle allows you to define one or more default tasks that are executed if no other tasks are specified.
+defaultTasks &#39;clean&#39;, &#39;run&#39;
+
+task clean &#123;
+    doLast &#123;
+        println &#39;Default Cleaning!&#39;
+    &#125;
+&#125;
+
+task run &#123;
+    doLast &#123;
+        println &#39;Default Running!&#39;
+    &#125;
+&#125;
+
+task other &#123;
+    doLast &#123;
+        println &quot;I&#39;m not a default task!&quot;
+    &#125;
+&#125;
+
+// working with files
+// .1 Copy
+task copyReport(type: Copy) &#123;
+    from file(&quot;$buildDir/reports/my-report.pdf&quot;)
+    into file(&quot;$buildDir/toArchive&quot;)
+&#125;
+
+task copyReportsForArchiving(type: Copy) &#123;
+    from &quot;$buildDir/reports/my-report.pdf&quot;, &quot;src/docs/manual.pdf&quot;
+    into &quot;$buildDir/toArchive&quot;
+&#125;
+
+task copyPdfReportsForArchiving(type: Copy) &#123;
+    from &quot;$buildDir/reports&quot;
+    include &quot;*.pdf&quot;
+    into &quot;$buildDir/toArchive&quot;
+&#125;
+
+// .2 Archive or UnPack
+task packageDistribution(type: Zip) &#123;
+    archiveFileName = &quot;my-distribution.zip&quot;
+    destinationDirectory = file(&quot;$buildDir/dist&quot;)
+
+    from &quot;$buildDir/toArchive&quot;
+&#125;
+
+task unpackFiles(type: Copy) &#123;
+    from zipTree(&quot;src/resources/thirdPartyResources.zip&quot;)
+    into &quot;$buildDir/resources&quot;
+&#125;
+
+// .3 Creating &quot;uber&quot; or &quot;fat&quot; JARs
+plugins &#123;
+    id &#39;java&#39;
+&#125;
+
+version = &#39;1.0.0&#39;
+
+repositories &#123;
+    mavenCentral()
+&#125;
+
+dependencies &#123;
+    implementation &#39;commons-io:commons-io:2.6&#39;
+&#125;
+
+task uberJar(type: Jar) &#123;
+    archiveClassifier = &#39;uber&#39;
+
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+    from &#123;
+        configurations.runtimeClasspath.findAll &#123; it.name.endsWith(&#39;jar&#39;) &#125;.collect &#123; zipTree(it) &#125;
+    &#125;
+&#125;
+</code></pre>
+<h3 id="管理依赖"><a href="#管理依赖" class="headerlink" title="管理依赖"></a>管理依赖</h3><h4 id="依赖类型"><a href="#依赖类型" class="headerlink" title="依赖类型"></a>依赖类型</h4><pre><code class="groovy">// module dependencies
+dependencies &#123;
+    runtime group: &#39;org.springframework&#39;, name: &#39;spring-core&#39;, version: &#39;2.5&#39;
+    implementation &#39;org.springframework:spring-web:5.+&#39;
+    implementation(&#39;org.ow2.asm:asm:6.0&#39;) &#123;
+        because &#39;we require a JDK 9 compatible bytecode generator&#39;
+    &#125;
+&#125;
+
+// file dependencies
+dependencies &#123;
+    runtime files(&#39;libs/a.jar&#39;, &#39;libs/b.jar&#39;)
+    runtime fileTree(&#39;libs&#39;) &#123; include &#39;*.jar&#39; &#125;
+&#125;
+
+// project dependencies
+dependencies &#123;
+    implementation project(&#39;:shared&#39;)
+&#125;
+</code></pre>
+<h4 id="仓库类型"><a href="#仓库类型" class="headerlink" title="仓库类型"></a>仓库类型</h4><pre><code class="groovy">// flat dir
+repositories &#123;
+    flatDir &#123;
+        dirs &#39;lib&#39;
+    &#125;
+    flatDir &#123;
+        dirs &#39;lib1&#39;, &#39;lib2&#39;
+    &#125;
+&#125;
+
+// maven repo
+repositories &#123;
+    mavenCentral()
+      jcenter()
+    google()
+    mavenLocal()
+    maven &#123;
+        url &quot;http://repo.mycompany.com/maven2&quot;
+    &#125;
+    maven &#123;
+        url &quot;http://repo.mycompany.com/snapshots&quot;
+        mavenContent &#123;
+            snapshotsOnly()
+        &#125;
+    &#125;
+    maven &#123;
+        url &quot;sftp://repo.mycompany.com:22/maven2&quot;
+        credentials &#123;
+            username &quot;user&quot;
+            password &quot;password&quot;
+        &#125;
+    &#125;
+    
+&#125;
+</code></pre>
+<h4 id="版本冲突"><a href="#版本冲突" class="headerlink" title="版本冲突"></a>版本冲突</h4><p>如果存在依赖的版本冲突，那么 gradle 默认会选择最高版本的的依赖以解决依赖冲突，当然我们也可以手动解决，比如排除依赖，或者手动设置一个版本。当然，一般使用 gradle 默认的处理就可以了。</p>
+<pre><code class="groovy">//  Excluding transitive dependency for a particular dependency declaration
+dependencies &#123;
+    implementation(&#39;log4j:log4j:1.2.15&#39;) &#123;
+        exclude group: &#39;javax.jms&#39;, module: &#39;jms&#39;
+        exclude group: &#39;com.sun.jdmk&#39;, module: &#39;jmxtools&#39;
+        exclude group: &#39;com.sun.jmx&#39;, module: &#39;jmxri&#39;
+    &#125;
+&#125;
+
+// Excluding transitive dependency for a particular configuration
+configurations &#123;
+    implementation &#123;
+        exclude group: &#39;javax.jms&#39;, module: &#39;jms&#39;
+        exclude group: &#39;com.sun.jdmk&#39;, module: &#39;jmxtools&#39;
+        exclude group: &#39;com.sun.jmx&#39;, module: &#39;jmxri&#39;
+    &#125;
+&#125;
+
+dependencies &#123;
+    implementation &#39;log4j:log4j:1.2.15&#39;
+&#125;
+
+// Enforcing a dependency version
+dependencies &#123;
+    implementation &#39;org.apache.httpcomponents:httpclient:4.5.4&#39;
+    implementation(&#39;commons-codec:commons-codec:1.9&#39;) &#123;
+        force = true
+    &#125;
+&#125;
+</code></pre>
+<h3 id="多项目构建"><a href="#多项目构建" class="headerlink" title="多项目构建"></a>多项目构建</h3><p>多项目构建就是在 <strong>root project</strong>配置一个 <strong>settings.gradle</strong> 引入需要的子项目即可，</p>
+<p>比如我这边 <strong>root project</strong> 为  todo-gradle，有三个 <strong>sub project</strong> ，</p>
+<p>则 <strong>settings.gradle</strong> 配置如下</p>
+<pre><code class="groovy">rootProject.name = &#39;todo-gradle&#39;
+include &#39;web&#39;
+include &#39;model&#39;
+include &#39;dao&#39;
+</code></pre>
+<p>如果，<strong>sub project</strong> 很多配置项一样，那我们可以在 <strong>root project</strong> 的 <strong>build.gradle</strong> 构建脚本里进行通用的配置，使其对子项目生效，</p>
+<pre><code class="groovy">allprojects &#123;
+
+    apply plugin: &#39;java&#39;
+
+    sourceCompatibility = 1.8
+&#125;
+
+subprojects &#123;
+
+    repositories &#123;
+        mavenCentral()
+    &#125;
+
+
+    dependencies &#123;
+        testCompile group: &#39;junit&#39;, name: &#39;junit&#39;, version: &#39;4.12&#39;
+    &#125;
+
+
+&#125;
+</code></pre>
+<p>如果自定义的配置的任务或者选项，则在每个 <strong>project</strong> 的 <strong>build.gradle</strong> 构建脚本里配置即可，比如我 <strong>web sub project</strong> 还引入了 <strong>The War Plugin</strong>，那么我在 <strong>web sub project</strong> 的<strong>build.gradle</strong> 构建脚本可以配置如下</p>
+<pre><code class="groovy">apply plugin: &#39;war&#39;
+</code></pre>
+<p>最后就是项目依赖配置了，比如我 <strong>dao sub project</strong> 依赖 <strong>model sub project</strong></p>
+<pre><code class="groovy">dependencies &#123;
+    implementation project(&#39;:model&#39;)
+&#125;
+</code></pre>
+<p>因为依赖是可以传递的，所以假如我 <strong>web sub project</strong> 依赖 <strong>dao sub project</strong> 跟 <strong>model sub project</strong>，而 <strong>dao sub project</strong> 又依赖 <strong>model sub project</strong>，实际上我只要在 <strong>web sub projec</strong>t 构建脚本里面依赖 <strong>dao sub project</strong> 即可</p>
+<pre><code class="groovy">
+dependencies &#123;
+    implementation project(&#39;:dao&#39;)
+&#125;
+</code></pre>
+<p>如果存在依赖关系，显而易见，那么被依赖的项目或者任务都会先执行。</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>一般只要类继承 <strong>junit.framework.TestCase</strong> 或者 <strong>groovy.util.GroovyTestCase</strong> </p>
+<p>或是假如使用 springboot 框架，带有 <strong>@RunWith</strong> 注解的类</p>
+<p>最常见的就是任何至少一个包含 <strong>@Test</strong> 注解的类</p>
+<p>当然，不同测试框架使用大同小异，你可以具体使用的时候查阅下资料即可，</p>
+<p>下面官方的代码实例就显示了 <strong>test task</strong> 的相关配置。 </p>
+<p>Executes JUnit (3.8.x, 4.x or 5.x) or TestNG tests. Test are always run in (one or more) separate JVMs. The sample below shows various configuration options.</p>
+<pre><code class="groovy">apply plugin: &#39;java&#39; // adds &#39;test&#39; task
+
+test &#123;
+  // enable TestNG support (default is JUnit)
+  useTestNG()
+  // enable JUnit Platform (a.k.a. JUnit 5) support
+  useJUnitPlatform()
+
+  // set a system property for the test JVM(s)
+  systemProperty &#39;some.prop&#39;, &#39;value&#39;
+
+  // explicitly include or exclude tests
+  include &#39;org/foo/**&#39;
+  exclude &#39;org/boo/**&#39;
+
+  // show standard out and standard error of the test JVM(s) on the console
+  testLogging.showStandardStreams = true
+
+  // set heap size for the test JVM(s)
+  minHeapSize = &quot;128m&quot;
+  maxHeapSize = &quot;512m&quot;
+
+  // set JVM arguments for the test JVM(s)
+  jvmArgs &#39;-XX:MaxPermSize=256m&#39;
+
+  // listen to events in the test execution lifecycle
+  beforeTest &#123; descriptor -&gt;
+     logger.lifecycle(&quot;Running test: &quot; + descriptor)
+  &#125;
+
+  // Fail the &#39;test&#39; task on the first test failure
+  failFast = true
+
+  // listen to standard out and standard error of the test JVM(s)
+  onOutput &#123; descriptor, event -&gt;
+     logger.lifecycle(&quot;Test: &quot; + descriptor + &quot; produced standard out/err: &quot; + event.message )
+  &#125;
+&#125;
+</code></pre>
+<p>一般测试的最终结果，会显示在 <strong>project</strong> 的 <strong>build&#x2F;reports</strong> 目录里面</p>
+<h3 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h3><p>假如我们开发完一个功能模块，打包成一个 jar 包，需要提供给他人依赖引用，那么我们就可以发布出去了，一般 gradle 没有自己的仓库，如果是java 项目的话一般都是发布到 <strong>maven</strong> 仓库，因为 <strong>lvh</strong> 现在用的人比较少了，这里就简单的介绍一下怎么发布到 maven 仓库</p>
+<h4 id="Maven-Publish-Pluging"><a href="#Maven-Publish-Pluging" class="headerlink" title="Maven Publish Pluging"></a>Maven Publish Pluging</h4><pre><code class="groovy">apply plugin: &#39;maven-publish&#39;
+
+publishing &#123;
+    
+    publications &#123;
+        maven(MavenPublication) &#123;
+            groupId = &#39;org.gradle.sample&#39;
+            artifactId = &#39;project1-sample&#39;
+            version = &#39;1.1&#39;
+
+            from components.java
+        &#125;
+    &#125;
+    
+    repositories &#123;
+        maven &#123;
+            name = &#39;myRepo&#39;
+            def releasesRepoUrl = &quot;$buildDir/repos/releases&quot;
+            def snapshotsRepoUrl = &quot;$buildDir/repos/snapshots&quot;
+            url = version.endsWith(&#39;SNAPSHOT&#39;) ? snapshotsRepoUrl : releasesRepoUrl
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><p><a target="_blank" rel="noopener" href="https://docs.gradle.org/current/userguide/userguide.html"><strong>官方用户手册</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://www.imooc.com/learn/833"><strong>慕课网新一代构建工具gradle</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/jianchengwang/todo-java"><strong>TODO 代码</strong></a></p>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/JAVA/">JAVA</a><a class="link-muted mr-2" rel="tag" href="/tags/gradle/">gradle</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/09/10/of/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">intro to serverless functions</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/09/10/eventually-chooses-ikbc-f87/"><span class="level-item">机械键盘ikbc</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>

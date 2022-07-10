@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>构建工具-Maven-相关知识-整理专题 - 一枝清寒.</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#2f3542"><meta name="application-name" content="ChenShang"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="msapplication-TileColor" content="#2f3542"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ChenShang"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="如果你是学习 Java 或是说 JVM 语言相关的内容的话，在实际使用中有一个东西你是绕不过去的，构建工具。等你到企业还有一个东西你也绕不过去，持续集成。"><meta property="og:type" content="blog"><meta property="og:title" content="构建工具-Maven-相关知识-整理专题"><meta property="og:url" content="http://example.com/2016/03/09/Maven/"><meta property="og:site_name" content="一枝清寒."><meta property="og:description" content="如果你是学习 Java 或是说 JVM 语言相关的内容的话，在实际使用中有一个东西你是绕不过去的，构建工具。等你到企业还有一个东西你也绕不过去，持续集成。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://img.youmeek.com/2016/maven.png"><meta property="article:published_time" content="2016-03-09T11:56:08.000Z"><meta property="article:modified_time" content="2021-08-20T11:08:58.185Z"><meta property="article:author" content="ChenShang"><meta property="article:tag" content="Java"><meta property="article:tag" content="Maven"><meta property="article:tag" content="CI"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="http://img.youmeek.com/2016/maven.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2016/03/09/Maven/"},"headline":"构建工具-Maven-相关知识-整理专题","image":["http://img.youmeek.com/2016/maven.png"],"datePublished":"2016-03-09T11:56:08.000Z","dateModified":"2021-08-20T11:08:58.185Z","author":{"@type":"Person","name":"ChenShang"},"publisher":{"@type":"Organization","name":"一枝清寒.","logo":{"@type":"ImageObject","url":{"text":"ChenShang"}}},"description":"如果你是学习 Java 或是说 JVM 语言相关的内容的话，在实际使用中有一个东西你是绕不过去的，构建工具。等你到企业还有一个东西你也绕不过去，持续集成。"}</script><link rel="canonical" href="http://example.com/2016/03/09/Maven/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><!--!--><!--!--><!--!--><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">ChenShang</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></div></div></div></nav><canvas width="1366" height="662" style="position: fixed; left: 0px; top: 0px; z-index: 2147483647; pointer-events: none;"></canvas><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2016-03-09T11:56:08.000Z" title="2016/3/9 19:56:08">2016-03-09</time>发表</span><span class="level-item"><time dateTime="2021-08-20T11:08:58.185Z" title="2021/8/20 19:08:58">2021-08-20</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/Java/">Java</a></span></div></div><h1 class="title is-3 is-size-4-mobile">构建工具-Maven-相关知识-整理专题</h1><div class="content"><span id="more"></span>
+
+<h2 id="本文初衷"><a href="#本文初衷" class="headerlink" title="本文初衷"></a>本文初衷</h2><ul>
+<li><img src="http://img.youmeek.com/2016/maven.png" alt="Maven"></li>
+<li>整理自己脑袋中、收藏中的那些资料，来一次清空，让自己重新开始。</li>
+<li>整理这篇的起点是本人已经会使用 Maven，并且已经使用了一年多，所以我个人觉得这篇文章对完全不懂 Maven 来讲是有压力的，但是对于刚刚入门 Maven 的人是有帮助的。</li>
+<li>如果你认为一篇文章就可以让你完全了解 Maven，那你是在鄙视官网帮助文档书写者。</li>
+<li>以此篇为引，希望可以得到你的建议，我只想成长，真心感谢!（鞠躬）</li>
+</ul>
+<h2 id="先总结"><a href="#先总结" class="headerlink" title="先总结"></a>先总结</h2><ul>
+<li>如果你是学习 Java 或是说 JVM 语言相关的内容的话，在实际使用中有一个东西你是绕不过去的，构建工具。等你到企业还有一个东西你也绕不过去，持续集成。</li>
+<li>在说持续集成前，先简单地解释两个概念：集群、分布式<ul>
+<li>应用集群：同样的一套程序&#x2F;代码，放在一批服务器上，每台服务器上的代码一样。</li>
+<li>应用分布式：不同的组件代码，放在一批服务器上，不同的服务器放不同模块的代码。</li>
+</ul>
+</li>
+<li>在大公司，现在的项目基本都是分布式的，而要做到分布式那就得尽可能地分层、分割、分布。也因为这样，一个项目一般都是由不同模块组合成的。公司里在不同的地区或是部门做不同的模块，尽量减少部门与部门、地区与地区模块的耦合度，也就是降低必要的联系，让他们尽可能的能独立开发、测试。<ul>
+<li>这样的拆分，对一个项目的好处是：<ul>
+<li>分布式架构：具有高性能、高可用、可伸缩、可扩展等优点</li>
+<li>公司成本会降低，类似阿里的去 IOE</li>
+<li>效率会提高</li>
+<li>容错能力更强</li>
+<li>灵活性更高</li>
+</ul>
+</li>
+<li>举一个两者简单的对比例子<ul>
+<li>应用分布式<ul>
+<li>一个采用分布式架构的电商，在做抢购的特殊时候，压力特别的大的部分应该是：购物车、订单、库存、日志等这些跟购物有关的模块，那既然这几个模块压力大，那我们就在抢购前多部署几套跟购物业务相关的模块到服务器上，此时要求这类服务器性能只要能承载对应的模块即可。其他比如：资讯、客服等无压力模块就原样部署即可，无需变动。</li>
+</ul>
+</li>
+<li>应用集群<ul>
+<li>一个采用应用集群架构的电商，在做抢购的特殊时候，为了抗住压力，必须把整个应用一套一套地部署到新服务器上，此时就要求服务器性能要好，能承载整个应用。</li>
+</ul>
+</li>
+<li>对比总结：降低成本</li>
+<li>扩展内容<ul>
+<li>在未来容器虚拟化（以 Docker 为主）的情况下，模块化的组件更容易部署到这些容器上面，也就很容易发生这样的事情：一台服务器部署非常多模块，成本就会降得更低。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>我们已经知道了分布式效益更好，我们也知道分布式的系统都是需要拆分的，对项目进行拆分，把一个大项目拆分成很多小模块项目，然后大家彼此依赖或通信。此时问题来了：如何高效地依赖。</li>
+<li>高效地依赖解决办法是：自动化的构建 + 持续集成。<ul>
+<li>在目前 Java 界，最常用的构建工具就是：Maven</li>
+<li>在多模块的项目中，还是以一个电商项目为例，购物车模块肯定是会依赖 core 模块、Parent 模块等，而这些模块的开发者在不同城市或是不同部门。在协同开发中，不可能每次他们一有更新就得专门安排一个人来交付依赖，这种方式效率是非常低的。</li>
+<li>今天整理这个 Maven 材料其实是为了后面整理持续集成做的准备的，大家必须有这个基础才能说后面的持续集成，后续的持续集成会涉及到：TeamCity、Jenkins、Hudson</li>
+</ul>
+</li>
+</ul>
+<h2 id="Maven-知识"><a href="#Maven-知识" class="headerlink" title="Maven 知识"></a>Maven 知识</h2><h3 id="Maven-是什么"><a href="#Maven-是什么" class="headerlink" title="Maven 是什么"></a>Maven 是什么</h3><ul>
+<li>术语定义<ul>
+<li>Maven 官网：<a target="_blank" rel="noopener" href="http://maven.apache.org/">http://maven.apache.org/</a></li>
+<li>Maven 官网对自己的定义：<a target="_blank" rel="noopener" href="http://maven.apache.org/what-is-maven.html">http://maven.apache.org/what-is-maven.html</a></li>
+<li>百度百科定义：<a target="_blank" rel="noopener" href="http://baike.baidu.com/view/336103.htm">http://baike.baidu.com/view/336103.htm</a></li>
+<li>维基百科定义：<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Apache_Maven">https://zh.wikipedia.org/wiki/Apache_Maven</a><ul>
+<li>在 Wiki 上还需要注意如下，这些有助于你站在更加宏观的角度看待它，但是可能需要积累：<ul>
+<li><code>参见</code></li>
+<li><code>补充阅读</code></li>
+<li><code>参考资料</code></li>
+<li><code>外部链接</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>它的历史<ul>
+<li>Google 搜索：<code>Maven History</code><ul>
+<li>搜索结果：<ul>
+<li>历史介绍：<a target="_blank" rel="noopener" href="http://maven.apache.org/background/history-of-maven.html">http://maven.apache.org/background/history-of-maven.html</a></li>
+<li>创始人：<strong>jason van zyl</strong></li>
+<li>创始人现在：<a target="_blank" rel="noopener" href="http://takari.io/">http://takari.io/</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Google 搜索：<code>Maven 区别</code>、<code>Maven difference</code><ul>
+<li>搜索结果：<ul>
+<li>人们在关注：</li>
+<li>gradle maven区别</li>
+<li>ant maven区别</li>
+<li>ivy maven区别</li>
+<li>maven maven2区别<ul>
+<li>通过这个搜索结果我们知道，现阶段我们要的是 Maven 3：</li>
+<li><a target="_blank" rel="noopener" href="http://www.infoq.com/cn/news/2011/07/xxb-maven-10-time-to-update">Maven实战（十）——Maven 3，是时候升级了</a></li>
+<li><a target="_blank" rel="noopener" href="http://tech.it168.com/a2010/1108/1123/000001123274_all.shtml">六年等一回 Maven 3的10大新特性详解</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>同类常见技术（按技术出现时间正序）<ul>
+<li><code>Ant</code></li>
+<li><code>Gradle</code></li>
+</ul>
+</li>
+<li>同类技术比较：<ul>
+<li>Google 搜索：<code>Ant Maven Gradle</code><ul>
+<li>搜索结果：<ul>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/napolunyishi/article/details/39345995">Java构建工具：Ant vs Maven vs Gradle</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/huang0925/p/5209563.html">Maven和Gradle对比</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>学习前提&#x2F;依赖<ul>
+<li>要有 Java 基础相关（如果你完全没学过 Java，建议跳过，不适合你）</li>
+<li>最好有 Java Web 相关知识</li>
+<li>不需要会 Ant 或是 Maven 早期版本的内容</li>
+</ul>
+</li>
+</ul>
+<h3 id="为什么会出现"><a href="#为什么会出现" class="headerlink" title="为什么会出现"></a>为什么会出现</h3><ul>
+<li>Google 搜索：（这些一般都是一些故事，你自己来判断，别人的坎坷是你成长的基石）<ul>
+<li>关键字：<code>为什么用 maven</code></li>
+<li>关键字：<code>why use maven</code></li>
+<li>关键字：<code>What does Maven do</code></li>
+<li>关键字：<code>Why do we need Maven</code></li>
+<li>关键字：<code>Why should we use Maven</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="哪些人不喜欢它"><a href="#哪些人不喜欢它" class="headerlink" title="哪些人不喜欢它"></a>哪些人不喜欢它</h3><ul>
+<li>Google 搜索：（这些一般都是一些故事，你自己来判断，别人的坎坷是你成长的基石）<ul>
+<li>关键字：<code>不用 maven</code></li>
+<li>关键字：<code>Why I Don&#39;t Use Maven</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="为什么学习它"><a href="#为什么学习它" class="headerlink" title="为什么学习它"></a>为什么学习它</h3><ul>
+<li>构建工具是 Java Web 开发者绕不过去的一道坎</li>
+</ul>
+<h3 id="我要怎么做（按优先级从高到低排序）"><a href="#我要怎么做（按优先级从高到低排序）" class="headerlink" title="我要怎么做（按优先级从高到低排序）"></a>我要怎么做（按优先级从高到低排序）</h3><ul>
+<li>看教程<ul>
+<li>官网快速入门文档<ul>
+<li>在官网中查看带有下面几个关键字的链接：<ul>
+<li><code>Getting Started</code></li>
+<li><code>Quick Start</code></li>
+<li><code>Getting Started Guides</code></li>
+<li><code>usage page</code></li>
+<li><code>Tutorials</code></li>
+<li><code>Guides</code></li>
+<li><code>Development Guides</code></li>
+<li><code>Documentation</code></li>
+<li><code>Docs</code></li>
+<li><code>Screencasts</code></li>
+<li>Maven 主页上得到字眼有：<ul>
+<li><a target="_blank" rel="noopener" href="http://maven.apache.org/guides/index.html">documentation index</a></li>
+<li>在子页面我们得到：<ul>
+<li><a target="_blank" rel="noopener" href="http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html">Getting Started in 5 Minutes</a></li>
+<li><a target="_blank" rel="noopener" href="http://maven.apache.org/guides/getting-started/index.html">Getting Started in 30 Minutes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在极客学院搜索对应的教学视频（我是年 VIP）<ul>
+<li>极客学院对 Maven 的讲解比较到位，从初级到中级都涵盖（需要 VIP 权限）：</li>
+<li>Maven 概述及安装，包含下面内容：<ul>
+<li><code>Maven 概述及安装</code></li>
+<li><code>在 Mac 电脑上安装及配置 Maven</code></li>
+<li><code>在 Windows 电脑上安装及配置 Maven</code></li>
+<li><code>在 Linux 电脑上安装及配置 Maven</code></li>
+<li>地址：<a target="_blank" rel="noopener" href="http://www.jikexueyuan.com/course/571.html">http://www.jikexueyuan.com/course/571.html</a></li>
+</ul>
+</li>
+<li>Maven 核心概念讲解，包含下面内容：<ul>
+<li><code>POM概述</code></li>
+<li><code>插件与目标</code></li>
+<li><code>项目的生命周期阶段</code></li>
+<li>地址：<a target="_blank" rel="noopener" href="http://www.jikexueyuan.com/course/866.html">http://www.jikexueyuan.com/course/866.html</a></li>
+</ul>
+</li>
+<li>在工具中使用 Maven，包含下面内容：<ul>
+<li><code>使用命令行工具构建一个 Maven 项目</code></li>
+<li><code>使用 Eclipse 构建一个 Maven 项目</code></li>
+<li><code>使用 IntelliJIDEA 构建一个 Maven 项目</code></li>
+<li>地址：<a target="_blank" rel="noopener" href="http://www.jikexueyuan.com/course/580_1.html?ss=1">http://www.jikexueyuan.com/course/580_1.html?ss=1</a></li>
+</ul>
+</li>
+<li>使用 Maven 构建 Web 项目，包含下面内容：<ul>
+<li><code>创建一个Web项目</code></li>
+<li><code>使用 Tomcat 插件运行 Web 项目</code></li>
+<li><code>使用 Jetty 插件运行 Web 项目</code></li>
+<li><code>添加 J2EE 依赖</code></li>
+<li><code>创建 JSP 和 Servlet</code></li>
+<li><code>在 Eclipse 中使用 Maven 构建 Web 项目</code></li>
+<li>地址：<a target="_blank" rel="noopener" href="http://www.jikexueyuan.com/course/908.html">http://www.jikexueyuan.com/course/908.html</a></li>
+<li>地址：<a target="_blank" rel="noopener" href="http://www.jikexueyuan.com/course/951.html">http://www.jikexueyuan.com/course/951.html</a></li>
+</ul>
+</li>
+<li>使用 Maven 构建多模块项目<ul>
+<li><code>多模块项目介绍</code></li>
+<li><code>创建 helloweb 项目的骨架结构</code></li>
+<li><code>将 helloweb 项目导入 Eclipse</code></li>
+<li><code>使用 dependencyManagement 管理依赖</code></li>
+<li><code>使用 pluginManagement 管理插件</code></li>
+<li><code>定义项目属性及配置信息</code></li>
+<li><code>完善 helloweb-entity 模块</code></li>
+<li><code>完善 helloweb-core 模块</code></li>
+<li><code>完善 helloweb-web 模块</code></li>
+<li><code>使用 log4j 打印日志</code></li>
+<li><code>使用 junit 进行单元测试</code></li>
+<li><code>使用 guava 美化代码</code></li>
+<li>地址：<a target="_blank" rel="noopener" href="http://www.jikexueyuan.com/course/957.html">http://www.jikexueyuan.com/course/957.html</a></li>
+<li>地址：<a target="_blank" rel="noopener" href="http://www.jikexueyuan.com/course/964.html">http://www.jikexueyuan.com/course/964.html</a></li>
+<li>地址：<a target="_blank" rel="noopener" href="http://www.jikexueyuan.com/course/977.html">http://www.jikexueyuan.com/course/977.html</a></li>
+<li>地址：<a target="_blank" rel="noopener" href="http://www.jikexueyuan.com/course/989.html">http://www.jikexueyuan.com/course/989.html</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>极客学院上整理得很好的文字教程：<a target="_blank" rel="noopener" href="http://wiki.jikexueyuan.com/project/maven/">http://wiki.jikexueyuan.com/project/maven/</a></li>
+<li>国外著名的教程网：<a target="_blank" rel="noopener" href="http://www.tutorialspoint.com/maven/index.htm">http://www.tutorialspoint.com/maven/index.htm</a></li>
+<li>Google 搜索：<code>Maven 视频 教程 百度云网盘</code>    </li>
+<li>Google 搜索：<code>Maven 视频 教程</code></li>
+<li>简书-搜索相关内容：<a target="_blank" rel="noopener" href="http://www.jianshu.com/">http://www.jianshu.com/</a></li>
+<li>知乎-搜索相关内容：<a target="_blank" rel="noopener" href="http://www.zhihu.com/">http://www.zhihu.com/</a></li>
+<li>Quora-搜索相关内容：<a target="_blank" rel="noopener" href="https://www.quora.com/">https://www.quora.com/</a></li>
+<li>微博-搜索相关内容：<a target="_blank" rel="noopener" href="http://weibo.com/">http://weibo.com</a></li>
+<li>公众号-搜索相关内容：<a target="_blank" rel="noopener" href="http://weixin.sogou.com/">http://weixin.sogou.com/</a></li>
+<li>开发者头条-搜索相关内容：<a target="_blank" rel="noopener" href="http://toutiao.io/">http://toutiao.io/</a></li>
+<li>京东-图书：<a target="_blank" rel="noopener" href="http://book.jd.com/">http://book.jd.com/</a></li>
+<li>YouTube-搜索相关内容：<a target="_blank" rel="noopener" href="http://youtube.com/">http://youtube.com/</a></li>
+</ul>
+</li>
+<li>自己写 Demo<ul>
+<li>Maven 下载地址：<a target="_blank" rel="noopener" href="http://maven.apache.org/download.cgi">http://maven.apache.org/download.cgi</a></li>
+<li>此时（2016-03-10）最新版本为：<strong>Apache Maven 3.3.9</strong></li>
+<li>JDK 要求：Maven 3.3 要求 JDK 1.7 或是更新，其他版本无</li>
+<li>操作系统没要求，官网原话：<code>No minimum requirement. Start up scripts are included as shell scripts and Windows batch files</code><ul>
+<li>但是，按系统常见压缩格式，我个人建议：</li>
+<li>Windows 下载的文件：<strong>apache-maven-版本号-bin.zip</strong></li>
+<li>类 Unix 下载的文件：<strong>apache-maven-版本号-bin.tar.gz</strong></li>
+</ul>
+</li>
+<li>我这里以 Maven 3.1 进行安装为例（Windows 系统）：<ul>
+<li>安装：<ul>
+<li>我的 Maven 解压目录发在 D 盘根目录下</li>
+<li>新增系统变量：<code>JAVA_HOME  ===  C:\Program Files\Java\jdk1.6.0_23</code></li>
+<li>新增系统变量：<code>M2_HOME  ===  D:\maven\maven3.1.1</code><ul>
+<li>需要注意的是变量名就叫这个 <code>M2_HOME</code>，不要改其他的，因为 TeamCity 这类工具它会默认去找该变量一致的内容自动帮我们匹配构建环境的，所以我们就按官方约定来。</li>
+</ul>
+</li>
+<li>在系统变量 Path 中增加：<code>;%JAVA_HOME%\bin;%M2_HOME%\bin</code></li>
+</ul>
+</li>
+<li>测试：<ul>
+<li>打开 cmd</li>
+<li>输入：<code>java -version</code>，能显示 Java 版本信息即表示 JAVA_HOME 设置好了</li>
+<li>输入：<code>mvn –v</code>，能显示 Maven 版本信息即表示 M2_HOME 设置好了</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>参考别人 Demo<ul>
+<li>通过上面的学习，我们知道，我们要学习别人的 Maven 配置，只要能看懂他们的 POM 文件配置即可，所以现在你需要做的是找一些开源项目，读懂他们的 POM</li>
+<li>Gtihub 搜索 Demo：<a target="_blank" rel="noopener" href="https://github.com/search/advanced">https://github.com/search/advanced</a></li>
+<li>Git@OSC 搜索 Demo：<a target="_blank" rel="noopener" href="http://git.oschina.net/">http://git.oschina.net/</a></li>
+</ul>
+</li>
+<li>项目场景模拟、提高<ul>
+<li>我现在所有的 Java 相关的项目都是 Maven 构建的</li>
+<li>自己做持续集成的话，有 Nexus 做私有仓库</li>
+<li>平时开发连接的是：<strong>开源中国 Maven 库</strong>：<ul>
+<li>使用技巧：</li>
+<li><a target="_blank" rel="noopener" href="http://maven.oschina.net/help.html">http://maven.oschina.net/help.html</a></li>
+<li><a target="_blank" rel="noopener" href="http://my.oschina.net/huangyong/blog/180189">http://my.oschina.net/huangyong/blog/180189</a></li>
+</ul>
+</li>
+<li>POM 依赖 jar 常去的查找地：<ul>
+<li>官网：<a target="_blank" rel="noopener" href="http://search.maven.org/">http://search.maven.org/</a></li>
+<li>开源中国：<a target="_blank" rel="noopener" href="http://maven.oschina.net/home.html">http://maven.oschina.net/home.html</a></li>
+<li>Nexus 库：<a target="_blank" rel="noopener" href="https://repository.sonatype.org/">https://repository.sonatype.org/</a></li>
+<li>MVNRepository：<a target="_blank" rel="noopener" href="http://mvnrepository.com/">http://mvnrepository.com/</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>遇到问题<ul>
+<li>官网 FAQ：<a target="_blank" rel="noopener" href="https://maven.apache.org/general.html">https://maven.apache.org/general.html</a></li>
+<li>Google</li>
+<li>Stack Overflow：<a target="_blank" rel="noopener" href="http://stackoverflow.com/">http://stackoverflow.com/</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="资料整理"><a href="#资料整理" class="headerlink" title="资料整理"></a>资料整理</h3><ul>
+<li>来自 Google 过程中的资料（真心感谢这些作者）：<ul>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000000640821">Maven重要概念及最佳实践</a></li>
+<li><a target="_blank" rel="noopener" href="http://mritd.me/2015/12/31/Maven-%E6%95%99%E7%A8%8B/#">Maven 教程 </a></li>
+<li><a target="_blank" rel="noopener" href="http://www.trinea.cn/android/maven/">Maven介绍，包括作用、核心概念、用法、常用命令、扩展及配置</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/haippy/archive/2012/07/04/2576453.html">7天学会Maven（第一天——了解 Maven）</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/haippy/archive/2012/07/05/2577233.html">7天学会Maven（第二天——Maven 标准目录结构）</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/zhaoyang/archive/2012/01/07/2315443.html">Maven 3 入门 – 安装与配置</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/sxyx2008/article/details/8725220">Maven之pom中文详解</a></li>
+<li><a target="_blank" rel="noopener" href="http://my.oschina.net/MyHeaven1987/blog/99781?fromerr=07XUhoR7">maven中的依赖机制简介</a></li>
+<li><a target="_blank" rel="noopener" href="http://my.oschina.net/MyHeaven1987/blog/100704?fromerr=SWanTA4V">maven中的仓库简介</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/bigtall/archive/2011/03/23/1993253.html">maven常见问题问答</a></li>
+<li><a target="_blank" rel="noopener" href="http://drizzlewalk.blog.51cto.com/2203401/665590">maven scope含义的说明</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.infoq.com/cn/news/2011/06/xxb-maven-9-package">Maven实战（九）——打包的技巧</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/sxyx2008/article/details/7959220">Maven仓库汇总</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/iusmile/archive/2012/11/14/2770118.html">Maven 的41种骨架功能介绍</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/zht666/article/details/8673609">IntelliJ IDEA 12创建Maven管理的Java Web项目（图解）</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/sxyx2008/article/details/7975129">对maven私服配置的说明 </a></li>
+</ul>
+</li>
+</ul>
+<h2 id="过程细节"><a href="#过程细节" class="headerlink" title="过程细节"></a>过程细节</h2><ul>
+<li>过去 2014 年里，基本上关于 Maven 的知识都是在 Google 上搜索出来的。</li>
+<li>在 2015 年才看到极客学院上面有成套资料</li>
+</ul>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><ul>
+<li>Maven 也许开始要过时了，但是即使 Gradle 的时代要到来了，你会害怕吗？我想你不会的，因为你会学习知识的方法，更而且他们还差不多。</li>
+</ul>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Java/">Java</a><a class="link-muted mr-2" rel="tag" href="/tags/Maven/">Maven</a><a class="link-muted mr-2" rel="tag" href="/tags/CI/">CI</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2016/03/11/IntelliJ-IDEA-ER/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">为什么不尝试下 IntelliJ IDEA？我想劝说你</span></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://api.vvhan.com/api/qt?qq=3225454747" alt="ChenShang"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">ChenShang</p><p class="is-size-6 is-block">A high school student.</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China GuangDong.</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">97</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">43</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">103</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xixi-cmd" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xixi-cmd"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="zhihu" href="https://www.zhihu.com/people/chenshang-53"><i class="fab fa-zhihu"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="/articles/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">归档</span></span><span class="level-right"><span class="level-item tag">/articles/</span></span></a></li><li><a class="level is-mobile" href="/tags/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">标签</span></span><span class="level-right"><span class="level-item tag">/tags/</span></span></a></li><li><a class="level is-mobile" href="/categories/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">分类</span></span><span class="level-right"><span class="level-item tag">/categories/</span></span></a></li><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/"><span class="level-start"><span class="level-item">IntelliJ IDEA</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/IntelliJ-IDEA/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Mac/"><span class="level-start"><span class="level-item">Mac</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/TeamCity/"><span class="level-start"><span class="level-item">TeamCity</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/TeamCity/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Toss-Note/"><span class="level-start"><span class="level-item">Toss Note</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/"><span class="level-start"><span class="level-item">HEXO</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/Toss-Note/HEXO/Github/"><span class="level-start"><span class="level-item">Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/Vue-JS/"><span class="level-start"><span class="level-item">Vue.JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/gulp/"><span class="level-start"><span class="level-item">gulp</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/java/"><span class="level-start"><span class="level-item">java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/python/turtle/"><span class="level-start"><span class="level-item">turtle</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"><span class="level-start"><span class="level-item">网络爬虫</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ssh/"><span class="level-start"><span class="level-item">ssh</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/web/"><span class="level-start"><span class="level-item">web</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/"><span class="level-start"><span class="level-item">JS</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/web/JS/JS%E9%80%86%E5%90%91/"><span class="level-start"><span class="level-item">JS逆向</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%8E%86%E5%8F%B2/"><span class="level-start"><span class="level-item">历史</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="level-start"><span class="level-item">学习方法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="level-start"><span class="level-item">学习日记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="level-start"><span class="level-item">物理学</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/%E7%89%A9%E7%90%86%E5%AD%A6/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="level-start"><span class="level-item">科幻历险记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">小技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">开发工具</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">测试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/"><span class="level-start"><span class="level-item">搞机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%90%9E%E6%9C%BA/MAC/"><span class="level-start"><span class="level-item">MAC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">教程</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E4%B8%BB%E9%A2%98/"><span class="level-start"><span class="level-item">主题</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%99%E7%A8%8B/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="level-start"><span class="level-item">游戏</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%B8%B8%E6%88%8F/%E5%8E%9F%E7%A5%9E/"><span class="level-start"><span class="level-item">原神</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/"><span class="level-start"><span class="level-item">系统</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/"><span class="level-start"><span class="level-item">linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%B3%BB%E7%BB%9F/linux/deepin/"><span class="level-start"><span class="level-item">deepin</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%BD%AF%E4%BB%B6/"><span class="level-start"><span class="level-item">软件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%80%B2%E9%9A%8E%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">進階教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="level-start"><span class="level-item">随笔</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E9%9A%8F%E7%AC%94/%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">笔记</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E9%BB%84%E8%89%B2/"><span class="level-start"><span class="level-item">黄色</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-07-08T16:50:41.751Z">2022-07-09</time></p><p class="title"><a href="/2022/07/09/hello-world/">Hello World</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:42.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">如何反黑客后门程序</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:54:36.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E5%8C%96%E5%AD%A6%E7%AC%94%E8%AE%B0%20-2/">化学笔记②</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:52:05.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/%E4%BB%8ELinux%E5%86%85%E6%A0%B8%E7%90%86%E8%A7%A3JAVA%E7%9A%84NIO/">从Linux内核理解JAVA的NIO</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-09-10T15:51:57.000Z">2021-09-10</time></p><p class="title"><a href="/2021/09/10/of/">intro to serverless functions</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/07/"><span class="level-start"><span class="level-item">七月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">二月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">八月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/12/"><span class="level-start"><span class="level-item">十二月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/08/"><span class="level-start"><span class="level-item">八月 2017</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2017/01/"><span class="level-start"><span class="level-item">一月 2017</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/12/"><span class="level-start"><span class="level-item">十二月 2016</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/11/"><span class="level-start"><span class="level-item">十一月 2016</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/10/"><span class="level-start"><span class="level-item">十月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/08/"><span class="level-start"><span class="level-item">八月 2016</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/04/"><span class="level-start"><span class="level-item">四月 2016</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2016/03/"><span class="level-start"><span class="level-item">三月 2016</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Aplayer/"><span class="tag">Aplayer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Apple/"><span class="tag">Apple</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Biological/"><span class="tag">Biological</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CI/"><span class="tag">CI</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fiddler/"><span class="tag">Fiddler</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Firefox/"><span class="tag">Firefox</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Flink/"><span class="tag">Flink</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Genshin-Impact/"><span class="tag">Genshin-Impact</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Homebrew/"><span class="tag">Homebrew</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/IntelliJ-IDEA/"><span class="tag">IntelliJ IDEA</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JAVA/"><span class="tag">JAVA</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JS/"><span class="tag">JS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MVVM/"><span class="tag">MVVM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Mac/"><span class="tag">Mac</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Maven/"><span class="tag">Maven</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Movie/"><span class="tag">Movie</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Node-js/"><span class="tag">Node.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenCV/"><span class="tag">OpenCV</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PWA/"><span class="tag">PWA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/PicGo/"><span class="tag">PicGo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rust/"><span class="tag">Rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Rx-js/"><span class="tag">Rx.js</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ShadowSocks/"><span class="tag">ShadowSocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Shadowsocks/"><span class="tag">Shadowsocks</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TeamCity/"><span class="tag">TeamCity</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Toss-Note/"><span class="tag">Toss Note</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VPS/"><span class="tag">VPS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/VSCode/"><span class="tag">VSCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue-js/"><span class="tag">Vue.js</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vultr/"><span class="tag">Vultr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Web/"><span class="tag">Web</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebAssembly/"><span class="tag">WebAssembly</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bug/"><span class="tag">bug</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/butterfly/"><span class="tag">butterfly</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cdn/"><span class="tag">cdn</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/centOS/"><span class="tag">centOS</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-analysis/"><span class="tag">data analysis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/flask/"><span class="tag">flask</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/game/"><span class="tag">game</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/games/"><span class="tag">games</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/go/"><span class="tag">go</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gradle/"><span class="tag">gradle</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/gulp/"><span class="tag">gulp</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/javascript/"><span class="tag">javascript</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jsdelivr/"><span class="tag">jsdelivr</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/live2d/"><span class="tag">live2d</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/music/"><span class="tag">music</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nginx/"><span class="tag">nginx</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pandas/"><span class="tag">pandas</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/react/"><span class="tag">react</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/rust/"><span class="tag">rust</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/serverless/"><span class="tag">serverless</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/shell/"><span class="tag">shell</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/skill/"><span class="tag">skill</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/terminal/"><span class="tag">terminal</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/turtle%E7%BB%98%E5%9B%BE/"><span class="tag">turtle绘图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/viola/"><span class="tag">viola</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows/"><span class="tag">windows</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/windows11/"><span class="tag">windows11</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%B8%BB%E9%A1%8C/"><span class="tag">主題</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA/"><span class="tag">前端构建</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"><span class="tag">前端框架</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%89%8D%E7%AB%AF%E7%9B%91%E6%8E%A7/"><span class="tag">前端监控</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%AD%A6/"><span class="tag">化学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8C%96%E5%B7%A5/"><span class="tag">化工</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8E%86%E5%8F%B2/"><span class="tag">历史</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tag">图床</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><span class="tag">学习方法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"><span class="tag">学习日记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90/"><span class="tag">持续集成</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8F%92%E4%BB%B6/"><span class="tag">插件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tag">教程</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tag">数学</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B5%8B%E8%AF%95/"><span class="tag">测试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%89%A9%E7%90%86%E5%AD%A6/"><span class="tag">物理学</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%B5%E8%84%91/"><span class="tag">电脑</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%99%BD%E5%AB%96/"><span class="tag">白嫖</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E5%B9%BB%E5%8E%86%E9%99%A9%E8%AE%B0/"><span class="tag">科幻历险记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%AC%94%E8%AE%B0/"><span class="tag">笔记</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F/"><span class="tag">系统</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/"><span class="tag">组件化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF/"><span class="tag">终端</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E6%98%93%E4%BA%91/"><span class="tag">网易云</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="tag">网络安全</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E7%AB%AF%E8%9E%8D%E5%90%88/"><span class="tag">跨端融合</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%9C%E8%89%B2/"><span class="tag">颜色</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">ChenShang</a><p class="is-size-7"><span>&copy; 2022 ChenShang</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><script src="/js/main.js" defer></script><!--!--><script src="/js/style.js"></script><link rel="stylesheet" href="/css/chen.css"></body></html>
