@@ -1,0 +1,11 @@
+# ChenShang's Blog~♥️
+- [关于我](https://blog.weikecc.top/about/)
+- [友情链接](https://blog.weikecc.top/links/)
+
+## Posts
+- [关于C++的类和对象的相关笔记](https://blog.weikecc.top/posts/cpp_1/)
+- [docker初探](https://blog.weikecc.top/posts/docker_1/)
+- [linux终端美化](https://blog.weikecc.top/posts/linux_1/)
+- [浅谈C++的面向对象](https://blog.weikecc.top/posts/cpp_2/)
+- [Rust初探——二叉树的增减和遍历](https://blog.weikecc.top/posts/rust_1/)
+- [国产linux操作系统deepin](https://blog.weikecc.top/posts/linux2_deepin/)

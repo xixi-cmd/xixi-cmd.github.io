@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>ChenShang&#39;s Blog~♥️</title>
+    <link>https://blog.weikecc.top/</link>
+    <description>Recent content on ChenShang&#39;s Blog~♥️</description>
+    <image>
+      <title>ChenShang&#39;s Blog~♥️</title>
+      <url>https://blog.weikecc.top/images/papermod-cover.png</url>
+      <link>https://blog.weikecc.top/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo</generator>
+    <language>zh</language>
+    <copyright>PaperMod Contributors</copyright>
+    <lastBuildDate>Tue, 09 Jun 2026 00:20:00 +0800</lastBuildDate>
+    <atom:link href="https://blog.weikecc.top/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于C&#43;&#43;的类和对象的相关笔记</title>
+      <link>https://blog.weikecc.top/posts/cpp_1/</link>
+      <pubDate>Tue, 09 Jun 2026 00:20:00 +0800</pubDate>
+      <guid>https://blog.weikecc.top/posts/cpp_1/</guid>
+      <description>关于c&#43;&#43;的类和对象的相关笔记</description>
+    </item>
+    <item>
+      <title>docker初探</title>
+      <link>https://blog.weikecc.top/posts/docker_1/</link>
+      <pubDate>Thu, 16 Apr 2026 00:20:00 +0800</pubDate>
+      <guid>https://blog.weikecc.top/posts/docker_1/</guid>
+      <description>docker初探</description>
+    </item>
+    <item>
+      <title>linux终端美化</title>
+      <link>https://blog.weikecc.top/posts/linux_1/</link>
+      <pubDate>Thu, 16 Apr 2026 00:20:00 +0800</pubDate>
+      <guid>https://blog.weikecc.top/posts/linux_1/</guid>
+      <description>linux使用Fish作为默认shell并且使用Oh My Posh美化</description>
+    </item>
+    <item>
+      <title>浅谈C&#43;&#43;的面向对象</title>
+      <link>https://blog.weikecc.top/posts/cpp_2/</link>
+      <pubDate>Thu, 16 Apr 2026 00:20:00 +0800</pubDate>
+      <guid>https://blog.weikecc.top/posts/cpp_2/</guid>
+      <description>关于c&#43;&#43;的类和对象的相关笔记</description>
+    </item>
+    <item>
+      <title>关于我</title>
+      <link>https://blog.weikecc.top/about/</link>
+      <pubDate>Mon, 01 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>https://blog.weikecc.top/about/</guid>
+      <description>&lt;h2 id=&#34;-你好我是-chenshang&#34;&gt;👋 你好，我是 ChenShang&lt;/h2&gt;
+&lt;p&gt;一名正在探索编程世界的大一计算机专业学生。&lt;/p&gt;
+&lt;h2 id=&#34;-技术栈&#34;&gt;💻 技术栈&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;C++&lt;/strong&gt; - 探索底层与性能的奥秘&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Python&lt;/strong&gt; - 感受简洁与高效的魅力&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Web 前端&lt;/strong&gt; - 用代码构建可视化的美好&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;-热爱与日常&#34;&gt;🥤 热爱与日常&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;快乐源泉&lt;/strong&gt;：肥宅快乐水（可乐），写代码时的最佳伴侣&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;运动习惯&lt;/strong&gt;：喜欢跳绳，但上了大学以后就没怎么运动过了 😅&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;日常吐槽&lt;/strong&gt;：特别讨厌大学的数学课（懂的都懂）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;-关于博客&#34;&gt;🚀 关于博客&lt;/h2&gt;
+&lt;p&gt;这个博客是我记录学习过程、分享技术心得的地方。希望能在这里：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;分享 C++/Python/前端的学习笔记&lt;/li&gt;
+&lt;li&gt;记录项目开发中的坑与收获&lt;/li&gt;
+&lt;li&gt;与更多热爱编程的朋友交流&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;-联系我&#34;&gt;📫 联系我&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;GitHub: &lt;a href=&#34;https://github.com/xixi-cmd&#34;&gt;xixi-cmd&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;X/Twitter: &lt;a href=&#34;https://x.com/LiLiyawen&#34;&gt;@LiLiyawen&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;blockquote&gt;
+&lt;p&gt;努力学习，早日成为大佬！💪&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>Rust初探——二叉树的增减和遍历</title>
+      <link>https://blog.weikecc.top/posts/rust_1/</link>
+      <pubDate>Sat, 22 May 2021 00:20:00 +0800</pubDate>
+      <guid>https://blog.weikecc.top/posts/rust_1/</guid>
+      <description>二叉树的增减和遍历</description>
+    </item>
+    <item>
+      <title>国产linux操作系统deepin</title>
+      <link>https://blog.weikecc.top/posts/linux2_deepin/</link>
+      <pubDate>Sun, 13 Dec 2020 17:39:14 +0800</pubDate>
+      <guid>https://blog.weikecc.top/posts/linux2_deepin/</guid>
+      <description>国产linux操作系统deepin的安装和配置</description>
+    </item>
+    <item>
+      <title>友情链接</title>
+      <link>https://blog.weikecc.top/links/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://blog.weikecc.top/links/</guid>
+      <description>&lt;hr&gt;
+&lt;br&gt;
+我的友链：
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;- &lt;span class=&#34;nt&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ChenShang&amp;#39;s Blog&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;url&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;https://weikecc.top/&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;description&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;山高路远，道阻且长&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;tag&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;技术+生活&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;avatar&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;https://cdn.jsdmirror.com/gh/xixi-cmd/file@main/avatar.jpg&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;若需添加你的友链，请在评论区按照以下格式提交：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;- &lt;span class=&#34;nt&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;你的友链名称&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;url&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;你的网站链接&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;description&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;你的网站描述&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;tag&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;技术+生活&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;avatar&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;你的头像链接&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+  </channel>
+</rss>

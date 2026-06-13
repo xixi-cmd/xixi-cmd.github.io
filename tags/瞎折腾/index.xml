@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>瞎折腾 on ChenShang&#39;s Blog~♥️</title>
+    <link>https://blog.weikecc.top/tags/%E7%9E%8E%E6%8A%98%E8%85%BE/</link>
+    <description>Recent content in 瞎折腾 on ChenShang&#39;s Blog~♥️</description>
+    <image>
+      <title>ChenShang&#39;s Blog~♥️</title>
+      <url>https://blog.weikecc.top/images/papermod-cover.png</url>
+      <link>https://blog.weikecc.top/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo</generator>
+    <language>zh</language>
+    <copyright>PaperMod Contributors</copyright>
+    <lastBuildDate>Sun, 13 Dec 2020 17:39:14 +0800</lastBuildDate>
+    <atom:link href="https://blog.weikecc.top/tags/%E7%9E%8E%E6%8A%98%E8%85%BE/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>国产linux操作系统deepin</title>
+      <link>https://blog.weikecc.top/posts/linux2_deepin/</link>
+      <pubDate>Sun, 13 Dec 2020 17:39:14 +0800</pubDate>
+      <guid>https://blog.weikecc.top/posts/linux2_deepin/</guid>
+      <description>国产linux操作系统deepin的安装和配置</description>
+    </item>
+  </channel>
+</rss>
